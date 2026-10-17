@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="ShadowBox Nox - shadow boxing trainer with your phone camera. تدريب الملاكمة الافتراضي بكاميرا هاتفك." />
+  <title>ShadowBox Nox 🥊</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+</head>
+<body>
+
+  <!-- ============ شاشة الدخول ============ -->
+  <div id="splash" class="splash">
+    <div class="splash-logo">🥊</div>
+    <div class="splash-name">ShadowBox <span>Nox</span></div>
+    <p class="splash-hint" data-i18n="splash_hint">اضغط للدخول</p>
+  </div>
+
+  <!-- ============ الشاشة الرئيسية: أربعة أقسام ============ -->
+  <main id="homeScreen" class="screen active">
+    <div class="topbar">
+      <button id="btnSettings" class="chip" data-i18n="btn_settings">⚙️ الإعدادات</button>
+    </div>
+
+    <header class="brand">
+      <div class="logo">🥊</div>
+      <h1>ShadowBox <span>Nox</span></h1>
+      <p class="tagline" data-i18n="tagline"></p>
+    </header>
+
+    <div id="banner" class="banner" hidden data-i18n-html="banner_https"></div>
+
+    <nav class="nav-list">
+      <button id="btnTraining" class="nav-bar nav-train">
+        <span class="mode-logo">🥊</span>
+        <span class="mode-text"><b data-i18n="nav_training">التمرين</b><small data-i18n="nav_training_desc"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+      <button id="btnLearn" class="nav-bar nav-learn">
+        <span class="mode-logo">🎓</span>
+        <span class="mode-text"><b data-i18n="nav_learn">التعلّم</b><small data-i18n="nav_learn_desc"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+      <button id="btnCoach" class="nav-bar nav-coach">
+        <span class="mode-logo">🧠</span>
+        <span class="mode-text"><b data-i18n="coach_name">المدرّب الذكي</b><small data-i18n="nav_coach_desc"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+      <button id="btnHistory" class="nav-bar nav-activity">
+        <span class="mode-logo">📊</span>
+        <span class="mode-text"><b data-i18n="nav_activity">سجل النشاط</b><small data-i18n="nav_activity_desc"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+    </nav>
+
+    <div class="row">
+      <button id="btnHelp" class="btn ghost" data-i18n="btn_help">نصائح الإعداد</button>
+    </div>
+
+    <div class="notice" data-i18n-html="notice_privacy"></div>
+    <div class="notice small" data-i18n="notice_accuracy"></div>
+  </main>
+
+  <!-- ============ قسم التمرين: أنواع التدريب ============ -->
+  <main id="trainMenuScreen" class="screen">
+    <div class="setup-head">
+      <button id="btnTrainBack" class="chip" data-i18n="btn_back">رجوع</button>
+      <h2 class="setup-name" data-i18n="nav_training">التمرين</h2>
+    </div>
+
+    <h2 class="section-title" data-i18n="modes_title">اختر نوع التدريب</h2>
+    <div class="mode-cards">
+      <button class="mode-card" data-mode="free">
+        <span class="mode-logo">🥊</span>
+        <span class="mode-text"><b data-i18n="name_free">حرّ</b><small data-i18n="desc_free"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+      <button class="mode-card" data-mode="sequence">
+        <span class="mode-logo">🎯</span>
+        <span class="mode-text"><b data-i18n="name_sequence">تسلسل</b><small data-i18n="desc_sequence"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+      <button class="mode-card" data-mode="dodge">
+        <span class="mode-logo">🛡️</span>
+        <span class="mode-text"><b data-i18n="name_dodge">مراوغة</b><small data-i18n="desc_dodge"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
+    </div>
+  </main>
+
+  <!-- ============ قسم التعلّم ============ -->
+  <main id="learnScreen" class="screen">
+    <div class="setup-head">
+      <button id="btnLearnBack" class="chip" data-i18n="btn_back">رجوع</button>
+      <h2 class="setup-name" data-i18n="nav_learn">التعلّم</h2>
+    </div>
+
+    <section class="card">
+      <h2 data-i18n="learn_combos_t">الكومبوهات</h2>
+      <ul class="tips">
+        <li data-i18n="learn_combos_1"></li>
+        <li data-i18n="learn_combos_2"></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="learn_feet_t">حركة القدمين</h2>
+      <ul class="tips">
+        <li data-i18n="learn_feet_1"></li>
+        <li data-i18n="learn_feet_2"></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="learn_def_t">الدفاع</h2>
+      <ul class="tips">
+        <li data-i18n="learn_def_1"></li>
+        <li data-i18n="learn_def_2"></li>
+      </ul>
+    </section>
+
+    <p class="notice small" data-i18n="learn_note"></p>
+  </main>
+
+  <!-- ============ شاشة إعدادات الجلسة ============ -->
+  <main id="setupScreen" class="screen">
+    <div class="setup-head">
+      <button id="btnSetupBack" class="chip" data-i18n="btn_back">رجوع</button>
+      <div class="setup-title">
+        <span id="setupLogo" class="mode-logo">🥊</span>
+        <h2 id="setupTitle" class="setup-name"></h2>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2 data-i18n="setup_title">إعدادات الجلسة</h2>
+
+      <label class="field">
+        <span data-i18n="field_round_len">مدة الجولة</span>
+        <select id="roundSec">
+          <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
+          <option value="120" data-i18n="dur_2">دقيقتان</option>
+          <option value="180" selected data-i18n="dur_3">3 دقائق</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_rounds">عدد الجولات</span>
+        <select id="roundCount">
+          <option value="1" data-i18n="rounds_1">جولة واحدة</option>
+          <option value="2" data-i18n="rounds_2">جولتان</option>
+          <option value="3" selected data-i18n="rounds_3">3 جولات</option>
+          <option value="4" data-i18n="rounds_4">4 جولات</option>
+          <option value="6" data-i18n="rounds_6">6 جولات</option>
+          <option value="12" data-i18n="rounds_12">12 جولة</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_rest">الراحة بين الجولات</span>
+        <select id="restSec">
+          <option value="0" data-i18n="rest_0">بدون راحة</option>
+          <option value="30" selected data-i18n="rest_30">30 ثانية</option>
+          <option value="60" data-i18n="rest_60">دقيقة</option>
+          <option value="90" data-i18n="rest_90">دقيقة ونصف</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_speed">سرعة الأهداف</span>
+        <select id="speedSel">
+          <option value="slow" data-i18n="speed_slow">بطيء</option>
+          <option value="mid" selected data-i18n="speed_mid">متوسط</option>
+          <option value="fast" data-i18n="speed_fast">سريع</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_sens">حساسية الكشف</span>
+        <select id="sensSel">
+          <option value="low" data-i18n="sens_low">منخفضة (تتطلب لكمة قوية)</option>
+          <option value="mid" selected data-i18n="sens_mid">متوسطة</option>
+          <option value="high" data-i18n="sens_high">عالية (تقبل لكمات أخف)</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_count">احتساب اللكمات</span>
+        <select id="countSel">
+          <option value="targets" selected data-i18n="count_targets">على الأهداف فقط</option>
+          <option value="all" data-i18n="count_all">كل لكمة في الهواء أيضًا</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_stance">وضعية الوقوف</span>
+        <select id="stanceSel">
+          <option value="orthodox" selected data-i18n="stance_orth">اليد اليسرى أمامية (عادية)</option>
+          <option value="southpaw" data-i18n="stance_south">اليد اليمنى أمامية (معاكسة)</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_camera">الكاميرا</span>
+        <select id="facingSel">
+          <option value="user" selected data-i18n="cam_front">الأمامية (مفضّلة للتدريب)</option>
+          <option value="environment" data-i18n="cam_back">الخلفية</option>
+        </select>
+      </label>
+    </section>
+
+    <button id="btnStart" class="btn primary big" data-i18n="btn_start">ابدأ التدريب</button>
+    <p id="homeMsg" class="msg" role="alert"></p>
+  </main>
+
+  <!-- ============ شاشة التدريب ============ -->
+  <main id="trainScreen" class="screen">
+    <canvas id="stage"></canvas>
+    <video id="cam" playsinline muted autoplay></video>
+
+    <!-- الشريط العلوي -->
+    <div class="hud top">
+      <div class="pill" id="roundLabel">الجولة 1/3</div>
+      <div class="timer" id="timer">03:00</div>
+      <div class="pill status" id="statusPill">معايرة</div>
+    </div>
+
+    <!-- خطوة التسلسل التالية -->
+    <div id="seqPrompt" class="seq-prompt" hidden></div>
+
+    <!-- لوحة الإحصائيات السفلية -->
+    <div class="hud bottom">
+      <div class="counter-main">
+        <b id="total">0</b>
+        <small data-i18n="unit_punch">لكمة</small>
+      </div>
+
+      <div class="grid">
+        <div class="stat"><b id="jabCount">0</b><small data-i18n="stat_jab">جاب</small></div>
+        <div class="stat"><b id="rightCount">0</b><small data-i18n="stat_right">يمنى</small></div>
+        <div class="stat"><b id="leftCount">0</b><small data-i18n="stat_left">يسرى</small></div>
+        <div class="stat"><b id="targetHits">0</b><small data-i18n="stat_targets">أهداف القفاز</small></div>
+        <div class="stat"><b id="ppm">0</b><small data-i18n="stat_ppm">لكمة/دقيقة</small></div>
+        <div class="stat"><b id="crossCount">0</b><small data-i18n="stat_cross">كروس</small></div>
+        <div class="stat"><b id="pillarHits">0</b><small data-i18n="stat_hits">ضربات مستلمة</small></div>
+        <div class="stat"><b id="dodges">0</b><small data-i18n="stat_dodges">تفادٍ ناجح</small></div>
+      </div>
+
+      <div class="toggle-row">
+        <button id="btnStats" class="stats-toggle" data-i18n="btn_show_stats">إظهار النتائج</button>
+        <button id="btnLabels" class="stats-toggle" data-i18n="lbl_show">إظهار توضيح اللكمات</button>
+      </div>
+
+      <div class="controls">
+        <button id="btnPause" class="ctrl" aria-label="Pause">⏸</button>
+        <button id="btnStance" class="ctrl" data-i18n="ctrl_left">يسار أمامي</button>
+        <button id="btnRotate" class="ctrl" data-i18n="btn_rotate">⟳ تدوير</button>
+        <button id="btnCam" class="ctrl" data-i18n="btn_cam">🔄 كاميرا</button>
+        <button id="btnStop" class="ctrl danger" data-i18n="btn_end">إنهاء</button>
+      </div>
+    </div>
+
+    <!-- تنبيه مؤقت -->
+    <div id="toast" class="toast" hidden></div>
+
+    <!-- المعايرة قبل البدء -->
+    <div id="calibOverlay" class="overlay calib">
+      <div class="sheet">
+        <h2 data-i18n="calib_title">معايرة الوضعية</h2>
+        <p class="hint" data-i18n="calib_hint">قف على بعد مناسب بحيث يظهر جسمك من الكتفين حتى اليدين، واجعل الإضاءة من أمامك.</p>
+        <p id="calibStatus" class="status" data-i18n="calib_searching">جارٍ البحث عن جسمك...</p>
+        <button id="calibBtn" class="btn primary big" disabled data-i18n="btn_start_round">ابدأ الجولة</button>
+        <button id="calibCancel" class="btn ghost" data-i18n="btn_back">رجوع</button>
+      </div>
+    </div>
+
+    <!-- الراحة بين الجولات -->
+    <div id="restOverlay" class="overlay" hidden>
+      <div class="sheet">
+        <h2 data-i18n="rest_title">راحة</h2>
+        <div class="big-num" id="restCount">30</div>
+        <p id="restNext" class="hint"></p>
+        <button id="restSkip" class="btn primary big" data-i18n="btn_skip_rest">ابدأ الجولة الآن</button>
+      </div>
+    </div>
+
+    <!-- الإيقاف المؤقت -->
+    <div id="pauseOverlay" class="overlay" hidden>
+      <div class="sheet">
+        <h2 data-i18n="pause_title">متوقف مؤقتًا</h2>
+        <p class="hint" data-i18n="pause_hint">لن تُحتسب اللكمات أثناء الإيقاف.</p>
+        <button id="btnResume" class="btn primary big" data-i18n="btn_resume">متابعة</button>
+      </div>
+    </div>
+
+    <!-- نتيجة الجلسة -->
+    <div id="resultOverlay" class="overlay" hidden>
+      <div class="sheet">
+        <h2 data-i18n="res_title">نتيجة الجلسة 🥊</h2>
+        <div id="resultBody"></div>
+        <button id="btnAgain" class="btn primary big" data-i18n="btn_again">جلسة جديدة</button>
+        <button id="btnHome" class="btn ghost" data-i18n="btn_home">الرئيسية</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ الإعدادات ============ -->
+  <div id="settingsModal" class="overlay modal" hidden>
+    <div class="sheet wide">
+      <h2 data-i18n="settings_title">الإعدادات</h2>
+
+      <label class="field">
+        <span data-i18n="field_lang">اللغة</span>
+        <select id="langSel">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+
+      <label class="toggle">
+        <input type="checkbox" id="soundToggle" checked />
+        <span data-i18n="toggle_sound">تفعيل الأصوات والتأثيرات الصوتية</span>
+      </label>
+
+      <div class="row">
+        <button id="btnResetHistory" class="btn ghost danger-text" data-i18n="btn_reset_history">حذف السجل المحفوظ</button>
+        <button id="btnCloseSettings" class="btn primary" data-i18n="btn_close">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ السجل ============ -->
+  <div id="historyModal" class="overlay modal" hidden>
+    <div class="sheet wide">
+      <h2 data-i18n="hist_title">السجل والإحصائيات</h2>
+      <div id="historyBody"></div>
+      <div class="row">
+        <button id="btnClearHistory" class="btn ghost danger-text" data-i18n="btn_clear_history">حذف السجل</button>
+        <button id="btnCloseHistory" class="btn primary" data-i18n="btn_close">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ المدرّب الذكي ============ -->
+  <div id="coachModal" class="overlay modal" hidden>
+    <div class="sheet wide">
+      <h2 data-i18n="coach_title">المدرّب الذكي 🧠</h2>
+      <div id="coachBody"></div>
+
+      <form id="coachChatForm" class="coach-chat" autocomplete="off">
+        <h3 class="section-title" data-i18n="coach_chat_title">اسأل المدرّب</h3>
+        <div id="coachChatLog" class="coach-log" aria-live="polite"></div>
+        <div class="coach-input-row">
+          <input id="coachChatInput" type="text" maxlength="500" dir="auto" />
+          <button id="coachChatSend" type="submit" class="btn primary" data-i18n="coach_chat_send">إرسال</button>
+        </div>
+        <p id="coachChatStatus" class="msg" role="status"></p>
+        <button id="coachRetry" type="button" class="btn ghost" hidden data-i18n="coach_chat_retry">إعادة المحاولة</button>
+        <p class="notice small" data-i18n="coach_chat_note"></p>
+      </form>
+
+      <button id="btnCloseCoach" class="btn primary big" data-i18n="btn_close">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- ============ المساعدة ============ -->
+  <div id="helpModal" class="overlay modal" hidden>
+    <div class="sheet wide">
+      <h2 data-i18n="help_title">نصائح للحصول على أفضل دقة</h2>
+      <ul class="tips">
+        <li data-i18n-html="help_1"></li>
+        <li data-i18n-html="help_2"></li>
+        <li data-i18n-html="help_3"></li>
+        <li data-i18n-html="help_4"></li>
+        <li data-i18n-html="help_5"></li>
+        <li data-i18n-html="help_6"></li>
+        <li data-i18n-html="help_7"></li>
+      </ul>
+      <p class="notice small" data-i18n="help_limit"></p>
+      <button id="btnCloseHelp" class="btn primary big" data-i18n="btn_ok">حسنًا</button>
+    </div>
+  </div>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>

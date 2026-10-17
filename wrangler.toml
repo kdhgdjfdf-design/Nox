@@ -1,0 +1,17 @@
+# إعداد النشر على Cloudflare Workers
+# الأمر: npx wrangler deploy
+# المفتاح لا يوضع هنا أبدًا، بل يُضاف بالأمر: npx wrangler secret put OPENAI_API_KEY
+
+name = "shadowbox-nox-coach"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+# النموذج: غيّره هنا إذا أردت نموذجًا آخر يدعم Responses API وأداة web_search
+OPENAI_MODEL = "gpt-5.5"
+# أصول المواقع المسموح لها بالاتصال (افصل بينها بفاصلة). أضف عنوان المعاينة إن احتجته.
+ALLOWED_ORIGINS = "https://kdhgdjfdf-design.github.io"
+# أقصى طول للسؤال بالحروف
+MAX_QUESTION_CHARS = "500"
+# أقصى عدد طلبات لكل IP في الدقيقة (حد تقريبي داخل الخادم)
+RATE_LIMIT_PER_MIN = "10"
