@@ -51,9 +51,9 @@ function showLessons(push=true){
  if(player&&player.cueVideoById)loadLesson(current,true);
 }
 $('backFromCorners').addEventListener('click',()=>{location.href='index.html'});
-$('openLearning').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
+$('openLearning').addEventListener('click',()=>{location.href='learning-preview.html?v=20261018c'});
 $('openBasics').addEventListener('click',()=>showLessons(true));
-['openTraining','openCoach','openHistory'].forEach(id=>$(id).addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'}));
+
 $('backToCorners').addEventListener('click',()=>{
   lessonScreen.hidden=true;cornerScreen.hidden=false;
   history.replaceState({screen:'corners'},'',location.pathname+location.search+'#corners');
@@ -61,7 +61,7 @@ $('backToCorners').addEventListener('click',()=>{
 window.addEventListener('popstate',()=>{
  if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false;}
  else if(location.hash==='#corners'){cornerScreen.hidden=false;lessonScreen.hidden=true;}
- else {location.href='https://kdhgdjfdf-design.github.io/shadowbox/';}
+ else {location.href='index.html';}
 });
 if(location.hash==='#lessons'){history.replaceState({screen:'corners'},'',location.pathname+location.search+'#corners');history.pushState({screen:'lessons'},'',location.pathname+location.search+'#lessons');cornerScreen.hidden=true;lessonScreen.hidden=false}
 else{if(location.hash!=='#corners')history.replaceState({screen:'corners'},'',location.pathname+location.search+'#corners');cornerScreen.hidden=false;lessonScreen.hidden=true}
