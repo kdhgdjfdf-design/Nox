@@ -1916,7 +1916,7 @@ el.btnClearHistory.addEventListener("click", clearHistory);
 el.btnHelp.addEventListener("click", () => (el.helpModal.hidden = false));
 el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
-  window.location.href = "coach-preview.html";
+  window.location.href = "coach-preview.html?v=20261018b";
 });
 
 // ---------- المدرّب المحلي: إرشادات قواعدية دون API أو رفع بيانات ----------
@@ -2092,7 +2092,7 @@ el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
 el.btnLearn.addEventListener("click", () => {
-  window.location.href = "learning-preview.html";
+  window.location.href = "learning-hub.html?v=20261018b";
 });
 el.btnTrainBack.addEventListener("click", () => showScreen("home"));
 el.btnLearnBack.addEventListener("click", () => showScreen("home"));
