@@ -1872,22 +1872,9 @@ function typeRows(arr) {
 }
 
 function renderCoach() {
-  const sessions = loadSessions();
-  const a = analyzeSessions(sessions);
-  if (!a) {
-    el.coachBody.innerHTML = '<p class="notice">' + t("coach_empty") + '</p><p class="notice small">' + t("coach_note") + '</p>';
-    return;
-  }
-  const stat = (label, value) => '<div><b>' + value + '</b><small>' + label + '</small></div>';
-  el.coachBody.innerHTML =
-    '<div class="res-grid">' +
-      stat(t("coach_stat_sessions"), a.sessions) +
-      stat(t("coach_stat_ppm"), a.avgPpm) +
-      stat(t("coach_stat_glove"), a.glovePct === null ? "—" : a.glovePct + "%") +
-      stat(t("coach_stat_dodge"), a.dodgePct === null ? "—" : a.dodgePct + "%") +
-    '</div><h3 class="section-title">' + t("coach_tips_title") + '</h3>' +
-    '<ul class="tips">' + a.tips.map((x) => '<li>' + x + '</li>').join("") + '</ul>' +
-    '<p class="notice small">' + t("coach_note") + '</p>';
+  // الإحصائيات تبقى في سجل النشاط فقط، ولا تُعرض في واجهة المدرب.
+  el.coachBody.innerHTML = "";
+  el.coachBody.hidden = true;
 }
 
 function clearHistory() {
@@ -1964,6 +1951,44 @@ function coachHasAny(text, words) {
   return words.some((word) => text.includes(word));
 }
 
+function buildPersonalizedProgressReply(sessions, english) {
+  if (!sessions.length) {
+    return english
+      ? "I don't have saved sessions to personalize this yet. Once some history is available, I can use it privately to suggest a more suitable general activity routine."
+      : "ما عندي جلسات محفوظة أخصص النصيحة بناءً عليها حتى الآن. عندما يتوفر سجل، أستطيع استخدامه داخليًا لاقتراح روتين نشاط عام أنسب لك.";
+  }
+
+  const recent = sessions.slice(0, 5);
+  const accuracyValues = recent.filter((s) => typeof s.accuracy === "number").map((s) => s.accuracy);
+  const avgAccuracy = accuracyValues.length
+    ? accuracyValues.reduce((sum, value) => sum + value, 0) / accuracyValues.length
+    : null;
+  const avgDuration = recent.reduce((sum, s) => sum + (Number(s.durationSec) || 0), 0) / recent.length;
+  const suggestions = [];
+
+  if (sessions.length < 3) {
+    suggestions.push(english
+      ? "There are only a few saved sessions, so focus on a comfortable, consistent routine before drawing conclusions."
+      : "عدد الجلسات المحفوظة ما زال قليلًا؛ ركّز على الانتظام بروتين مريح قبل استخلاص نتائج عن تطورك.");
+  }
+  if (avgDuration > 0 && avgDuration < 120) {
+    suggestions.push(english
+      ? "Your sessions tend to be brief. Keep activity manageable and enjoyable, and take breaks when needed rather than chasing a higher score."
+      : "جلساتك تميل إلى أن تكون قصيرة؛ حافظ على نشاط مريح وممتع وخذ فترات راحة عند الحاجة بدل مطاردة نتيجة أعلى.");
+  }
+  if (avgAccuracy !== null && avgAccuracy < 50) {
+    suggestions.push(english
+      ? "The camera-based score has been low, but tracking can be inaccurate. Check that the phone is stable and lighting is clear; treat the score as an estimate, not a judgment of your ability."
+      : "نتيجة التتبّع بالكاميرا كانت منخفضة، لكن التتبّع قد يخطئ. تأكد من ثبات الهاتف ووضوح الإضاءة، واعتبر النتيجة تقديرًا لا حكمًا على قدرتك.");
+  }
+  if (!suggestions.length) {
+    suggestions.push(english
+      ? "Keep your routine comfortable and consistent, leave time for recovery, and focus on how you feel rather than trying to beat a number every session."
+      : "حافظ على روتين مريح ومنتظم، واترك وقتًا كافيًا للتعافي، واهتم بشعورك وطاقتك بدل محاولة تحطيم رقم في كل جلسة.");
+  }
+  return (english ? "Based on your saved progress, here's a useful next step:\\n• " : "بناءً على سجل تقدمك، هذه خطوة مفيدة لك:\\n• ") + suggestions.join("\\n• ");
+}
+
 function buildLocalCoachReply(question) {
   const q = normalizeCoachText(question);
   const english = lang === "en";
@@ -1978,22 +2003,11 @@ function buildLocalCoachReply(question) {
   }
 
   if (has(["جلسه", "ادائي", "تقييمي", "نتائج", "تقدم", "احصائيات", "session", "performance", "progress", "stats", "last workout", "review"])) {
-    if (!latest) {
-      return english
-        ? "There are no saved sessions yet, so I can't rate your performance. Complete a short session first; then I can summarize the recorded punch count, pace, target accuracy, and dodges."
-        : "لا توجد جلسات محفوظة بعد، لذلك لا أستطيع تقييم أدائك الآن. أكمل جلسة قصيرة أولًا، وبعدها أستطيع تلخيص عدد اللكمات والإيقاع ودقة الأهداف والتفادي المسجّلة.";
-    }
-    const total = Number(latest.total) || 0;
-    const ppm = Number(latest.ppm) || 0;
-    const hits = Number(latest.targetHits) || 0;
-    const misses = Number(latest.targetMiss) || 0;
-    const accuracy = typeof latest.accuracy === "number" ? latest.accuracy + "%" : (hits + misses ? Math.round(100 * hits / (hits + misses)) + "%" : "—");
-    const dodges = Number(latest.dodges) || 0;
-    const duration = Math.max(0, Math.round((Number(latest.durationSec) || 0) / 60));
-    if (english) {
-      return "Your latest saved session:\n• Punches: " + total + "\n• Pace: " + ppm + " punches/min\n• Target hits/misses: " + hits + "/" + misses + "\n• Recorded accuracy: " + accuracy + "\n• Dodges: " + dodges + "\n• Duration: about " + duration + " min\n\nCoach's next step: choose one goal for the next round—steady rhythm, cleaner target contact, or balanced defense. These are saved app stats, not a live camera assessment.";
-    }
-    return "ملخص آخر جلسة محفوظة:\n• اللكمات: " + total + "\n• الإيقاع: " + ppm + " لكمة/دقيقة\n• إصابات الأهداف/الإخفاقات: " + hits + "/" + misses + "\n• الدقة المسجّلة: " + accuracy + "\n• مرات التفادي: " + dodges + "\n• المدة: نحو " + duration + " دقيقة\n\nخطوتك القادمة: اختر هدفًا واحدًا للجولة التالية—إيقاع ثابت، أو لمس أدق للأهداف، أو دفاع متوازن. هذه أرقام محفوظة في التطبيق وليست تحليلًا مباشرًا للكاميرا.";
+    return buildPersonalizedProgressReply(sessions, english);
+  }
+
+  if (has(["طور نفسي", "اطور", "تحسين مستواي", "كيف اتحسن", "اتقدم اكثر", "احسن ادائي", "improve myself", "how can i improve", "get better", "improve my progress", "level up", "improve my performance"])) {
+    return buildPersonalizedProgressReply(sessions, english);
   }
 
   if (has(["كومبو", "تركيبه", "تركيبات", "combo", "combination", "sequence"])) {
