@@ -1236,7 +1236,7 @@ function judgeTargetPunch(side, nx, ny) {
 }
 
 function applyTargetHit(tgt, p) {
-  if (!tgt || tgt.state !== "live" || tgt.judged) return false; // الهدف الحي يُحتسب مرة واحدة فقط
+  if (!tgt || tgt.state !== "live") return false; // الحالة الحية هي الحارس النهائي لمنع تكرار العدّ
   tgt.judged = true;
   tgt.state = "hit";
   tgt.age = 0;
