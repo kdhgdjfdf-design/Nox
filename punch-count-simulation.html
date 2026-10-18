@@ -87,26 +87,26 @@ ul{padding-right:20px;color:var(--muted);line-height:1.8}footer{font-size:.8rem;
     state.mode=kind;state.t=0;state.trail=[];state.confidence=1;
     const start=performance.now(), duration=kind==='noise'?1300:1050;
     const startX=home.x,startY=home.y;
-    const end=kind==='hit'?{x:target.x,y:target.y}:kind==='miss'?{x:target.x,y:target.y+target.r+65}:{x:target.x-70,y:target.y-80};
+    const end=kind==='hit'?{x:target.x,y:target.y}:kind==='miss'?{x:target.x,y:target.y+target.r+65}:{x:target.x,y:target.y};
     let eventCounted=false, duplicateTested=false;
     state.locked=true;
     state.anim=requestAnimationFrame(function frame(now){
       const p=Math.min(1,(now-start)/duration), eased=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
       let x=startX+(end.x-startX)*eased, y=startY+(end.y-startY)*eased;
       let confidence=1;
-      if(kind==='noise'){const n=(Math.random()-.5)*48;x+=n;y+=(Math.random()-.5)*48;confidence=Math.random()>.28?.9:.25;}
+      if(kind==='noise'){const n=(Math.random()-.5)*30;x+=n;y+=(Math.random()-.5)*30;confidence=p>.62?.25:.9;}
       state.rawX=x;state.rawY=y;state.confidence=confidence;
       const alpha=.38;
       state.smoothX += (x-state.smoothX)*alpha;state.smoothY += (y-state.smoothY)*alpha;
       state.trail.push({x:state.smoothX,y:state.smoothY});if(state.trail.length>30)state.trail.shift();
       const dx=state.smoothX-target.x,dy=state.smoothY-target.y;
       const inside=Math.hypot(dx,dy)<target.r;
-      const movingToward=kind==='hit' && p<.98;
+      const movingToward=(kind==='hit'||kind==='noise') && p<.98;
       if(inside) entered=true;
       if(movingToward && inside && confidence>=.5 && !eventCounted){state.hits++;eventCounted=true;status('تم تسجيل إصابة واحدة فقط.','good');stats();}
       if(inside && eventCounted && p>.85 && !duplicateTested){duplicateTested=true;state.dupes++;status('اختبار التكرار: نفس الحدث لم يضف إصابة ثانية.','gold');stats();}
       if(p<1){state.anim=requestAnimationFrame(frame);return;}
-      if(!eventCounted){state.misses++;stats();status(kind==='noise'?'انتهى اختبار التذبذب: البيانات منخفضة الثقة لا تُحتسب كإصابة.':'الحركة لم تدخل منطقة الهدف؛ لم تُسجّل إصابة.','bad');}
+      if(!eventCounted){state.misses++;stats();status(kind==='noise'?'انتهى اختبار التتبّع المشوش: النقطة منخفضة الثقة لم تُحتسب كإصابة.':'الحركة لم تدخل منطقة الهدف؛ لم تُسجّل إصابة.','bad');}
       state.smoothX=home.x;state.smoothY=home.y;state.rawX=home.x;state.rawY=home.y;state.confidence=1;state.trail=[];
       state.anim=null;state.locked=false;state.mode='idle';
     });
