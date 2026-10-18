@@ -268,7 +268,11 @@ const T = {
   coach_chat_long: ["السؤال طويل جدًا، اختصره.", "Question is too long. Please shorten it."],
   coach_chat_ph: ["اسأل عن الملاكمة: تاريخها، تقنياتها، تدريبك...", "Ask about boxing: history, techniques, training..."],
   coach_chat_sources: ["المصادر", "Sources"],
-  coach_chat_note: ["الإجابات من نموذج ذكاء اصطناعي وقد لا تكون دقيقة دائمًا. راجع المصادر المعروضة.", "Answers come from an AI model and may not always be accurate. Check the sources shown."],
+  coach_chat_note: ["المدرّب يعمل محليًا بقواعد تدريبية واضحة ويستخدم أرقام جلساتك المحفوظة فقط؛ لا يراقب الكاميرا ولا يرسل بياناتك إلى خادم.", "The coach runs locally using clear training rules and your saved session stats only; it does not analyze the camera or send your data to a server."],
+  coach_quick_session: ["قيّم آخر جلسة", "Review my last session"],
+  coach_quick_combo: ["أعطني كومبو للمبتدئين", "Give me a beginner combo"],
+  coach_quick_accuracy: ["كيف أحسّن دقة اللكمات؟", "How can I improve punch accuracy?"],
+  coach_quick_defense: ["علّمني أساسيات الدفاع", "Teach me basic defense"],
   coach_name: ["المدرّب الذكي", "AI Coach"],
   coach_desc: ["تحليل جلساتك واقتراح تمارين مناسبة", "Analyzes your sessions and suggests drills"],
   coach_title: ["المدرّب الذكي 🧠", "AI Coach 🧠"],
@@ -1814,15 +1818,22 @@ function typeRows(arr) {
 }
 
 function renderCoach() {
-  const a = analyzeSessions(loadSessions());
+  const sessions = loadSessions();
+  const a = analyzeSessions(sessions);
   if (!a) {
-    el.coachBody.innerHTML = `<p class="notice">${t("coach_empty")}</p><p class="notice small">${t("coach_note")}</p>`;
+    el.coachBody.innerHTML = '<p class="notice">' + t("coach_empty") + '</p><p class="notice small">' + t("coach_note") + '</p>';
     return;
   }
-  el.coachBody.innerHTML = `
-    <h3 class="section-title">${t("coach_tips_title")}</h3>
-    <ul class="tips">${a.tips.map((x) => `<li>${x}</li>`).join("")}</ul>
-    <p class="notice small">${t("coach_note")}</p>`;
+  const stat = (label, value) => '<div><b>' + value + '</b><small>' + label + '</small></div>';
+  el.coachBody.innerHTML =
+    '<div class="res-grid">' +
+      stat(t("coach_stat_sessions"), a.sessions) +
+      stat(t("coach_stat_ppm"), a.avgPpm) +
+      stat(t("coach_stat_glove"), a.glovePct === null ? "—" : a.glovePct + "%") +
+      stat(t("coach_stat_dodge"), a.dodgePct === null ? "—" : a.dodgePct + "%") +
+    '</div><h3 class="section-title">' + t("coach_tips_title") + '</h3>' +
+    '<ul class="tips">' + a.tips.map((x) => '<li>' + x + '</li>').join("") + '</ul>' +
+    '<p class="notice small">' + t("coach_note") + '</p>';
 }
 
 function clearHistory() {
@@ -1864,105 +1875,144 @@ el.btnCoach.addEventListener("click", () => {
   el.coachModal.hidden = false;
 });
 
-// ---------- المدرّب الذكي: محادثة مع الخادم الوسيط ----------
-// عنوان الـ Worker: يُضاف بعد نشره، مثال: "https://shadowbox-nox-coach.<name>.workers.dev/api/chat"
-// إذا بقي فارغًا تظهر رسالة "غير متصلة بعد" ولا تُعرض أي إجابة محلية كأنها بحث.
-const COACH_API_URL = "";
-const COACH_TIMEOUT_MS = 30000;
+// ---------- المدرّب المحلي: إرشادات قواعدية دون API أو رفع بيانات ----------
 let coachBusy = false;
-let coachLastQuestion = "";
 
 function coachSetStatus(text, isError = false) {
   el.coachChatStatus.textContent = text;
   el.coachChatStatus.className = "msg" + (isError ? " error" : "");
 }
 
-function coachAddMsg(role, text, sources = []) {
+function coachAddMsg(role, text) {
   const box = document.createElement("div");
   box.className = "coach-msg " + role;
   const p = document.createElement("p");
   p.textContent = text;
   box.appendChild(p);
-  const safe = sources.filter((s) => s && typeof s.url === "string" && /^https:\/\//.test(s.url));
-  if (safe.length) {
-    const title = document.createElement("small");
-    title.className = "coach-src-title";
-    title.textContent = t("coach_chat_sources");
-    box.appendChild(title);
-    const ul = document.createElement("ul");
-    ul.className = "coach-sources";
-    for (const s of safe) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = s.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = s.title || s.url;
-      li.appendChild(a);
-      ul.appendChild(li);
-    }
-    box.appendChild(ul);
-  }
   el.coachChatLog.appendChild(box);
   el.coachChatLog.scrollTop = el.coachChatLog.scrollHeight;
   return box;
 }
 
-async function askCoach(question) {
-  if (coachBusy) return;                       // منع الإرسال المتكرر
-  if (!COACH_API_URL) {
-    coachSetStatus(t("coach_chat_offline"), true);
-    return;
+function normalizeCoachText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/[ًٌٍَُِّْـ]/g, "")
+    .replace(/[؟?!.,،؛:]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function coachHasAny(text, words) {
+  return words.some((word) => text.includes(word));
+}
+
+function buildLocalCoachReply(question) {
+  const q = normalizeCoachText(question);
+  const english = lang === "en";
+  const sessions = loadSessions();
+  const latest = sessions[0] || null;
+  const has = (words) => coachHasAny(q, words);
+
+  if (has(["الم", "وجع", "اصابه", "injury", "pain", "hurt", "hurt"])) {
+    return english
+      ? "Safety first: stop the session if you feel pain, dizziness, or unusual discomfort. Do not try to punch through it. Tell a trusted adult and get advice from a qualified health professional before returning."
+      : "السلامة أولًا: أوقف التدريب إذا شعرت بألم أو دوخة أو انزعاج غير معتاد. لا تحاول مواصلة اللكم رغم الألم. أخبر شخصًا بالغًا تثق به واستشر مختصًا صحيًا قبل العودة للتدريب.";
   }
+
+  if (has(["جلسه", "ادائي", "تقييمي", "نتائج", "تقدم", "احصائيات", "session", "performance", "progress", "stats", "last workout", "review"])) {
+    if (!latest) {
+      return english
+        ? "There are no saved sessions yet, so I can't rate your performance. Complete a short session first; then I can summarize the recorded punch count, pace, target accuracy, and dodges."
+        : "لا توجد جلسات محفوظة بعد، لذلك لا أستطيع تقييم أدائك الآن. أكمل جلسة قصيرة أولًا، وبعدها أستطيع تلخيص عدد اللكمات والإيقاع ودقة الأهداف والتفادي المسجّلة.";
+    }
+    const total = Number(latest.total) || 0;
+    const ppm = Number(latest.ppm) || 0;
+    const hits = Number(latest.targetHits) || 0;
+    const misses = Number(latest.targetMiss) || 0;
+    const accuracy = typeof latest.accuracy === "number" ? latest.accuracy + "%" : (hits + misses ? Math.round(100 * hits / (hits + misses)) + "%" : "—");
+    const dodges = Number(latest.dodges) || 0;
+    const duration = Math.max(0, Math.round((Number(latest.durationSec) || 0) / 60));
+    if (english) {
+      return "Your latest saved session:\n• Punches: " + total + "\n• Pace: " + ppm + " punches/min\n• Target hits/misses: " + hits + "/" + misses + "\n• Recorded accuracy: " + accuracy + "\n• Dodges: " + dodges + "\n• Duration: about " + duration + " min\n\nCoach's next step: choose one goal for the next round—steady rhythm, cleaner target contact, or balanced defense. These are saved app stats, not a live camera assessment.";
+    }
+    return "ملخص آخر جلسة محفوظة:\n• اللكمات: " + total + "\n• الإيقاع: " + ppm + " لكمة/دقيقة\n• إصابات الأهداف/الإخفاقات: " + hits + "/" + misses + "\n• الدقة المسجّلة: " + accuracy + "\n• مرات التفادي: " + dodges + "\n• المدة: نحو " + duration + " دقيقة\n\nخطوتك القادمة: اختر هدفًا واحدًا للجولة التالية—إيقاع ثابت، أو لمس أدق للأهداف، أو دفاع متوازن. هذه أرقام محفوظة في التطبيق وليست تحليلًا مباشرًا للكاميرا.";
+  }
+
+  if (has(["كومبو", "تركيبه", "تركيبات", "combo", "combination", "sequence"])) {
+    return english
+      ? "Beginner combo: 1) Jab, 2) Cross, 3) return both hands to guard. Start slowly for 5–8 clean repetitions, keep your balance, and exhale gently with each punch. Add a hook only when the first two punches feel controlled."
+      : "كومبو للمبتدئين: ١) جاب، ٢) كروس، ٣) أعد اليدين إلى وضع الحراسة. ابدأ بـ٥–٨ تكرارات بطيئة ونظيفة، وحافظ على توازنك وأخرج النفس بهدوء مع كل لكمة. أضف الهوك فقط عندما تتحكم في اللكمتين الأولى والثانية.";
+  }
+
+  if (has(["دقه", "هدف", "اهداف", "اصابه", "اخفاق", "miss", "accuracy", "target", "hit rate"])) {
+    return english
+      ? "For cleaner target contact: slow down first, keep your eyes on the target, extend without locking your elbow, and bring the hand back to guard after each punch. Train accuracy before speed. The app's hit detection is an estimate, so use the score as a guide—not a perfect measurement."
+      : "لتحسين دقة إصابة الأهداف: خفّف السرعة أولًا، وركّز نظرك على الهدف، ومدّ الذراع دون قفل المرفق، ثم أعد اليد إلى الحراسة بعد كل لكمة. درّب الدقة قبل السرعة. احتساب التطبيق تقديري، فاعتبر النتيجة مؤشرًا لا قياسًا مثاليًا.";
+  }
+
+  if (has(["دفاع", "تفادي", "مراوغه", "حاجز", "حراسه", "slip", "dodge", "defense", "guard", "block"])) {
+    return english
+      ? "Defense basics: keep your hands near your cheeks, chin slightly tucked, and knees relaxed. Move your head a little off the center line while keeping balance; avoid huge bends or sudden twisting. Practise slowly in a clear space."
+      : "أساسيات الدفاع: أبقِ يديك قرب الخدين، والذقن منخفضًا قليلًا، والركبتين مرتاحتين. حرّك الرأس قليلًا خارج خط المنتصف مع الحفاظ على التوازن، وتجنّب الانحناء المبالغ فيه أو الالتواء المفاجئ. تدرّب ببطء وفي مساحة خالية.";
+  }
+
+  if (has(["جاب", "كروس", "هوك", "uppercut", "jab", "cross", "hook", "لكمه", "لكمات", "punch"])) {
+    return english
+      ? "Technique checkpoint: keep the non-punching hand in guard, rotate from the hips and torso without forcing the shoulder, keep your wrist aligned with the forearm, then return to guard. Practise at low speed first. Which punch do you want to focus on: jab, cross, or hook?"
+      : "نقاط تقنية: أبقِ اليد غير الضاربة في الحراسة، ودوّر الورك والجذع دون إجبار الكتف، وحافظ على استقامة المعصم مع الساعد، ثم أعد اليد إلى الحراسة. تدرّب بسرعة منخفضة أولًا. أي لكمة تريد التركيز عليها: الجاب أم الكروس أم الهوك؟";
+  }
+
+  if (has(["سرعه", "سرعتي", "تحمل", "تعب", "stamina", "speed", "pace", "endurance"])) {
+    return english
+      ? "Build pace gradually: use short rounds, keep a rhythm you can control, and rest between rounds. Don't chase a high punch count if your technique becomes messy. Track one thing per session—steady pace, clean form, or recovery."
+      : "طوّر الإيقاع تدريجيًا: استخدم جولات قصيرة، وحافظ على سرعة تستطيع التحكم بها، واسترح بين الجولات. لا تطارد عدد لكمات كبيرًا إذا بدأت التقنية تتدهور. تابع شيئًا واحدًا في كل جلسة: ثبات الإيقاع أو نظافة الحركة أو التعافي.";
+  }
+
+  if (has(["مرحبا", "اهلا", "السلام", "help", "ماذا تستطيع", "كيف تساعد", "hello", "hi"])) {
+    return english
+      ? "I'm your local boxing coach. I can suggest beginner combos, explain punch technique and defense, help improve target accuracy, and summarize saved session stats. I don't watch or analyze your camera feed."
+      : "أنا مدرّبك المحلي للملاكمة. أستطيع اقتراح كومبوهات للمبتدئين، وشرح التقنية والدفاع، ومساعدتك على تحسين دقة الأهداف، وتلخيص أرقام الجلسات المحفوظة. لا أشاهد الكاميرا ولا أحلل صورتك مباشرة.";
+  }
+
+  return english
+    ? "I can help with boxing basics, jab/cross/hook technique, beginner combos, defense, target accuracy, pacing, and saved session stats. Try one of the quick questions above, or ask one specific thing. I only use local rules and saved session numbers."
+    : "أستطيع مساعدتك في أساسيات الملاكمة، وتقنية الجاب والكروس والهوك، والكومبوهات، والدفاع، ودقة الأهداف، والإيقاع، وأرقام جلساتك المحفوظة. جرّب أحد الأسئلة السريعة أعلاه أو اسألني عن نقطة محددة. أستخدم قواعد محلية وأرقام الجلسات فقط.";
+}
+
+function askCoach(question) {
+  if (coachBusy) return;
   coachBusy = true;
   el.coachChatSend.disabled = true;
-  el.coachRetry.hidden = true;
   coachSetStatus("");
   coachAddMsg("user", question);
-  const loading = coachAddMsg("bot", t("coach_chat_loading"));
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), COACH_TIMEOUT_MS);
-  try {
-    const res = await fetch(COACH_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, lang }),
-      signal: ctrl.signal,
-    });
-    let data = {};
-    try { data = await res.json(); } catch { data = {}; }
-    if (!res.ok) throw new Error(typeof data.message === "string" ? data.message : t("coach_chat_error"));
-    loading.remove();
-    coachAddMsg("bot", data.reply || t("coach_chat_error"), Array.isArray(data.sources) ? data.sources : []);
-  } catch (err) {
-    loading.remove();
-    coachSetStatus(err.name === "AbortError" ? t("coach_chat_timeout") : (err.message || t("coach_chat_error")), true);
-    coachLastQuestion = question;
-    el.coachRetry.hidden = false;
-  } finally {
-    clearTimeout(timer);
-    coachBusy = false;
-    el.coachChatSend.disabled = false;
-  }
+  coachAddMsg("bot", buildLocalCoachReply(question));
+  coachBusy = false;
+  el.coachChatSend.disabled = false;
 }
+
+const COACH_QUICK_PROMPTS = {
+  session: ["قيّم آخر جلسة", "Review my last session"],
+  combo: ["أعطني كومبو للمبتدئين", "Give me a beginner combo"],
+  accuracy: ["كيف أحسّن دقة اللكمات؟", "How can I improve punch accuracy?"],
+  defense: ["علّمني أساسيات الدفاع", "Teach me basic defense"]
+};
+document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
+  button.addEventListener("click", () => askCoach(COACH_QUICK_PROMPTS[button.dataset.coachPrompt][lang === "en" ? 1 : 0]));
+});
 
 el.coachChatForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const q = el.coachChatInput.value.trim();
-  if (!q) return;
-  if (!COACH_API_URL) {
-    coachSetStatus(t("coach_chat_offline"), true);
-    return;                                    // لا نمسح السؤال إن لم تكن الخدمة متصلة
-  }
-  if (q.length > 500) {
+  const question = el.coachChatInput.value.trim();
+  if (!question) return;
+  if (question.length > 500) {
     coachSetStatus(t("coach_chat_long"), true);
     return;
   }
   el.coachChatInput.value = "";
-  askCoach(q);
-});
-el.coachRetry.addEventListener("click", () => {
-  if (coachLastQuestion) askCoach(coachLastQuestion);
+  askCoach(question);
 });
 el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
