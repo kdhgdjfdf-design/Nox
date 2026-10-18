@@ -124,6 +124,8 @@ const T = {
   theme_blue: ["أزرق", "Blue"],
   theme_green: ["أخضر", "Green"],
   theme_purple: ["بنفسجي", "Purple"],
+  theme_gold: ["ذهبي", "Gold"],
+  advanced_hint: ["المتقدم يجعل الأهداف أسرع؛ اختره بعد إتقان المتوسط.", "Advanced makes targets move faster; try it after getting comfortable with intermediate."],
   toggle_sound: ["تفعيل الأصوات والتأثيرات الصوتية", "Sound effects"],
   btn_reset_history: ["حذف السجل المحفوظ", "Clear saved history"],
   btn_close: ["إغلاق", "Close"],
@@ -549,7 +551,7 @@ function setLang(v) {
   applyLang();
 }
 function applyTheme(v) {
-  const allowed = ["red", "blue", "green", "purple"];
+  const allowed = ["red", "blue", "green", "purple", "gold"];
   document.documentElement.dataset.theme = allowed.includes(v) ? v : "red";
 }
 function setTheme(v) {
@@ -1182,7 +1184,8 @@ function advanceSeq() {
 // يحاول احتساب الضربة على الهدف؛ يعيد true إن كانت الضربة قد استُهلكت على هدف
 function tryTargetHit(side, p) {
   const tgt = findTargetAt(p.x, p.y);
-  if (!tgt) return false;
+  // لا نعتبر اللمسة إصابة إذا كان الهدف قد حُسم أو لم يعد حيًا.
+  if (!tgt || tgt.state !== "live" || tgt.judged) return false;
   if (tgt.seqMode && tgt.hand !== side) {
     stats.wrongHand++;
     addFloater(t("fl_wrong"), p.x, p.y - 36, "#ff5a64");
@@ -1221,8 +1224,7 @@ function judgeSequenceHit(side, nx, ny) {
 function judgeTargetPunch(side, nx, ny) {
   const p = toScreen(nx, ny);
   const tgt = findTargetAt(p.x, p.y);
-  if (!tgt || tgt.judged) return false;
-  tgt.judged = true;
+  if (!tgt || tgt.state !== "live" || tgt.judged) return false;
   const lead = stance === "orthodox" ? "left" : "right";
   const type = side === lead ? "jab" : "cross";
   stats.total++;
@@ -1234,7 +1236,8 @@ function judgeTargetPunch(side, nx, ny) {
 }
 
 function applyTargetHit(tgt, p) {
-  if (tgt.state !== "live") return;   // الإصابة تُحتسب مرة واحدة فقط لكل هدف
+  if (!tgt || tgt.state !== "live" || tgt.judged) return false; // الهدف الحي يُحتسب مرة واحدة فقط
+  tgt.judged = true;
   tgt.state = "hit";
   tgt.age = 0;
   stats.targetHits++;
@@ -1245,6 +1248,7 @@ function applyTargetHit(tgt, p) {
   addFloater(t("fl_target"), p.x, p.y - 36, "#ffd166");
   tone(520, 0.12, 0.2, "triangle");
   updateHud();
+  return true;
 }
 
 // ---------- المعايرة ----------
