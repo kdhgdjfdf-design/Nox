@@ -18,6 +18,7 @@ on:
       - 'character-preview.html'
       - 'coach-preview.html'
       - 'shadowbox-learning-preview.html'
+      - 'learning-preview.html'
       - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
 
