@@ -38,3 +38,6 @@ npm run dev
 - كل التعديلات هنا تجريبية على هذا الفرع.
 - لا تغيّر إعدادات النشر ولا تدمج إلى `main` قبل موافقة المستخدم.
 - المستودع المنفصل `shadowbox` خارج نطاق هذا الاختبار ويجب أن يبقى دون تغيير.
+
+
+<!-- Refresh isolated GitHub Pages after the stable main navigation fix. -->
