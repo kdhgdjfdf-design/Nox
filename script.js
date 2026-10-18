@@ -225,6 +225,10 @@ const T = {
   res_avg_hit: ["متوسط وقت الإصابة", "Avg time to hit"],
   res_rounds: ["جولات مكتملة", "Rounds completed"],
   coach_tip_accuracy: ["دقتك في لمس الأهداف منخفضة. ركّز على لمس القفاز بقبضتك قبل زيادة السرعة.", "Your target accuracy is low. Focus on landing the glove with your fist before increasing speed."],
+  coach_pose_title: ["مؤشرات الوضعية من الكاميرا", "Camera-based posture signals"],
+  coach_pose_guard: ["مؤشر انخفاض اليدين بين اللكمات", "Hands-down signal between punches"],
+  coach_pose_lean: ["مؤشر ميل الجذع", "Torso-lean signal"],
+  coach_pose_unavailable: ["لم تتوفر عينات كافية لتحليل الوضعية في هذه الجلسة.", "There were not enough pose samples to analyze posture in this session."],
   coach_tip_guard: ["مؤشر الكاميرا يوحي أن يديك تنخفضان كثيرًا بين اللكمات. جرّب إرجاعهما إلى وضع الحراسة بعد كل ضربة؛ التقدير تقريبي.", "Camera samples suggest your hands may drop between punches. Practice returning them to guard after each punch; this estimate is approximate."],
   coach_tip_balance: ["رصدت الكاميرا ميلًا جانبيًا متكررًا للجذع. جرّب الوقوف بتوازن وحرّك رأسك بهدوء دون مبالغة؛ هذا مؤشر تقريبي.", "The camera repeatedly detected a sideways torso lean. Try a balanced stance and controlled head movement; this is only an approximate signal."],
   hist_sessions: ["جلسة", "sessions"],
@@ -1721,6 +1725,17 @@ function accuracyBlock(s) {
     </div>`;
 }
 
+function poseFeedbackHTML(s) {
+  if ((s.poseSamples || 0) < 8) {
+    return '<p class="notice small">' + t("coach_pose_unavailable") + '</p>';
+  }
+  return '<h3 class="section-title">' + t("coach_pose_title") + '</h3>' +
+    '<div class="res-grid">' +
+      '<div><b>' + (typeof s.lowGuardRate === "number" ? s.lowGuardRate + "%" : "—") + '</b><small>' + t("coach_pose_guard") + '</small></div>' +
+      '<div><b>' + (typeof s.leanRate === "number" ? s.leanRate + "%" : "—") + '</b><small>' + t("coach_pose_lean") + '</small></div>' +
+    '</div>';
+}
+
 function showResult(s) {
   const note = s.total === 0 ? t("res_none") : "";
   el.resultBody.innerHTML = `
@@ -1738,6 +1753,7 @@ function showResult(s) {
       <div><b>${s.cross}</b><small>${t("res_cross")}</small></div>
     </div>
     ${accuracyBlock(s)}
+    ${poseFeedbackHTML(s)}
     ${note ? `<p class="notice">${note}</p>` : ""}
     <p class="notice small">${t("res_note")}</p>`;
   el.resultOverlay.hidden = false;
