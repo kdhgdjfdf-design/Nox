@@ -102,7 +102,6 @@ ul{padding-right:20px;color:var(--muted);line-height:1.8}footer{font-size:.8rem;
       const dx=state.smoothX-target.x,dy=state.smoothY-target.y;
       const inside=Math.hypot(dx,dy)<target.r;
       const movingToward=(kind==='hit'||kind==='noise') && p<.98;
-      if(inside) entered=true;
       if(movingToward && inside && confidence>=.5 && !eventCounted){state.hits++;eventCounted=true;status('تم تسجيل إصابة واحدة فقط.','good');stats();}
       if(inside && eventCounted && p>.85 && !duplicateTested){duplicateTested=true;state.dupes++;status('اختبار التكرار: نفس الحدث لم يضف إصابة ثانية.','gold');stats();}
       if(p<1){state.anim=requestAnimationFrame(frame);return;}
