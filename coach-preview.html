@@ -58,10 +58,10 @@ const messages=document.getElementById("messages"),welcome=document.getElementBy
 function addMessage(value,role){welcome.classList.add("empty-hide");const row=document.createElement("div");row.className="msg-row "+(role==="user"?"user-row":"bot-row");const avatar=document.createElement("div");avatar.className="avatar "+(role==="bot"?"bot-avatar":"");avatar.textContent=role==="bot"?"✦":"أنت";const msg=document.createElement("div");msg.className="msg";msg.textContent=value;if(role==="user"){row.append(avatar,msg)}else{row.append(avatar,msg)}messages.appendChild(row);row.scrollIntoView({behavior:"smooth",block:"end"});}
 function normalizeQuestion(value){
  return value.toLowerCase()
-  .normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"")
+  .normalize("NFD").replace(/[ًٌٍَُِّْٰـ]/g,"")
   .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه")
-  .replace(/[؟?!.,،؛:()[\\]{}"'`]/g," ")
-  .replace(/\\s+/g," ").trim();
+  .replace(/[؟?!.,،؛:]/g," ")
+  .replace(/\s+/g," ").trim();
 }
 function answer(q){
  const s=normalizeQuestion(q);
