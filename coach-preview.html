@@ -25,40 +25,14 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
 <div class="side-top"><div class="brand"><span class="brand-icon">🧠</span><span>Nox Coach</span></div><button class="icon-btn" id="closeSidebar" aria-label="إغلاق القائمة">×</button></div>
 <button class="new-chat" id="newChat"><span>＋</span><span>محادثة جديدة</span></button>
-<div class="side-caption">استكشف المواضيع</div>
-<button class="side-link" data-q="boxing_rules">🥊　 قواعد الملاكمة</button>
-<button class="side-link" data-q="stance">🧍　 الوقفة والحراسة</button>
-<button class="side-link" data-q="footwork">👣　 حركة القدمين والتوازن</button>
-<button class="side-link" data-q="defense">🛡️　 الدفاع والتفادي</button>
-<button class="side-link" data-q="combos">🔗　 الكومبوهات واللكمات</button>
-<button class="side-link" data-q="warmup">☀️　 الإحماء والحركة</button>
-<button class="side-link" data-q="fitness">↗️　 أنواع اللياقة</button>
-<button class="side-link" data-q="growth">📏　 الطول والنمو حسب العمر</button>
-<button class="side-link" data-q="weight">⚖️　 الوزن والصحة</button>
-<button class="side-link" data-q="plan">🗓️　 خطة نشاط عامة</button>
-<button class="side-link" data-q="recovery">💧　 الراحة والتعافي</button>
-<button class="side-link" data-q="camera">▣　 إعداد الكاميرا</button>
-<button class="side-link" data-q="safety">♡　 السلامة</button>
-<button class="side-link" data-q="progress">▤　 متابعة التقدم</button>
 <div class="side-bottom">🔒 يعمل محليًا على هذا الجهاز<br>لا يحتاج إلى API أو مفتاح.</div>
 </aside>
 <div class="overlay" id="overlay"></div>
 <main class="main">
 <header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local">● يعمل محليًا</div></header>
 <div class="chat-scroll"><section class="chat" id="chat">
-<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اختر سؤالًا للبدء أو اكتب سؤالك مباشرة.</p>
-<div class="suggestions">
-<button class="suggestion" data-q="boxing_rules"><strong>🥊 قواعد الملاكمة</strong></button>
-<button class="suggestion" data-q="stance"><strong>🧍 الوقفة والحراسة</strong></button>
-<button class="suggestion" data-q="defense"><strong>🛡️ الدفاع والتفادي</strong></button>
-<button class="suggestion" data-q="combos"><strong>🔗 الكومبوهات</strong></button>
-<button class="suggestion" data-q="warmup"><strong>☀️ إحماء</strong></button>
-<button class="suggestion" data-q="fitness"><strong>🏃 نوع اللياقة</strong></button>
-<button class="suggestion" data-q="growth"><strong>📏 الطول والنمو</strong></button>
-<button class="suggestion" data-q="weight"><strong>⚖️ الوزن والصحة</strong></button>
-<button class="suggestion" data-q="plan"><strong>🗓️ خطة نشاط</strong></button>
-<button class="suggestion" data-q="recovery"><strong>💧 التعافي</strong></button>
-</div></div>
+<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اكتب سؤالك بأي صياغة بسيطة، وسأحاول فهم المقصود من الكلمات والمعنى.</p>
+</div>
 <div class="messages" id="messages" aria-live="polite"></div>
 </section></div>
 <div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note">Nox دليل محلي بإجابات مبرمجة مسبقًا، وليس نموذج ذكاء اصطناعي متصلًا بالإنترنت.</div></div></div>
@@ -82,15 +56,34 @@ progress:"تابع الانتظام والشعور العام والطاقة و�
 };
 const messages=document.getElementById("messages"),welcome=document.getElementById("welcome"),question=document.getElementById("question");
 function addMessage(value,role){welcome.classList.add("empty-hide");const row=document.createElement("div");row.className="msg-row "+(role==="user"?"user-row":"bot-row");const avatar=document.createElement("div");avatar.className="avatar "+(role==="bot"?"bot-avatar":"");avatar.textContent=role==="bot"?"✦":"أنت";const msg=document.createElement("div");msg.className="msg";msg.textContent=value;if(role==="user"){row.append(avatar,msg)}else{row.append(avatar,msg)}messages.appendChild(row);row.scrollIntoView({behavior:"smooth",block:"end"});}
-function answer(q){const s=q.toLowerCase();
-if(/قواعد الملاكمة|ما قواعد|قواعد اللعبة|قوانين الملاكمة|boxing rules|rules of boxing|مسموح.*لكم|ممنوع.*ملاكمة/.test(s))return answers.boxing_rules;
-if(/وقفة|وضعية الحراسة|حراسة|كيف أقف|stance|guard/.test(s))return answers.stance;
-if(/قدم|حركة القدمين|توازن|footwork|balance/.test(s))return answers.footwork;
-if(/دفاع|تفادي|مراوغة|أدافع|defen[cs]e|dodge/.test(s))return answers.defense;
-if(/كومبو|كومبوهات|تسلسل اللكم|أنواع اللكمات|لكمة مستقيمة|combo|jab|cross/.test(s))return answers.combos;
-if(/إحماء|احماء|warm.?up/.test(s))return answers.warmup;if(/طول|نمو|عمر|growth|height|بلوغ/.test(s))return answers.growth;if(/وزن|الوزن المناسب|وزن مناسب|سمنة|نحافة|weight|bmi/.test(s))return answers.weight;if(/خطة|جدول|روتين|plan|routine/.test(s))return answers.plan;if(/لياق|تمرين|fitness|نشاط/.test(s))return answers.fitness;if(/راحة|تعاف|نوم|ماء|recovery|rest/.test(s))return answers.recovery;if(/كاميرا|camera|إضاءة|تتبّع|تتبع/.test(s))return answers.camera;if(/سلام|ألم|دوخ|إصاب|safety|pain/.test(s))return answers.safety;if(/تقدم|تقدّم|نتيجة|إحصاء|progress|stats/.test(s))return answers.progress;return "أنا دليل محلي بسيط بإجابات مبرمجة مسبقًا، لذلك قد لا أفهم كل سؤال. أستطيع المساعدة في الإحماء وأنواع اللياقة والنمو والصحة العامة والتعافي والسلامة. للأسئلة الشخصية عن النمو أو الوزن، الأفضل الرجوع إلى مختص صحي.";}
+function normalizeQuestion(value){
+ return value.toLowerCase()
+  .normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"")
+  .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه")
+  .replace(/[؟?!.,،؛:()[\\]{}"'`]/g," ")
+  .replace(/\\s+/g," ").trim();
+}
+function answer(q){
+ const s=normalizeQuestion(q);
+ const has=(re)=>re.test(s);
+ // نبدأ بالمواضيع الأكثر تحديدًا حتى لا تُلتقط الكلمة ضمن موضوع آخر.
+ if(has(/(قواعد|قانون|قوانين|نظام|شروط|ممنوع|مسموح|خطا|اخطاء|مخالفات).*(ملاكم|بوكس|لكم|حلبه)|(ملاكمه|بوكسينغ|boxing).*(قواعد|قانون|شروط|ممنوع|مسموح)|(ما|ايش|شو|شنو|كيف).*(مسموح|ممنوع).*(ملاكم|لكم)/))return answers.boxing_rules;
+ if(has(/(وقفة|وقفه|وضعية|وضعيه|وضع|حراسة|حراسه|احمي وجهي|ارفع يدي|اليدين).*(ملاكم|بوكس|صحيح|صح|سليم|كيف)?|كيف.*(اقف|وقفتي|احط يدي|امسك الحراسه)|stance|guard/))return answers.stance;
+ if(has(/(قدم|القدمين|رجلي|رجلي|خطوات|اتحرك|الحركة|الحركه|توازن|اتوازن|تنقل).*(ملاكم|بوكس|صحيح|كيف)?|كيف.*(اتحرك|احرك رجلي|امشي في الملاكمه)|footwork|balance/))return answers.footwork;
+ if(has(/(دفاع|ادافع|احمي نفسي|تفادي|اتجنب|مراوغه|مراوغة|انحني|تفلت|اتجنب الضربات|صد الضربات|صد).*(ملاكم|لكم|ضرب|كيف)?|كيف.*(اتجنب|اتفادي|ادافع|احمي نفسي)|defen[cs]e|dodge/))return answers.defense;
+ if(has(/(كومبو|كومبوهات|تركيبه|تركيبة|تسلسل|مجموعة لكمات|ربط اللكمات|لكمات متتاليه|لكمات متتالية|جاب|كروس|jab|cross|combo)/))return answers.combos;
+ if(has(/(احماء|تسخين|تهيئه|تهيئة|قبل التمرين|قبل الملاكمه|warm.?up)/))return answers.warmup;
+ if(has(/(طول|اطول|النمو|انمو|البلوغ|مرحلة البلوغ|growth|height)/))return answers.growth;
+ if(has(/(وزن|الوزن|نحافه|نحافة|سمنه|سمنة|كتله الجسم|كتلة الجسم|weight|bmi)/))return answers.weight;
+ if(has(/(خطة|خطه|جدول|روتين|برنامج|انظم تمريني|تنظيم التمرين|plan|routine)/))return answers.plan;
+ if(has(/(لياقه|لياقة|التحمل|القوة|قوة الجسم|مرونه|مرونة|تمارين|تمرين|نشاط بدني|fitness|exercise)/))return answers.fitness;
+ if(has(/(راحه|راحة|تعافي|استشفاء|استرجاع|نوم|ماء|اشرب|recovery|rest)/))return answers.recovery;
+ if(has(/(كاميرا|الكاميرا|الهاتف|التصوير|اضاءة|إضاءة|تتبع الحركة|تتبّع الحركة|camera)/))return answers.camera;
+ if(has(/(سلامه|سلامة|امن|أمان|اصابه|إصابة|الم|ألم|وجع|دوخه|دوخة|ضيق النفس|safety|pain)/))return answers.safety;
+ if(has(/(تقدم|تقدّم|نتيجه|نتيجة|احصاء|إحصاء|ارقام|أرقام|احسن|تحسن|progress|stats)/))return answers.progress;
+ return "أقدر أساعدك في أساسيات الملاكمة والوقفة والحراسة وحركة القدمين والدفاع والكومبوهات، وكذلك الإحماء واللياقة والتعافي والسلامة. جرّب إعادة السؤال بكلمات أبسط أو اذكر الموضوع الذي تقصده. أنا أعمل بإجابات محلية مبرمجة مسبقًا، لذلك قد لا أفهم كل صياغة أو سؤال خارج المعلومات الموجودة.";
+}
 function ask(q,label){const clean=q.trim();if(!clean)return;addMessage(label||clean,"user");addMessage(answer(clean),"bot");question.value="";closeMenu();question.focus();}
-document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.q;ask(k,({boxing_rules:"ما قواعد الملاكمة؟",stance:"كيف تكون وقفة الملاكم الصحيحة؟",footwork:"كيف أتحرك بقدمي وأحافظ على التوازن؟",defense:"كيف أتعلم الدفاع والتفادي؟",combos:"ما هي الكومبوهات في الملاكمة؟",warmup:"أريد نصائح للإحماء",fitness:"ما أنواع اللياقة؟",growth:"كيف أفهم الطول والنمو حسب العمر؟",weight:"ما الوزن الصحي في سن المراهقة؟",plan:"اقترح خطة نشاط عامة وآمنة",recovery:"كيف أتعافى وأرتاح؟",camera:"كيف أجهّز الكاميرا؟",safety:"أعطني نصائح للسلامة",progress:"كيف أتابع تقدمي؟"})[k]||b.textContent.trim());}));
 document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const q=question.value.trim();if(!q)return;ask(q);});
 const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay");function openMenu(){sidebar.classList.add("open");overlay.classList.add("show")}function closeMenu(){sidebar.classList.remove("open");overlay.classList.remove("show")}document.getElementById("openSidebar").addEventListener("click",openMenu);document.getElementById("closeSidebar").addEventListener("click",closeMenu);overlay.addEventListener("click",closeMenu);document.getElementById("newChat").addEventListener("click",()=>{messages.replaceChildren();welcome.classList.remove("empty-hide");closeMenu();question.value="";});
 </script>
