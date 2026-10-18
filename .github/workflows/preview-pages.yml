@@ -70,3 +70,4 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+# Refresh Pages after the learning-corner labels update.
