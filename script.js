@@ -46,7 +46,7 @@ const SEQ_BASE_MS = 1600;      // زمن الخطوة في التسلسل عند
 const SPEED_MUL = { slow: 1.35, mid: 1, fast: 0.75 };  // مضاعِف زمن الاقتراب حسب اختيار السرعة
 // حساسية الكشف: قيم حد السرعة وحد الامتداد (الأعلى = يتطلب لكمة أقوى)
 const SENS = { low: { speed: 3.0, ext: 1.25 }, mid: { speed: 2.2, ext: 1.15 }, high: { speed: 1.7, ext: 1.05 } };
-const MODE_LOGO = { free: "🥊", sequence: "🎯", dodge: "🛡️" };
+const MODE_LOGO = { free: "🥊", sequence: "🎯", dodge: "🛡️", progress: "📈" };
 
 // ---------- النصوص: [عربي، English] ----------
 const T = {
@@ -61,6 +61,9 @@ const T = {
   desc_sequence: ["اتبع الكومبو: نوع الضربة واليد والمكان والسرعة", "Follow the combo: punch type, hand, zone and speed"],
   name_dodge: ["مراوغة", "Dodge"],
   desc_dodge: ["حواجز تتجه نحو رأسك، تفاداها بالحركة (بدون لكمات)", "Barriers aim at your head. Slip them by moving (no punches)"],
+  name_progress: ["التقدّم", "Progress"],
+  desc_progress: ["تزداد سرعة الأهداف تدريجيًا مع كل جولة", "Targets gradually get faster each round"],
+  progress_hint: ["في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.", "In Progress mode, targets gradually get faster each round."],
   btn_history: ["سجل التقدم الشخصي", "Personal progress"],
   btn_help: ["نصائح الإعداد", "Setup tips"],
   notice_privacy: ["🔒 <b>الخصوصية:</b> معالجة الفيديو تتم داخل متصفحك فقط. لا يتم رفع أي صورة من الكاميرا إلى أي خادم. السجل يُحفظ محليًا على جهازك.", "🔒 <b>Privacy:</b> video is processed only inside your browser. No camera image is uploaded to any server. History is saved locally on your device."],
@@ -106,6 +109,11 @@ const T = {
   cam_back: ["الخلفية", "Back"],
   settings_title: ["الإعدادات", "Settings"],
   field_lang: ["اللغة", "Language"],
+  field_theme: ["الثيم", "Theme"],
+  theme_red: ["أحمر", "Red"],
+  theme_blue: ["أزرق", "Blue"],
+  theme_green: ["أخضر", "Green"],
+  theme_purple: ["بنفسجي", "Purple"],
   toggle_sound: ["تفعيل الأصوات والتأثيرات الصوتية", "Sound effects"],
   btn_reset_history: ["حذف السجل المحفوظ", "Clear saved history"],
   btn_close: ["إغلاق", "Close"],
@@ -302,7 +310,7 @@ const IDS = [
   "resultOverlay", "resultBody", "btnAgain", "btnHome",
   "historyModal", "historyBody", "btnClearHistory", "btnCloseHistory",
   "helpModal", "btnCloseHelp", "seqPrompt", "btnStats", "btnLabels", "sensSel", "countSel", "splash",
-  "settingsModal", "langSel", "btnCloseSettings", "btnResetHistory",
+  "settingsModal", "langSel", "themeSel", "btnCloseSettings", "btnResetHistory",
   "btnCoach", "coachModal", "coachBody", "btnCloseCoach",
   "btnTraining", "btnLearn", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack",
   "coachChatForm", "coachChatInput", "coachChatSend", "coachChatLog", "coachChatStatus", "coachRetry",
@@ -473,6 +481,7 @@ function savePrefs() {
     facing: el.facingSel.value,
     sens: el.sensSel.value,
     count: el.countSel.value,
+    theme: el.themeSel.value,
   };
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
@@ -489,6 +498,8 @@ function applyPrefs() {
   pick(el.facingSel, prefs.facing);
   pick(el.sensSel, prefs.sens);
   pick(el.countSel, prefs.count);
+  pick(el.themeSel, prefs.theme || "red");
+  applyTheme(el.themeSel.value || "red");
   if (typeof prefs.sound === "boolean") el.soundToggle.checked = prefs.sound;
   lang = prefs.lang === "en" ? "en" : "ar";
 }
@@ -509,6 +520,14 @@ function setLang(v) {
   lang = v === "en" ? "en" : "ar";
   savePrefs();
   applyLang();
+}
+function applyTheme(v) {
+  const allowed = ["red", "blue", "green", "purple"];
+  document.documentElement.dataset.theme = allowed.includes(v) ? v : "red";
+}
+function setTheme(v) {
+  applyTheme(v);
+  savePrefs();
 }
 
 // ---------- الصوت (WebAudio، بدون ملفات خارجية) ----------
@@ -651,6 +670,17 @@ function setSetupMode() {
   el.setupScreen.dataset.mode = pendingMode;
   el.setupTitle.textContent = t("name_" + pendingMode);
   el.setupLogo.textContent = MODE_LOGO[pendingMode] || "🥊";
+  const visible = {
+    free: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
+    sequence: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldStance", "fieldCamera"],
+    dodge: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldStance", "fieldCamera"],
+    progress: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
+  }[pendingMode] || [];
+  for (const id of ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"]) {
+    const field = $(id);
+    if (field) field.hidden = !visible.includes(id);
+  }
+  if (el.progressHint) el.progressHint.hidden = pendingMode !== "progress";
 }
 function openSetup(m) {
   pendingMode = m;
@@ -719,6 +749,7 @@ function setState(s) {
 }
 
 function startRound() {
+  speedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
   roundMs = 0;
   resetHands();
   targets = [];
@@ -1725,6 +1756,7 @@ el.btnCloseSettings.addEventListener("click", () => {
   el.settingsModal.hidden = true;
 });
 el.langSel.addEventListener("change", () => setLang(el.langSel.value));
+el.themeSel.addEventListener("change", () => setTheme(el.themeSel.value));
 el.soundToggle.addEventListener("change", savePrefs);
 el.btnResetHistory.addEventListener("click", clearHistory);
 
