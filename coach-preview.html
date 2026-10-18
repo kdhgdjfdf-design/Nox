@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#212121">
+<title>Nox — المدرّب المحلي</title>
+<style>
+:root{color-scheme:dark;--bg:#212121;--side:#171717;--panel:#2f2f2f;--line:#414141;--text:#f4f4f4;--muted:#aaa;--accent:#e11d2e;--user:#303030}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}body{min-height:100dvh}
+button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,input:focus-visible{outline:2px solid #aaa;outline-offset:3px}
+.app{display:flex;min-height:100dvh}.sidebar{width:220px;background:var(--side);padding:10px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}.side-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.brand{font-size:17px;font-weight:650;display:flex;align-items:center;gap:9px}.brand-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#343434}.icon-btn{width:38px;height:38px;border:1px solid transparent;background:transparent;border-radius:10px;font-size:19px;display:grid;place-items:center}.icon-btn:hover,.side-link:hover{background:#292929}.new-chat{border:1px solid #414141;border-radius:10px;padding:9px 10px;background:transparent;text-align:right;display:flex;gap:10px;align-items:center}.side-caption{font-size:12px;color:#888;padding:0 9px}.side-link{border:0;background:transparent;text-align:right;border-radius:8px;padding:8px;font-size:12px;color:#d4d4d4}.side-bottom{margin-top:auto;border-top:1px solid #303030;padding-top:12px;color:#999;font-size:12px;line-height:1.7}
+.main{min-width:0;flex:1;display:flex;flex-direction:column;min-height:100dvh;position:relative}.topbar{height:50px;display:flex;align-items:center;gap:10px;padding:0 18px;position:sticky;top:0;background:rgba(33,33,33,.94);backdrop-filter:blur(10px);z-index:3}.top-title{font-size:15px;font-weight:600}.local{font-size:11px;color:#b8d8bd;border:1px solid #36523c;background:#203126;padding:4px 8px;border-radius:20px;margin-right:auto;white-space:nowrap}.mobile-menu{display:none}
+.chat-scroll{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:8px 18px 6px}.chat{width:min(100%,800px);display:flex;flex-direction:column;gap:8px;flex:1;min-height:0}.welcome{margin:auto auto 8px;text-align:center;width:100%;padding:8px 0 4px}.welcome-icon{width:38px;height:38px;border-radius:13px;background:#303030;display:grid;place-items:center;font-size:20px;margin:0 auto 9px;border:1px solid #414141}.welcome h1{font-size:21px;font-weight:600;letter-spacing:-.4px;margin:0 0 10px}.welcome p{color:#aaa;font-size:12px;line-height:1.6;margin:0 auto;max-width:490px}
+.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;width:min(100%,720px);margin:13px auto 0}.suggestion{border:1px solid #444;background:transparent;border-radius:999px;padding:8px 12px;text-align:right;min-height:0;transition:background .15s,border-color .15s}.suggestion:hover{background:#2b2b2b;border-color:#666}.suggestion strong{font-size:12px;font-weight:500;display:block;margin:0}.suggestion span{display:none}
+.messages{display:flex;flex-direction:column;gap:18px;padding:8px 0 16px}.msg-row{display:flex;gap:11px;align-items:flex-start;max-width:100%}.msg-row.user-row{justify-content:flex-start}.avatar{width:29px;height:29px;border-radius:50%;flex:0 0 29px;display:grid;place-items:center;font-size:14px;background:#383838}.avatar.bot-avatar{background:#d9d9d9;color:#202020}.msg{font-size:14px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;padding-top:1px}.user-row .msg{background:#303030;border:1px solid #3b3b3b;border-radius:18px;padding:9px 14px;max-width:min(85%,600px)}.bot-row .msg{max-width:100%;flex:1}
+.composer-area{width:100%;padding:5px 18px max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--bg) 80%,transparent)}.composer-wrap{width:min(100%,760px);margin:0 auto}.composer{display:flex;align-items:flex-end;gap:8px;padding:6px 8px;background:#2f2f2f;border:1px solid #4b4b4b;border-radius:25px;box-shadow:0 6px 25px #0002}.composer input{flex:1;min-width:0;border:0;outline:0!important;background:transparent;color:var(--text);padding:8px 7px;font-size:14px}.composer input::placeholder{color:#999}.send{width:34px;height:34px;border:0;border-radius:50%;background:#f4f4f4;color:#202020;display:grid;place-items:center;font-size:20px;flex:0 0 39px}.send:hover{background:#ddd}.composer-note{text-align:center;color:#858585;font-size:11px;line-height:1.7;padding-top:9px}.empty-hide{display:none!important}.overlay{display:none}
+@media(min-width:850px){.sidebar{position:sticky;top:0;height:100dvh}}
+@media(max-width:700px){.sidebar{position:fixed;z-index:10;top:0;bottom:0;right:0;transform:translateX(105%);transition:transform .2s;width:min(285px,85vw);box-shadow:-20px 0 50px #0005}.sidebar.open{transform:translateX(0)}.overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:9}.mobile-menu{display:grid}.topbar{padding:0 10px;height:48px}.chat-scroll{padding:4px 12px}.welcome{padding:5px 0 2px}.welcome h1{font-size:19px;margin-bottom:5px}.welcome p{font-size:11px;line-height:1.5}.welcome-icon{width:32px;height:32px;font-size:17px;margin-bottom:6px}.suggestions{gap:6px;margin-top:9px}.suggestion{padding:7px 10px}.suggestion strong{font-size:11px}.composer-area{padding-left:10px;padding-right:10px}.messages{gap:14px}.msg{font-size:13px}.local{font-size:10px}}
+@media(max-width:360px){.suggestions{gap:5px}.suggestion{padding:6px 8px}.welcome h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+<div class="side-top"><div class="brand"><span class="brand-icon">🧠</span><span>Nox Coach</span></div><button class="icon-btn" id="closeSidebar" aria-label="إغلاق القائمة">×</button></div>
+<button class="new-chat" id="newChat"><span>＋</span><span>محادثة جديدة</span></button>
+<div class="side-caption">استكشف المواضيع</div>
+<button class="side-link" data-q="warmup">☀️　 الإحماء والحركة</button>
+<button class="side-link" data-q="fitness">↗️　 أنواع اللياقة</button>
+<button class="side-link" data-q="growth">📏　 الطول والنمو حسب العمر</button>
+<button class="side-link" data-q="weight">⚖️　 الوزن والصحة</button>
+<button class="side-link" data-q="plan">🗓️　 خطة نشاط عامة</button>
+<button class="side-link" data-q="recovery">💧　 الراحة والتعافي</button>
+<button class="side-link" data-q="camera">▣　 إعداد الكاميرا</button>
+<button class="side-link" data-q="safety">♡　 السلامة</button>
+<button class="side-link" data-q="progress">▤　 متابعة التقدم</button>
+<div class="side-bottom">🔒 يعمل محليًا على هذا الجهاز<br>لا يحتاج إلى API أو مفتاح.</div>
+</aside>
+<div class="overlay" id="overlay"></div>
+<main class="main">
+<header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local">● يعمل محليًا</div></header>
+<div class="chat-scroll"><section class="chat" id="chat">
+<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اختر سؤالًا للبدء أو اكتب سؤالك مباشرة.</p>
+<div class="suggestions">
+<button class="suggestion" data-q="warmup"><strong>☀️ إحماء</strong></button>
+<button class="suggestion" data-q="fitness"><strong>🏃 نوع اللياقة</strong></button>
+<button class="suggestion" data-q="growth"><strong>📏 الطول والنمو</strong></button>
+<button class="suggestion" data-q="weight"><strong>⚖️ الوزن والصحة</strong></button>
+<button class="suggestion" data-q="plan"><strong>🗓️ خطة نشاط</strong></button>
+<button class="suggestion" data-q="recovery"><strong>💧 التعافي</strong></button>
+</div></div>
+<div class="messages" id="messages" aria-live="polite"></div>
+</section></div>
+<div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note">Nox دليل محلي بإجابات مبرمجة مسبقًا، وليس نموذج ذكاء اصطناعي متصلًا بالإنترنت.</div></div></div>
+</main></div>
+<script>
+const answers={
+warmup:"ابدأ بتحضير لطيف لبضع دقائق، مثل المشي بهدوء في المكان وتحريك الكتفين والذراعين ضمن مدى مريح. لا تحوّل الإحماء إلى اختبار، وتوقّف إذا شعرت بألم أو دوخة.",
+fitness:"توجد أنواع مختلفة من اللياقة: التحمل القلبي التنفسي، القوة، المرونة، التوازن والتناسق. يمكن تطويرها بأنشطة عامة مناسبة لعمرك ومستواك، مع الراحة والتدرّج وتوقّف النشاط عند الألم أو الدوخة.",
+growth:"الطول يتأثر بالوراثة ومرحلة البلوغ والصحة العامة، والنمو يختلف كثيرًا بين المراهقين. لا يمكن الحكم على النمو من العمر وحده؛ الطبيب يستخدم منحنيات النمو ومتابعة القياسات مع الوقت. إذا كنت قلقًا بشأن طولك، تحدث مع ولي أمرك وطبيبك.",
+weight:"لا يوجد رقم واحد اسمه الوزن المثالي لكل شخص في عمرك. عند المراهقين يُقيّم الوزن مع الطول والعمر والجنس ومرحلة النمو ومنحنيات النمو، وليس بجدول بالغين أو مقارنة بالآخرين. أستطيع شرح العوامل العامة، لكن التقييم الشخصي الأفضل يكون مع طبيب أو ممرض مدرسي.",
+plan:"ابدأ بخطة بسيطة ومتوازنة: حركة ممتعة تناسبك، أنشطة خفيفة لتحسين التحمل، تمارين مرونة لطيفة، وأيام راحة كافية. ارفع النشاط تدريجيًا ولا تتمرن رغم الألم أو الدوخة. أخبرني عن مستوى نشاطك وما الذي تستمتع به لأقترح روتينًا عامًا وآمنًا.",
+recovery:"التعافي جزء مهم من أي نشاط: اشرب الماء بانتظام، وتناول وجبات متوازنة، ونَم بما يكفي. إذا استمر التعب غير المعتاد، خذ راحة وتحدّث مع شخص بالغ تثق به.",
+camera:"ضع الهاتف على سطح ثابت وفي مكان آمن، واجعل الإضاءة أمامك، وتأكد من أذونات الكاميرا. قد تخطئ قراءة الحركة أحيانًا، لذا اعتبر الأرقام تقديرية ولا تعتمد عليها للحكم على صحتك.",
+safety:"اختر مساحة خالية وآمنة، وتأكد أن الهاتف مثبت جيدًا. لا تواصل النشاط عند الألم أو الدوخة أو ضيق النفس غير المعتاد، واستشر شخصًا بالغًا تثق به إذا لم تكن متأكدًا مما ينبغي فعله.",
+progress:"تابع الانتظام والشعور العام والطاقة والتعافي، وليس رقمًا واحدًا فقط. خذ ملاحظات بسيطة أسبوعيًا، ولا تقارن نفسك بالآخرين."
+};
+const messages=document.getElementById("messages"),welcome=document.getElementById("welcome"),question=document.getElementById("question");
+function addMessage(value,role){welcome.classList.add("empty-hide");const row=document.createElement("div");row.className="msg-row "+(role==="user"?"user-row":"bot-row");const avatar=document.createElement("div");avatar.className="avatar "+(role==="bot"?"bot-avatar":"");avatar.textContent=role==="bot"?"✦":"أنت";const msg=document.createElement("div");msg.className="msg";msg.textContent=value;if(role==="user"){row.append(avatar,msg)}else{row.append(avatar,msg)}messages.appendChild(row);row.scrollIntoView({behavior:"smooth",block:"end"});}
+function answer(q){const s=q.toLowerCase();if(/إحماء|احماء|warm.?up/.test(s))return answers.warmup;if(/طول|نمو|عمر|growth|height|بلوغ/.test(s))return answers.growth;if(/وزن|الوزن المناسب|وزن مناسب|سمنة|نحافة|weight|bmi/.test(s))return answers.weight;if(/خطة|جدول|روتين|plan|routine/.test(s))return answers.plan;if(/لياق|تمرين|fitness|نشاط/.test(s))return answers.fitness;if(/راحة|تعاف|نوم|ماء|recovery|rest/.test(s))return answers.recovery;if(/كاميرا|camera|إضاءة|تتبّع|تتبع/.test(s))return answers.camera;if(/سلام|ألم|دوخ|إصاب|safety|pain/.test(s))return answers.safety;if(/تقدم|تقدّم|نتيجة|إحصاء|progress|stats/.test(s))return answers.progress;return "أنا دليل محلي بسيط بإجابات مبرمجة مسبقًا، لذلك قد لا أفهم كل سؤال. أستطيع المساعدة في الإحماء وأنواع اللياقة والنمو والصحة العامة والتعافي والسلامة. للأسئلة الشخصية عن النمو أو الوزن، الأفضل الرجوع إلى مختص صحي.";}
+function ask(q,label){const clean=q.trim();if(!clean)return;addMessage(label||clean,"user");addMessage(answer(clean),"bot");question.value="";closeMenu();question.focus();}
+document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.q;ask(k,({warmup:"أريد نصائح للإحماء",fitness:"ما أنواع اللياقة؟",growth:"كيف أفهم الطول والنمو حسب العمر؟",weight:"ما الوزن الصحي في سن المراهقة؟",plan:"اقترح خطة نشاط عامة وآمنة",recovery:"كيف أتعافى وأرتاح؟",camera:"كيف أجهّز الكاميرا؟",safety:"أعطني نصائح للسلامة",progress:"كيف أتابع تقدمي؟"})[k]||b.textContent.trim());}));
+document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const q=question.value.trim();if(!q)return;ask(q);});
+const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay");function openMenu(){sidebar.classList.add("open");overlay.classList.add("show")}function closeMenu(){sidebar.classList.remove("open");overlay.classList.remove("show")}document.getElementById("openSidebar").addEventListener("click",openMenu);document.getElementById("closeSidebar").addEventListener("click",closeMenu);overlay.addEventListener("click",closeMenu);document.getElementById("newChat").addEventListener("click",()=>{messages.replaceChildren();welcome.classList.remove("empty-hide");closeMenu();question.value="";});
+</script>
+</body>
+</html>
