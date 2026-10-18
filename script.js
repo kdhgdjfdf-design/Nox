@@ -300,7 +300,7 @@ const IDS = [
   "homeScreen", "setupScreen", "trainScreen", "cam", "stage",
   "roundSec", "roundCount", "restSec", "speedSel", "stanceSel", "facingSel", "soundToggle",
   "btnStart", "btnHistory", "btnHelp", "btnSettings", "btnSetupBack", "homeMsg", "banner",
-  "setupTitle", "setupLogo",
+  "setupTitle", "setupLogo", "progressHint",
   "roundLabel", "timer", "statusPill", "total", "leftCount", "rightCount",
   "jabCount", "crossCount", "ppm", "targetHits", "dodges", "pillarHits",
   "btnPause", "btnStance", "btnCam", "btnRotate", "btnStop", "toast",
