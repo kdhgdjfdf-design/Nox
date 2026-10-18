@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="description" content="ShadowBox Nox - shadow boxing trainer with your phone camera. تدريب الملاكمة الافتراضي بكاميرا هاتفك." />
   <title>ShadowBox Nox 🥊</title>
-  <link rel="stylesheet" href="style.css?v=20261018f" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 </head>
@@ -40,8 +40,8 @@
         <span class="mode-arrow"></span>
       </button>
       <button id="btnLearn" class="nav-bar nav-learn">
-        <span class="mode-logo">🥊</span>
-        <span class="mode-text"><b data-i18n="nav_learn">أساسيات الملاكمة</b><small data-i18n="nav_learn_desc"></small></span>
+        <span class="mode-logo">🎓</span>
+        <span class="mode-text"><b data-i18n="nav_learn">التعلّم</b><small data-i18n="nav_learn_desc"></small></span>
         <span class="mode-arrow"></span>
       </button>
       <button id="btnCoach" class="nav-bar nav-coach">
@@ -96,21 +96,9 @@
     </div>
   </main>
 
-  <!-- ============ قسم التعلّم: مكتبة أساسيات الملاكمة ============ -->
-  <main id="learnScreen" class="screen">
-    <div class="setup-head">
-      <button id="btnLearnBack" class="chip" data-i18n="btn_back">رجوع</button>
-      <h2 class="setup-name" data-i18n="nav_learn">التعلّم</h2>
-    </div>
-
-    <a class="learn-feature" href="shadowbox-learning-preview.html">
-      <span class="learn-feature-logo">🥊</span>
-      <span class="learn-feature-text">
-        <b>أساسيات الملاكمة</b>
-        <small>دروس الفيديو والشرح والمؤقّت والتنقّل بين الدروس.</small>
-      </span>
-      <span class="learn-feature-arrow" aria-hidden="true">‹</span>
-    </a>
+  <!-- ============ قسم التعلّم: تُفتح دروس الفيديو مباشرة ============ -->
+  <main id="learnScreen" class="screen" aria-hidden="true">
+    <button id="btnLearnBack" class="chip" hidden data-i18n="btn_back">رجوع</button>
   </main>
 
   <!-- ============ شاشة إعدادات الجلسة ============ -->
@@ -123,101 +111,90 @@
       </div>
     </div>
 
-    <section class="card setup-card">
+    <section class="card">
       <h2 data-i18n="setup_title">إعدادات الجلسة</h2>
 
-      <div class="setup-group" id="setupTimeGroup">
-        <h3 class="setup-group-title" data-i18n="setup_group_time">الوقت والجولات</h3>
-        <div class="setup-fields">
-          <label class="field" id="fieldRoundLen">
-            <span data-i18n="field_round_len">مدة الجولة</span>
-            <select id="roundSec">
-              <option value="180" selected data-i18n="dur_3">3 دقائق</option>
-              <option value="300" data-i18n="dur_5">5 دقائق</option>
-              <option value="420" data-i18n="dur_7">7 دقائق</option>
-              <option value="600" data-i18n="dur_10">10 دقائق</option>
-            </select>
-          </label>
-          <label class="field" id="fieldRoundCount">
-            <span data-i18n="field_rounds">عدد الجولات</span>
-            <select id="roundCount">
-              <option value="1" data-i18n="rounds_1">جولة واحدة</option>
-              <option value="2" data-i18n="rounds_2">جولتان</option>
-              <option value="3" selected data-i18n="rounds_3">3 جولات</option>
-              <option value="4" data-i18n="rounds_4">4 جولات</option>
-              <option value="6" data-i18n="rounds_6">6 جولات</option>
-              <option value="12" data-i18n="rounds_12">12 جولة</option>
-            </select>
-          </label>
-          <label class="field" id="fieldRest">
-            <span data-i18n="field_rest">الراحة بين الجولات</span>
-            <select id="restSec">
-              <option value="0" data-i18n="rest_0">بدون راحة</option>
-              <option value="30" selected data-i18n="rest_30">30 ثانية</option>
-              <option value="60" data-i18n="rest_60">دقيقة</option>
-              <option value="90" data-i18n="rest_90">دقيقة ونصف</option>
-            </select>
-          </label>
-        </div>
-      </div>
+      <label class="field">
+        <span data-i18n="field_round_len">مدة الجولة</span>
+        <select id="roundSec">
+          <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
+          <option value="120" data-i18n="dur_2">دقيقتان</option>
+          <option value="180" selected data-i18n="dur_3">3 دقائق</option>
+        </select>
+      </label>
 
-      <div class="setup-group" id="setupControlGroup">
-        <h3 class="setup-group-title" data-i18n="setup_group_control">السرعة وحساسية اللكمات</h3>
-        <div class="setup-fields">
-          <label class="field" id="fieldLevel">
-            <span data-i18n="field_level">مستوى الصعوبة</span>
-            <select id="levelSel">
-              <option value="beginner" data-i18n="level_beginner">مبتدئ</option>
-              <option value="intermediate" selected data-i18n="level_intermediate">متوسط</option>
-              <option value="advanced" data-i18n="level_advanced">متقدم</option>
-            </select>
-          </label>
-          <label class="field" id="fieldSpeed">
-            <span data-i18n="field_speed">سرعة الأهداف</span>
-            <select id="speedSel">
-              <option value="slow" data-i18n="speed_slow">بطيء</option>
-              <option value="mid" selected data-i18n="speed_mid">متوسط</option>
-              <option value="fast" data-i18n="speed_fast">سريع</option>
-            </select>
-          </label>
-          <label class="field" id="fieldSensitivity">
-            <span data-i18n="field_sens">حساسية الكشف</span>
-            <select id="sensSel">
-              <option value="low" data-i18n="sens_low">منخفضة (تتطلب لكمة قوية)</option>
-              <option value="mid" selected data-i18n="sens_mid">متوسطة</option>
-              <option value="high" data-i18n="sens_high">عالية (تقبل لكمات أخف)</option>
-            </select>
-          </label>
-          <label class="field" id="fieldCount">
-            <span data-i18n="field_count">احتساب اللكمات</span>
-            <select id="countSel">
-              <option value="targets" selected data-i18n="count_targets">على الأهداف فقط</option>
-              <option value="all" data-i18n="count_all">كل لكمة في الهواء أيضًا</option>
-            </select>
-          </label>
-        </div>
-      </div>
+      <label class="field">
+        <span data-i18n="field_rounds">عدد الجولات</span>
+        <select id="roundCount">
+          <option value="1" data-i18n="rounds_1">جولة واحدة</option>
+          <option value="2" data-i18n="rounds_2">جولتان</option>
+          <option value="3" selected data-i18n="rounds_3">3 جولات</option>
+          <option value="4" data-i18n="rounds_4">4 جولات</option>
+          <option value="6" data-i18n="rounds_6">6 جولات</option>
+          <option value="12" data-i18n="rounds_12">12 جولة</option>
+        </select>
+      </label>
+      <label class="field">
+        <span data-i18n="field_level">مستوى الصعوبة</span>
+        <select id="levelSel">
+          <option value="beginner" data-i18n="level_beginner">مبتدئ</option>
+          <option value="intermediate" selected data-i18n="level_intermediate">متوسط</option>
+          <option value="advanced" data-i18n="level_advanced">متقدم</option>
+        </select>
+      </label>
 
-      <div class="setup-group" id="setupPositionGroup">
-        <h3 class="setup-group-title" data-i18n="setup_group_position">الوضعية والكاميرا</h3>
-        <div class="setup-fields">
-          <label class="field" id="fieldStance">
-            <span data-i18n="field_stance">وضعية الوقوف</span>
-            <select id="stanceSel">
-              <option value="orthodox" selected data-i18n="stance_orth">اليد اليسرى أمامية (عادية)</option>
-              <option value="southpaw" data-i18n="stance_south">اليد اليمنى أمامية (معاكسة)</option>
-            </select>
-          </label>
-          <label class="field" id="fieldCamera">
-            <span data-i18n="field_camera">الكاميرا</span>
-            <select id="facingSel">
-              <option value="user" selected data-i18n="cam_front">الأمامية (مفضّلة للتدريب)</option>
-              <option value="environment" data-i18n="cam_back">الخلفية</option>
-            </select>
-          </label>
-        </div>
-      </div>
-      <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">المستوى يتغيّر تلقائيًا في وضع التقدّم فقط؛ في الوضع الحر يبقى المستوى الذي اخترته ثابتًا طوال الجلسة.</p>
+      <label class="field">
+        <span data-i18n="field_rest">الراحة بين الجولات</span>
+        <select id="restSec">
+          <option value="0" data-i18n="rest_0">بدون راحة</option>
+          <option value="30" selected data-i18n="rest_30">30 ثانية</option>
+          <option value="60" data-i18n="rest_60">دقيقة</option>
+          <option value="90" data-i18n="rest_90">دقيقة ونصف</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_speed">سرعة الأهداف</span>
+        <select id="speedSel">
+          <option value="slow" data-i18n="speed_slow">بطيء</option>
+          <option value="mid" selected data-i18n="speed_mid">متوسط</option>
+          <option value="fast" data-i18n="speed_fast">سريع</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_sens">حساسية الكشف</span>
+        <select id="sensSel">
+          <option value="low" data-i18n="sens_low">منخفضة (تتطلب لكمة قوية)</option>
+          <option value="mid" selected data-i18n="sens_mid">متوسطة</option>
+          <option value="high" data-i18n="sens_high">عالية (تقبل لكمات أخف)</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_count">احتساب اللكمات</span>
+        <select id="countSel">
+          <option value="targets" selected data-i18n="count_targets">على الأهداف فقط</option>
+          <option value="all" data-i18n="count_all">كل لكمة في الهواء أيضًا</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_stance">وضعية الوقوف</span>
+        <select id="stanceSel">
+          <option value="orthodox" selected data-i18n="stance_orth">اليد اليسرى أمامية (عادية)</option>
+          <option value="southpaw" data-i18n="stance_south">اليد اليمنى أمامية (معاكسة)</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_camera">الكاميرا</span>
+        <select id="facingSel">
+          <option value="user" selected data-i18n="cam_front">الأمامية (مفضّلة للتدريب)</option>
+          <option value="environment" data-i18n="cam_back">الخلفية</option>
+        </select>
+      </label>
+          <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.</p>
     </section>
 
     <button id="btnStart" class="btn primary big" data-i18n="btn_start">ابدأ التدريب</button>
@@ -289,12 +266,9 @@
     <div id="restOverlay" class="overlay" hidden>
       <div class="sheet">
         <h2 data-i18n="rest_title">راحة</h2>
-        <div class="big-num" id="restCount">60</div>
+        <div class="big-num" id="restCount">30</div>
         <p id="restNext" class="hint"></p>
-        <div class="row">
-          <button id="restAdd20" class="btn ghost" data-i18n="rest_add20">+20 ثانية</button>
-          <button id="restSkip" class="btn primary" data-i18n="btn_skip_rest">إنهاء الراحة</button>
-        </div>
+        <button id="restSkip" class="btn primary big" data-i18n="btn_skip_rest">ابدأ الجولة الآن</button>
       </div>
     </div>
 
@@ -370,19 +344,6 @@
     <div class="sheet wide">
       <h2 data-i18n="coach_title">المدرّب الذكي 🧠</h2>
       <div id="coachBody"></div>
-
-      <form id="coachChatForm" class="coach-chat" autocomplete="off">
-        <h3 class="section-title" data-i18n="coach_chat_title">اسأل المدرّب</h3>
-        <div id="coachChatLog" class="coach-log" aria-live="polite"></div>
-        <div class="coach-input-row">
-          <input id="coachChatInput" type="text" maxlength="500" dir="auto" />
-          <button id="coachChatSend" type="submit" class="btn primary" data-i18n="coach_chat_send">إرسال</button>
-        </div>
-        <p id="coachChatStatus" class="msg" role="status"></p>
-        <button id="coachRetry" type="button" class="btn ghost" hidden data-i18n="coach_chat_retry">إعادة المحاولة</button>
-        <p class="notice small" data-i18n="coach_chat_note"></p>
-      </form>
-
       <button id="btnCloseCoach" class="btn primary big" data-i18n="btn_close">إغلاق</button>
     </div>
   </div>
@@ -405,6 +366,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261018f" type="module"></script>
+  <script src="script.js" type="module"></script>
 </body>
 </html>
