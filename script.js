@@ -1986,7 +1986,7 @@ function buildPersonalizedProgressReply(sessions, english) {
       ? "Keep your routine comfortable and consistent, leave time for recovery, and focus on how you feel rather than trying to beat a number every session."
       : "حافظ على روتين مريح ومنتظم، واترك وقتًا كافيًا للتعافي، واهتم بشعورك وطاقتك بدل محاولة تحطيم رقم في كل جلسة.");
   }
-  return (english ? "Based on your saved progress, here's a useful next step:\\n• " : "بناءً على سجل تقدمك، هذه خطوة مفيدة لك:\\n• ") + suggestions.join("\\n• ");
+  return (english ? "Based on your saved progress, here's a useful next step:\n• " : "بناءً على سجل تقدمك، هذه خطوة مفيدة لك:\n• ") + suggestions.join("\n• ");
 }
 
 function buildLocalCoachReply(question) {
