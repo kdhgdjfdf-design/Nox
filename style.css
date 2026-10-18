@@ -928,6 +928,33 @@ body.hide-stats .grid { display: none; }
 .nav-bar .mode-text b { font-size: 20px; font-weight: 900; }
 .nav-bar .mode-text small { font-size: 13px; line-height: 1.5; opacity: 0.9; }
 
+/* ===== أسئلة سريعة للمدرّب المحلي ===== */
+.coach-quick-prompts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.coach-prompt {
+  min-height: 44px;
+  padding: 9px 10px;
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(91, 33, 182, 0.22), rgba(30, 16, 53, 0.65));
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: start;
+  cursor: pointer;
+}
+.coach-prompt:active { transform: scale(0.98); }
+.coach-prompt:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+@media (max-width: 360px) {
+  .coach-quick-prompts { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ===== محادثة المدرّب ===== */
 .coach-chat { margin-top: 6px; text-align: start; }
 .coach-chat .section-title { margin: 6px 0 8px; }
