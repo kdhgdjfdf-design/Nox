@@ -917,12 +917,56 @@ body.hide-stats .grid { display: none; }
 .nav-bar .mode-text small { font-size: 13px; line-height: 1.5; opacity: 0.9; }
 
 
-/* ===== الثيمات الإضافية في النسخة التجريبية ===== */
-:root[data-theme="red"] { --red:#e11d2e; --red-dark:#7f0b14; }
-:root[data-theme="blue"] { --red:#3b82f6; --red-dark:#1e3a8a; --line:#26384f; }
-:root[data-theme="green"] { --red:#14b8a6; --red-dark:#0b4f49; --line:#24443f; }
-:root[data-theme="purple"] { --red:#a855f7; --red-dark:#581c87; --line:#3c2a50; }
-:root[data-theme="blue"] body { background:radial-gradient(circle at top,#071c3a 0%,#0a0a0a 55%) fixed; }
-:root[data-theme="green"] body { background:radial-gradient(circle at top,#062b24 0%,#0a0a0a 55%) fixed; }
-:root[data-theme="purple"] body { background:radial-gradient(circle at top,#24083b 0%,#0a0a0a 55%) fixed; }
+/* ===== الثيمات: ألوان موحّدة لكل الواجهة ===== */
+:root[data-theme="red"] {
+  --red: #e11d2e; --red-dark: #7f0b14; --line: #2a2a2a;
+  --theme-glow: #2a0408; --theme-soft: rgba(225, 29, 46, .16);
+  --theme-shadow: rgba(225, 29, 46, .34);
+}
+:root[data-theme="blue"] {
+  --red: #3b82f6; --red-dark: #1e3a8a; --line: #26384f;
+  --theme-glow: #071c3a; --theme-soft: rgba(59, 130, 246, .16);
+  --theme-shadow: rgba(59, 130, 246, .34);
+}
+:root[data-theme="green"] {
+  --red: #14b8a6; --red-dark: #0b4f49; --line: #24443f;
+  --theme-glow: #062b24; --theme-soft: rgba(20, 184, 166, .16);
+  --theme-shadow: rgba(20, 184, 166, .32);
+}
+:root[data-theme="purple"] {
+  --red: #a855f7; --red-dark: #581c87; --line: #3c2a50;
+  --theme-glow: #24083b; --theme-soft: rgba(168, 85, 247, .16);
+  --theme-shadow: rgba(168, 85, 247, .34);
+}
+:root { --theme-glow: #2a0408; --theme-soft: rgba(225, 29, 46, .16); --theme-shadow: rgba(225, 29, 46, .34); }
+
+html, body {
+  background: radial-gradient(circle at top, var(--theme-glow) 0%, #0a0a0a 58%) fixed;
+}
+.splash {
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--theme-glow) 88%, #000) 0%, #0a0a0a 72%);
+}
+.btn.primary {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--red) 88%, white), var(--red-dark));
+  box-shadow: 0 10px 28px var(--theme-shadow);
+}
+.btn.primary, .btn:focus-visible, .chip:focus-visible {
+  outline-color: var(--red);
+}
+.brand h1 span, .splash-name span, .card h2, .sheet h2, .section-title {
+  color: var(--red);
+}
+.logo, .splash-logo {
+  filter: drop-shadow(0 6px 18px var(--theme-shadow));
+}
+.select:focus, select:focus { outline-color: var(--red); }
+.banner {
+  background: var(--theme-soft);
+  border-color: var(--red);
+}
+.toast, .seq-prompt, .stats-toggle { border-color: var(--red); }
+.acc-fill, .pbar-hit {
+  background: linear-gradient(90deg, var(--red-dark), var(--red));
+  box-shadow: 0 0 12px var(--theme-shadow);
+}
 .mode-card[data-mode="progress"] { --accent1:#64748b; --accent2:#263449; }
