@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="description" content="ShadowBox Nox - shadow boxing trainer with your phone camera. تدريب الملاكمة الافتراضي بكاميرا هاتفك." />
   <title>ShadowBox Nox 🥊</title>
-  <link rel="stylesheet" href="style.css?v=20261018f" />
+  <link rel="stylesheet" href="style.css?v=20261018g" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 </head>
@@ -390,6 +390,12 @@
 
       <form id="coachChatForm" class="coach-chat" autocomplete="off">
         <h3 class="section-title" data-i18n="coach_chat_title">اسأل المدرّب</h3>
+        <div class="coach-quick-prompts" aria-label="أسئلة سريعة للمدرب">
+          <button type="button" class="coach-prompt" data-coach-prompt="session" data-i18n="coach_quick_session">قيّم آخر جلسة</button>
+          <button type="button" class="coach-prompt" data-coach-prompt="combo" data-i18n="coach_quick_combo">أعطني كومبو للمبتدئين</button>
+          <button type="button" class="coach-prompt" data-coach-prompt="accuracy" data-i18n="coach_quick_accuracy">كيف أحسّن دقة اللكمات؟</button>
+          <button type="button" class="coach-prompt" data-coach-prompt="defense" data-i18n="coach_quick_defense">علّمني أساسيات الدفاع</button>
+        </div>
         <div id="coachChatLog" class="coach-log" aria-live="polite"></div>
         <div class="coach-input-row">
           <input id="coachChatInput" type="text" maxlength="500" dir="auto" />
@@ -422,6 +428,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261018f" type="module"></script>
+  <script src="script.js?v=20261018g" type="module"></script>
 </body>
 </html>
