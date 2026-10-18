@@ -26,6 +26,11 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <div class="side-top"><div class="brand"><span class="brand-icon">🧠</span><span>Nox Coach</span></div><button class="icon-btn" id="closeSidebar" aria-label="إغلاق القائمة">×</button></div>
 <button class="new-chat" id="newChat"><span>＋</span><span>محادثة جديدة</span></button>
 <div class="side-caption">استكشف المواضيع</div>
+<button class="side-link" data-q="boxing_rules">🥊　 قواعد الملاكمة</button>
+<button class="side-link" data-q="stance">🧍　 الوقفة والحراسة</button>
+<button class="side-link" data-q="footwork">👣　 حركة القدمين والتوازن</button>
+<button class="side-link" data-q="defense">🛡️　 الدفاع والتفادي</button>
+<button class="side-link" data-q="combos">🔗　 الكومبوهات واللكمات</button>
 <button class="side-link" data-q="warmup">☀️　 الإحماء والحركة</button>
 <button class="side-link" data-q="fitness">↗️　 أنواع اللياقة</button>
 <button class="side-link" data-q="growth">📏　 الطول والنمو حسب العمر</button>
@@ -43,6 +48,10 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <div class="chat-scroll"><section class="chat" id="chat">
 <div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اختر سؤالًا للبدء أو اكتب سؤالك مباشرة.</p>
 <div class="suggestions">
+<button class="suggestion" data-q="boxing_rules"><strong>🥊 قواعد الملاكمة</strong></button>
+<button class="suggestion" data-q="stance"><strong>🧍 الوقفة والحراسة</strong></button>
+<button class="suggestion" data-q="defense"><strong>🛡️ الدفاع والتفادي</strong></button>
+<button class="suggestion" data-q="combos"><strong>🔗 الكومبوهات</strong></button>
 <button class="suggestion" data-q="warmup"><strong>☀️ إحماء</strong></button>
 <button class="suggestion" data-q="fitness"><strong>🏃 نوع اللياقة</strong></button>
 <button class="suggestion" data-q="growth"><strong>📏 الطول والنمو</strong></button>
@@ -56,6 +65,11 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 </main></div>
 <script>
 const answers={
+boxing_rules:"قواعد الملاكمة الأساسية: توجيه اللكمات بقبضة اليد المغطاة بالقفاز إلى المناطق المسموح بها في مقدمة وجانبي الجذع والرأس وفق قواعد الفئة، وعدم الضرب أسفل الحزام أو خلف الرأس أو بعد أمر الحكم بالتوقف. يُمنع الركل والضرب بالرأس أو استخدام المرفق، كما يُمنع مسك الخصم أو دفعه بصورة غير قانونية. في التدريب الفردي تعلّم التقنية ببطء، واستخدم حماية مناسبة ولا تضرب شخصًا دون إشراف واتفاق واضح.",
+stance:"الوقفة الأساسية: اجعل قدميك متباعدتين بمقدار مريح، وقدّم قدمًا قليلًا عن الأخرى، اثنِ الركبتين قليلًا، ووزّع الوزن بتوازن. ارفع اليدين لحماية الوجه، وأبقِ الذقن منخفضًا بشكل طبيعي والكتفين مرتاحين. تختلف جهة القدم الأمامية حسب كونك أيمن أو أعسر؛ الأهم الثبات والراحة وعدم المبالغة في الانحناء.",
+footwork:"حركة القدمين والتوازن: تحرّك بخطوات صغيرة، وحرّك القدم الأقرب لاتجاه الحركة أولًا ثم اتبعها بالقدم الأخرى، حتى لا تتشابك القدمان. حافظ على مسافة الوقفة ولا تقفز أو تمدّ الخطوة أكثر من اللازم. تدرب ببطء في مساحة خالية قبل زيادة السرعة.",
+defense:"الدفاع والتفادي: أبقِ اليدين قرب الوجه، وراقب الحركة مع الحفاظ على توازنك. يمكن التدرب على خطوة جانبية صغيرة أو حركة خفيفة بالرأس بدل الميل الكبير، ثم العودة إلى الوقفة. ابدأ دون شريك وببطء؛ لا تستخدم تفاديًا حادًا قد يسبب فقدان التوازن، وتعلّم الدفاع مع مدرب مؤهل.",
+combos:"الكومبوهات هي ربط لكمتين أو أكثر في تسلسل، مثل اللكمة المستقيمة الأمامية ثم المستقيمة الخلفية. تعلّم كل لكمة منفردة أولًا، ثم اربطها ببطء مع عودة اليد إلى الحراسة بعد كل ضربة. لا تضحِّ بالتوازن أو التقنية من أجل السرعة، وتدرّب على كيس مناسب أو في الهواء دون توجيه اللكمات إلى شخص.",
 warmup:"ابدأ بتحضير لطيف لبضع دقائق، مثل المشي بهدوء في المكان وتحريك الكتفين والذراعين ضمن مدى مريح. لا تحوّل الإحماء إلى اختبار، وتوقّف إذا شعرت بألم أو دوخة.",
 fitness:"توجد أنواع مختلفة من اللياقة: التحمل القلبي التنفسي، القوة، المرونة، التوازن والتناسق. يمكن تطويرها بأنشطة عامة مناسبة لعمرك ومستواك، مع الراحة والتدرّج وتوقّف النشاط عند الألم أو الدوخة.",
 growth:"الطول يتأثر بالوراثة ومرحلة البلوغ والصحة العامة، والنمو يختلف كثيرًا بين المراهقين. لا يمكن الحكم على النمو من العمر وحده؛ الطبيب يستخدم منحنيات النمو ومتابعة القياسات مع الوقت. إذا كنت قلقًا بشأن طولك، تحدث مع ولي أمرك وطبيبك.",
@@ -68,9 +82,15 @@ progress:"تابع الانتظام والشعور العام والطاقة و�
 };
 const messages=document.getElementById("messages"),welcome=document.getElementById("welcome"),question=document.getElementById("question");
 function addMessage(value,role){welcome.classList.add("empty-hide");const row=document.createElement("div");row.className="msg-row "+(role==="user"?"user-row":"bot-row");const avatar=document.createElement("div");avatar.className="avatar "+(role==="bot"?"bot-avatar":"");avatar.textContent=role==="bot"?"✦":"أنت";const msg=document.createElement("div");msg.className="msg";msg.textContent=value;if(role==="user"){row.append(avatar,msg)}else{row.append(avatar,msg)}messages.appendChild(row);row.scrollIntoView({behavior:"smooth",block:"end"});}
-function answer(q){const s=q.toLowerCase();if(/إحماء|احماء|warm.?up/.test(s))return answers.warmup;if(/طول|نمو|عمر|growth|height|بلوغ/.test(s))return answers.growth;if(/وزن|الوزن المناسب|وزن مناسب|سمنة|نحافة|weight|bmi/.test(s))return answers.weight;if(/خطة|جدول|روتين|plan|routine/.test(s))return answers.plan;if(/لياق|تمرين|fitness|نشاط/.test(s))return answers.fitness;if(/راحة|تعاف|نوم|ماء|recovery|rest/.test(s))return answers.recovery;if(/كاميرا|camera|إضاءة|تتبّع|تتبع/.test(s))return answers.camera;if(/سلام|ألم|دوخ|إصاب|safety|pain/.test(s))return answers.safety;if(/تقدم|تقدّم|نتيجة|إحصاء|progress|stats/.test(s))return answers.progress;return "أنا دليل محلي بسيط بإجابات مبرمجة مسبقًا، لذلك قد لا أفهم كل سؤال. أستطيع المساعدة في الإحماء وأنواع اللياقة والنمو والصحة العامة والتعافي والسلامة. للأسئلة الشخصية عن النمو أو الوزن، الأفضل الرجوع إلى مختص صحي.";}
+function answer(q){const s=q.toLowerCase();
+if(/قواعد الملاكمة|ما قواعد|قواعد اللعبة|قوانين الملاكمة|boxing rules|rules of boxing|مسموح.*لكم|ممنوع.*ملاكمة/.test(s))return answers.boxing_rules;
+if(/وقفة|وضعية الحراسة|حراسة|كيف أقف|stance|guard/.test(s))return answers.stance;
+if(/قدم|حركة القدمين|توازن|footwork|balance/.test(s))return answers.footwork;
+if(/دفاع|تفادي|مراوغة|أدافع|defen[cs]e|dodge/.test(s))return answers.defense;
+if(/كومبو|كومبوهات|تسلسل اللكم|أنواع اللكمات|لكمة مستقيمة|combo|jab|cross/.test(s))return answers.combos;
+if(/إحماء|احماء|warm.?up/.test(s))return answers.warmup;if(/طول|نمو|عمر|growth|height|بلوغ/.test(s))return answers.growth;if(/وزن|الوزن المناسب|وزن مناسب|سمنة|نحافة|weight|bmi/.test(s))return answers.weight;if(/خطة|جدول|روتين|plan|routine/.test(s))return answers.plan;if(/لياق|تمرين|fitness|نشاط/.test(s))return answers.fitness;if(/راحة|تعاف|نوم|ماء|recovery|rest/.test(s))return answers.recovery;if(/كاميرا|camera|إضاءة|تتبّع|تتبع/.test(s))return answers.camera;if(/سلام|ألم|دوخ|إصاب|safety|pain/.test(s))return answers.safety;if(/تقدم|تقدّم|نتيجة|إحصاء|progress|stats/.test(s))return answers.progress;return "أنا دليل محلي بسيط بإجابات مبرمجة مسبقًا، لذلك قد لا أفهم كل سؤال. أستطيع المساعدة في الإحماء وأنواع اللياقة والنمو والصحة العامة والتعافي والسلامة. للأسئلة الشخصية عن النمو أو الوزن، الأفضل الرجوع إلى مختص صحي.";}
 function ask(q,label){const clean=q.trim();if(!clean)return;addMessage(label||clean,"user");addMessage(answer(clean),"bot");question.value="";closeMenu();question.focus();}
-document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.q;ask(k,({warmup:"أريد نصائح للإحماء",fitness:"ما أنواع اللياقة؟",growth:"كيف أفهم الطول والنمو حسب العمر؟",weight:"ما الوزن الصحي في سن المراهقة؟",plan:"اقترح خطة نشاط عامة وآمنة",recovery:"كيف أتعافى وأرتاح؟",camera:"كيف أجهّز الكاميرا؟",safety:"أعطني نصائح للسلامة",progress:"كيف أتابع تقدمي؟"})[k]||b.textContent.trim());}));
+document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.q;ask(k,({boxing_rules:"ما قواعد الملاكمة؟",stance:"كيف تكون وقفة الملاكم الصحيحة؟",footwork:"كيف أتحرك بقدمي وأحافظ على التوازن؟",defense:"كيف أتعلم الدفاع والتفادي؟",combos:"ما هي الكومبوهات في الملاكمة؟",warmup:"أريد نصائح للإحماء",fitness:"ما أنواع اللياقة؟",growth:"كيف أفهم الطول والنمو حسب العمر؟",weight:"ما الوزن الصحي في سن المراهقة؟",plan:"اقترح خطة نشاط عامة وآمنة",recovery:"كيف أتعافى وأرتاح؟",camera:"كيف أجهّز الكاميرا؟",safety:"أعطني نصائح للسلامة",progress:"كيف أتابع تقدمي؟"})[k]||b.textContent.trim());}));
 document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const q=question.value.trim();if(!q)return;ask(q);});
 const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay");function openMenu(){sidebar.classList.add("open");overlay.classList.add("show")}function closeMenu(){sidebar.classList.remove("open");overlay.classList.remove("show")}document.getElementById("openSidebar").addEventListener("click",openMenu);document.getElementById("closeSidebar").addEventListener("click",closeMenu);overlay.addEventListener("click",closeMenu);document.getElementById("newChat").addEventListener("click",()=>{messages.replaceChildren();welcome.classList.remove("empty-hide");closeMenu();question.value="";});
 </script>
