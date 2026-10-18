@@ -8,12 +8,12 @@
 </style></head>
 <body>
 <section id="cornerScreen" class="corner-screen">
-<header><a class="back" href="https://kdhgdjfdf-design.github.io/shadowbox/" aria-label="العودة للتطبيق">‹</a><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">اختر الركن الذي تريد الدخول إليه</div></div></header>
+<header><button class="back" id="backFromCorners" type="button" aria-label="الخروج إلى الشاشة الرئيسية">‹</button><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">اختر الركن الذي تريد الدخول إليه</div></div></header>
 <p class="intro">اختر قسمًا من التطبيق. دروس اللكمات موجودة داخل ركن التعلّم، ويمكنك الرجوع إلى هذه الصفحة في أي وقت.</p>
 <div class="corner-grid">
 <button class="corner-option" id="openTraining"><span class="ico">🥊</span><span><strong>التمرين</strong><small>العودة إلى التطبيق لاختيار وضع التدريب</small></span></button>
 <button class="corner-option" id="openLearning"><span class="ico">🎓</span><span><strong>التعلّم</strong><small>افتح ركن التعلّم في التطبيق</small></span></button>
-<button class="corner-option" id="openBasics"><span class="ico">🥊</span><span><strong>اللكمات الأساسية</strong><small>5 لكمات أساسية ثم اللكمات المتقدمة</small></span></button>
+<button class="corner-option" id="openBasics"><span class="ico">🥊</span><span><strong>الضربات الأساسية</strong><small>5 لكمات أساسية ثم اللكمات المتقدمة</small></span></button>
 <button class="corner-option" id="openCoach"><span class="ico">🧠</span><span><strong>المدرّب الذكي</strong><small>افتح ركن المدرّب من التطبيق</small></span></button>
 <button class="corner-option" id="openHistory"><span class="ico">📊</span><span><strong>سجل النشاط</strong><small>افتح سجلّك من التطبيق</small></span></button>
 </div>
@@ -44,14 +44,27 @@ const lessons={
 const ids=Object.keys(lessons);let current='basic',player=null,finished=false;const completed=new Set();
 const $=id=>document.getElementById(id);
 const cornerScreen=$('cornerScreen'),lessonScreen=$('lessonScreen');
-function showCorners(){lessonScreen.hidden=true;cornerScreen.hidden=false;if(location.hash==='#lessons'){history.replaceState({screen:'corners'},'',location.pathname+location.search)}}
-function showLessons(push=true){cornerScreen.hidden=true;lessonScreen.hidden=false;if(push&&location.hash!=='#lessons')history.pushState({screen:'lessons'},'','#lessons');if(player&&player.cueVideoById)loadLesson(current,true)}
+function showCorners(push=true){
+ lessonScreen.hidden=true;cornerScreen.hidden=false;
+ if(push&&location.hash!=='#corners')history.pushState({screen:'corners'},'',location.pathname+location.search+'#corners');
+}
+function showLessons(push=true){
+ cornerScreen.hidden=true;lessonScreen.hidden=false;
+ if(push&&location.hash!=='#lessons')history.pushState({screen:'lessons'},'',location.pathname+location.search+'#lessons');
+ if(player&&player.cueVideoById)loadLesson(current,true);
+}
+$('backFromCorners').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
 $('openLearning').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
 $('openBasics').addEventListener('click',()=>showLessons(true));
 ['openTraining','openCoach','openHistory'].forEach(id=>$(id).addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'}));
-$('backToCorners').addEventListener('click',showCorners);
-window.addEventListener('popstate',()=>showCorners());
-if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false}else{cornerScreen.hidden=false;lessonScreen.hidden=true}
+$('backToCorners').addEventListener('click',()=>showCorners(true));
+window.addEventListener('popstate',()=>{
+ if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false;}
+ else if(location.hash==='#corners'){cornerScreen.hidden=false;lessonScreen.hidden=true;}
+ else {location.href='https://kdhgdjfdf-design.github.io/shadowbox/';}
+});
+if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false}
+else{cornerScreen.hidden=false;lessonScreen.hidden=true}
 
 function fmt(s){s=Math.max(0,Math.floor(Number(s)||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function endTime(l){if(l.end!==null)return l.end;if(player){const d=player.getDuration();if(d>0)return d}return null}
