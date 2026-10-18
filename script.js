@@ -1912,14 +1912,7 @@ el.btnClearHistory.addEventListener("click", clearHistory);
 el.btnHelp.addEventListener("click", () => (el.helpModal.hidden = false));
 el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
-  renderCoach();
-  el.coachChatInput.placeholder = t("coach_chat_ph");
-  if (!el.coachChatLog.children.length) {
-    coachAddMsg("bot", lang === "en"
-      ? "Welcome. Ask me about your progress, target tracking, or a safe beginner routine. I can use saved session history privately to tailor general suggestions; session statistics stay in the History screen."
-      : "أهلًا بك! اسألني عن تقدمك أو دقة التتبّع أو روتين مناسب للمبتدئين. أستطيع الاستفادة من سجل جلساتك لتخصيص النصائح العامة دون عرض إحصائياتك هنا؛ ستبقى الإحصائيات في صفحة السجل.");
-  }
-  el.coachModal.hidden = false;
+  window.location.href = "coach-preview.html";
 });
 
 // ---------- المدرّب المحلي: إرشادات قواعدية دون API أو رفع بيانات ----------
@@ -2094,7 +2087,9 @@ el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
-el.btnLearn.addEventListener("click", () => showScreen("learn"));
+el.btnLearn.addEventListener("click", () => {
+  window.location.href = "learning-preview.html";
+});
 el.btnTrainBack.addEventListener("click", () => showScreen("home"));
 el.btnLearnBack.addEventListener("click", () => showScreen("home"));
 
