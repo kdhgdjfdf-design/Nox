@@ -969,3 +969,16 @@ body.hide-stats .grid { display: none; }
 #coachChatInput:focus { outline: 2px solid var(--red); outline-offset: 2px; }
 .coach-input-row .btn { min-height: 48px; padding: 0 16px; font-size: 15px; }
 .coach-chat .btn.ghost { margin-top: 6px; width: 100%; }
+
+
+/* تنظيم إعدادات التمرين قبل البدء */
+#setupScreen .setup-card { padding: 16px; }
+.setup-group { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--line); }
+.setup-group-title { margin: 0 0 12px; color: var(--red); font-size: 14px; font-weight: 800; }
+.setup-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 12px; }
+.setup-fields .field { min-width: 0; margin-bottom: 12px; }
+#setupScreen .setup-group[hidden] { display: none !important; }
+#setupScreen .field[hidden] { display: none !important; }
+@media (min-width: 480px) {
+  .setup-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
