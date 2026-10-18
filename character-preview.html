@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101015"><title>ShadowBox Nox — معاينة الملاكم</title>
+<style>
+:root{color-scheme:dark;--bg:#101015;--panel:#1b1b24;--line:#383846;--text:#f5f5fa;--muted:#aaa9bb;--accent:#a78bfa}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#282035 0,#101015 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px}
+main{max-width:760px;margin:auto}.top{display:flex;align-items:center;gap:12px;margin:8px 0 16px}.logo{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:#302331;font-size:26px}.eyebrow{font-size:11px;letter-spacing:2px;color:#c7a5b5}.title{margin:3px 0;font-size:23px}.sub{color:var(--muted);line-height:1.8;font-size:14px;margin:8px 0 16px}
+.stage{height:min(62dvh,540px);min-height:340px;border:1px solid #454052;border-radius:22px;overflow:hidden;background:#111016;position:relative;box-shadow:0 20px 60px #0006}.stage canvas{display:block;width:100%;height:100%}.status{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:#ddd;font-size:14px;line-height:1.8;pointer-events:none}.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.controls button,.back{border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--text);padding:13px 7px;font-size:14px}.controls button:active{background:#383044}.hint{border:1px solid var(--line);border-radius:15px;background:#1a1922;padding:13px 15px;line-height:1.8;font-size:14px}.note{font-size:12px;color:var(--muted);line-height:1.8;margin-top:14px}.back{display:inline-block;text-decoration:none;padding:9px 13px;margin-bottom:8px}
+@media(max-width:420px){body{padding:12px}.title{font-size:20px}.stage{min-height:300px;height:56dvh}.controls{gap:6px}.controls button{font-size:12px;padding:12px 3px}}
+</style></head>
+<body><main>
+<a class="back" href="./">‹ الرجوع إلى ShadowBox</a>
+<div class="top"><div class="logo">🥊</div><div><div class="eyebrow">SHADOWBOX NOX</div><h1 class="title">معاينة شخصية الملاكم</h1></div></div>
+<p class="sub">نموذج ثلاثي الأبعاد تجريبي بلباس ملاكمة وقفازات وشورت وحذاء رياضي. هذه صفحة مستقلة ولا تغيّر شاشة التدريب الرئيسية.</p>
+<div class="stage" id="stage"><div class="status" id="status">جارٍ إنشاء شخصية الملاكم…</div></div>
+<div class="controls" role="group" aria-label="عرض الشخصية">
+<button id="left">↶ تدوير لليسار</button><button id="front">إرجاع للواجهة</button><button id="right">تدوير لليمين ↷</button>
+</div>
+<div class="hint">اللباس: قميص رياضي أسود، شورت ملاكمة بنفسجي، قفازات حمراء وحذاء رياضي. هذه معاينة للشكل فقط وليست تدريبًا على الحركات.</div>
+<p class="note">يتم إنشاء الجسم والملابس داخل الصفحة، لذلك لا تحتاج إلى تنزيل ملف شخصية خارجي. يلزم اتصال الإنترنت لتحميل مكتبة العرض ثلاثي الأبعاد.</p>
+</main>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+<script type="module">
+const stage=document.getElementById('stage'),status=document.getElementById('status');
+try{
+const THREE=await import('three');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#111016');scene.fog=new THREE.Fog('#111016',8,17);
+const camera=new THREE.PerspectiveCamera(32,1,.1,100);camera.position.set(0,1.0,6.5);camera.lookAt(0,.25,0);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;stage.insertBefore(renderer.domElement,stage.firstChild);
+scene.add(new THREE.HemisphereLight(0xe3e8ff,0x30202a,2.3));
+const key=new THREE.DirectionalLight(0xffffff,2.7);key.position.set(-3,5,4);key.castShadow=true;scene.add(key);
+const rim=new THREE.PointLight(0x8065ff,18,10);rim.position.set(2,2.5,-1);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.CircleGeometry(2.2,48),new THREE.MeshStandardMaterial({color:0x1b1a24,roughness:.92}));floor.rotation.x=-Math.PI/2;floor.position.y=-1.28;floor.scale.set(1.1,.7,1);scene.add(floor);
+const grid=new THREE.GridHelper(5,18,0x3b3447,0x292430);grid.position.y=-1.275;scene.add(grid);
+const boxer=new THREE.Group();scene.add(boxer);
+const mat=(color,roughness=.72,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+const skin=mat('#a96f4c'),skinLight=mat('#bf845d'),black=mat('#20212a'),shirt=mat('#171820'),purple=mat('#7041a6'),purple2=mat('#8b5bc0'),red=mat('#c83245'),redDark=mat('#7e1e30'),white=mat('#e7e4ed'),hair=mat('#201711'),sole=mat('#ddd9e5');
+function mesh(geo,material,x,y,z,group=boxer){const o=new THREE.Mesh(geo,material);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;group.add(o);return o}
+function ball(x,y,z,sx,sy,sz,material,group=boxer){const o=mesh(new THREE.SphereGeometry(1,24,18),material,x,y,z,group);o.scale.set(sx,sy,sz);return o}
+function capsuleBetween(a,b,r,material){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=new THREE.Vector3().subVectors(B,A);const o=mesh(new THREE.CapsuleGeometry(r,Math.max(.01,d.length()-2*r),5,12),material,...A.clone().add(B).multiplyScalar(.5).toArray());o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return o}
+function cylinder(x,y,z,rt,rb,h,material){return mesh(new THREE.CylinderGeometry(rt,rb,h,24),material,x,y,z)}
+// Shoes and legs
+for(const side of [-1,1]){
+ ball(side*.19,-1.12,.10,.18,.12,.30,black);
+ ball(side*.19,-1.19,.13,.19,.045,.31,sole);
+ capsuleBetween([side*.18,-1.02,0],[side*.18,-.35,0],.105,skin);
+ // shorts legs, separated slightly
+ capsuleBetween([side*.19,-.43,.015],[side*.19,-.08,.015],.145,purple);
+ ball(side*.19,-.085,.02,.16,.06,.14,purple2);
+}
+// shorts waistband and trim
+cylinder(0,.015,0,.285,.31,.15,black);
+cylinder(0,-.065,0,.30,.30,.055,white);
+ball(0,-.23,.015,.30,.27,.17,purple);
+// torso and sports vest
+const torso=mesh(new THREE.CapsuleGeometry(.265,.54,8,20),shirt,0,.48,0);torso.scale.set(1.12,1,0.78);
+// chest panel and shoulder straps
+ball(0,.57,.19,.215,.31,.045,black);
+for(const side of [-1,1]){
+ capsuleBetween([side*.12,.80,.02],[side*.17,.57,.07],.055,red);
+ ball(side*.29,.70,0,.12,.13,.12,skinLight);
+ // arms angled forward in a guard pose
+ capsuleBetween([side*.30,.68,.015],[side*.39,.43,.13],.085,skin);
+ capsuleBetween([side*.39,.43,.13],[side*.31,.29,.24],.075,skinLight);
+ // glove cuff and padded glove
+ const cuff=mesh(new THREE.CylinderGeometry(.085,.09,.13,20),white,side*.31,.27,.25);cuff.rotation.z=side*.2;
+ ball(side*.31,.17,.29,.14,.15,.13,red);
+ ball(side*.31,.145,.385,.095,.085,.045,redDark);
+}
+// Neck, head, ears, hair
+cylinder(0,.91,0,.095,.10,.17,skin);
+ball(0,1.15,0,.19,.245,.17,skinLight);
+ball(0,1.31,-.015,.195,.10,.18,hair);
+for(const side of [-1,1]){ball(side*.19,1.15,0,.035,.06,.035,skin);ball(side*.075,1.17,.155,.018,.018,.01,black);}
+ball(0,1.095,.165,.045,.022,.018,skin);
+const clock=new THREE.Clock();let angle=0;
+function resize(){const w=stage.clientWidth||320,h=stage.clientHeight||360;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}
+resize();window.addEventListener('resize',resize);
+document.getElementById('left').addEventListener('click',()=>angle-=Math.PI/6);
+document.getElementById('right').addEventListener('click',()=>angle+=Math.PI/6);
+document.getElementById('front').addEventListener('click',()=>angle=0);
+status.remove();
+function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();boxer.rotation.y+=(angle-boxer.rotation.y)*.09;boxer.position.y=Math.sin(t*1.8)*.018;renderer.render(scene,camera)}
+animate();
+}catch(e){console.error(e);status.textContent='تعذّر إنشاء الشخصية. افتح الصفحة في Chrome وتأكد من الإنترنت.';}
+</script></body></html>
