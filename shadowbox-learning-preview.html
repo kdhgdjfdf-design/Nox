@@ -9,17 +9,14 @@
 <body>
 <section id="cornerScreen" class="corner-screen">
 <header><button class="back" id="backFromCorners" type="button" aria-label="الخروج إلى الشاشة الرئيسية">‹</button><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">اختر الركن الذي تريد الدخول إليه</div></div></header>
-<p class="intro">اختر قسمًا من التطبيق. دروس اللكمات موجودة داخل ركن التعلّم، ويمكنك الرجوع إلى هذه الصفحة في أي وقت.</p>
+<p class="intro">اختر أحد الركنين: أساسيات الملاكمة بكل دروسها الحالية، أو دروس اللكمات الأساسية والمتقدمة مع المؤقّت.</p>
 <div class="corner-grid">
-<button class="corner-option" id="openTraining"><span class="ico">🥊</span><span><strong>التمرين</strong><small>العودة إلى التطبيق لاختيار وضع التدريب</small></span></button>
-<button class="corner-option" id="openLearning"><span class="ico">🎓</span><span><strong>أساسيات الملاكمة</strong><small>كل محتوى التعلّم الحالي في التطبيق</small></span></button>
+<button class="corner-option" id="openLearning"><span class="ico">🎓</span><span><strong>أساسيات الملاكمة</strong><small>الدروس الحالية كاملة: الوقفة والحركات وبقية دروس التعلّم</small></span></button>
 <button class="corner-option" id="openBasics"><span class="ico">⚡</span><span><strong>اللكمات الأساسية والمتقدمة</strong><small>فيديو مقسّم إلى درسين مع المؤقّت</small></span></button>
-<button class="corner-option" id="openCoach"><span class="ico">🧠</span><span><strong>المدرّب الذكي</strong><small>افتح ركن المدرّب من التطبيق</small></span></button>
-<button class="corner-option" id="openHistory"><span class="ico">📊</span><span><strong>سجل النشاط</strong><small>افتح سجلّك من التطبيق</small></span></button>
 </div>
 </section>
 <main id="lessonScreen" hidden>
-<header><button class="back" id="backToCorners" type="button" aria-label="العودة لاختيار الركن">‹</button><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">مسار التعلّم · نسخة تجريبية</div></div></header>
+<header><button class="back" id="backToCorners" type="button" aria-label="العودة لاختيار الركن">‹</button><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">اللكمات الأساسية والمتقدمة · نسخة تجريبية</div></div></header>
 <p class="intro">درسان من الفيديو الذي اخترته. اختر أحدهما واضغط تشغيل؛ يبدأ الفيديو من وقت الدرس المحدد ويتوقف المؤقّت تلقائيًا عند نهايته، ثم يمكنك الانتقال إلى الدرس التالي.</p>
 <div class="progress"><span id="step">الدرس 1 من 2</span><div class="track"><div class="fill" id="fill"></div></div></div>
 <nav class="lessons" aria-label="الدروس">
@@ -33,7 +30,7 @@
 <p class="hint">واجهة تشغيل مبسّطة: استخدم زر التشغيل أسفل الفيديو بدل لمس الفيديو نفسه. قد يظل YouTube يعرض إعلانات أو عناصر خاصة به؛ لا تستطيع الصفحة منعها بالكامل.</p>
 <ul class="tips" id="tips"><li>حافظ على وضعية مريحة ومتوازنة.</li><li>أبقِ اليدين في وضع الحراسة كما يوضح المدرّب.</li><li>تدرّب ببطء وفي مساحة خالية من العوائق.</li></ul>
 <div class="actions"><button class="btn" id="replay">↻ إعادة الدرس</button><button class="btn primary" id="nextLesson" disabled>⏭️ الدرس التالي</button><a class="btn" id="youtube" href="https://www.youtube.com/watch?v=2QZt0rPw_Hc&amp;t=21s" target="_blank" rel="noopener noreferrer">فتح على YouTube ↗</a></div></section>
-<p class="note">هذه صفحة تجريبية مستقلة ولا تغيّر التطبيق الأصلي. يحتاج المشغّل إلى اتصال بالإنترنت. إذا لم يظهر الفيديو أو المؤقّت، جرّب إعادة تحميل الصفحة من GitHub Pages.</p>
+<p class="note">هذه صفحة تجريبية داخل مستودع Nox، ولا تغيّر مستودع ShadowBoxNox الأساسي. يحتاج المشغّل إلى اتصال بالإنترنت. إذا لم يظهر الفيديو أو المؤقّت، جرّب إعادة تحميل الصفحة من GitHub Pages.</p>
 </main>
 <script>
 const VIDEO_ID='2QZt0rPw_Hc';
@@ -53,7 +50,7 @@ function showLessons(push=true){
  if(push&&location.hash!=='#lessons')history.pushState({screen:'lessons'},'',location.pathname+location.search+'#lessons');
  if(player&&player.cueVideoById)loadLesson(current,true);
 }
-$('backFromCorners').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
+$('backFromCorners').addEventListener('click',()=>{location.href='index.html'});
 $('openLearning').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
 $('openBasics').addEventListener('click',()=>showLessons(true));
 ['openTraining','openCoach','openHistory'].forEach(id=>$(id).addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'}));
