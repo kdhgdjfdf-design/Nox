@@ -12,6 +12,13 @@ on:
       - 'package.json'
       - '.stackblitzrc'
       - 'README.md'
+      - 'manifest.json'
+      - 'icon-192.png'
+      - 'icon-512.png'
+      - 'character-preview.html'
+      - 'coach-preview.html'
+      - 'shadowbox-learning-preview.html'
+      - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
 
 permissions:
