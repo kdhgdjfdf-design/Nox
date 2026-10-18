@@ -1899,6 +1899,7 @@ function normalizeCoachText(value) {
     .toLowerCase()
     .replace(/[أإآ]/g, "ا")
     .replace(/ى/g, "ي")
+    .replace(/ة/g, "ه")
     .replace(/[ًٌٍَُِّْـ]/g, "")
     .replace(/[؟?!.,،؛:]/g, " ")
     .replace(/\s+/g, " ")
