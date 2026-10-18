@@ -11,7 +11,7 @@
 const MP_URL   = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
 const WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
 const MODEL_URL =
-  "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+  "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task";
 const STORAGE_KEY = "shadowbox_sessions_v1";
 const PREFS_KEY = "shadowbox_prefs_v1";
 
@@ -363,7 +363,8 @@ let activeMs = 0;                // زمن الجولات الفعلي فقط
 let stats = freshStats();
 let hands = { left: freshHand(), right: freshHand() };
 
-let lastPose = null;             // آخر مجموعة نقاط للجسم
+let lastPose = null;             // آخر مجموعة نقاط للجسم بعد التنعيم الزمني
+let smoothedPose = null;         // يقلل اهتزاز الهيكل بين الإطارات
 let poseSW = 0;                  // عرض الكتفين بالبكسل (في فضاء الفيديو)
 let stableSince = 0, calibReady = false;
 let countdownMs = -1;            // العد التنازلي قبل الجولة (-1 = غير نشط)
@@ -579,9 +580,9 @@ async function ensureLandmarker() {
     baseOptions: { modelAssetPath: MODEL_URL, delegate },
     runningMode: "VIDEO",
     numPoses: 1,
-    minPoseDetectionConfidence: 0.5,
-    minPosePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
+    minPoseDetectionConfidence: 0.55,
+    minPosePresenceConfidence: 0.55,
+    minTrackingConfidence: 0.6,
   });
   try {
     landmarker = await PoseLandmarker.createFromOptions(vision, opts("GPU"));
@@ -909,6 +910,27 @@ function updateState(dt) {
 }
 
 // ---------- الكشف عن الجسم وتحليل اللكمات ----------
+function smoothPose(points) {
+  // نمزج أغلب الإطار الجديد مع السابق لتخفيف اهتزاز المفاصل دون تأخير كبير.
+  const alpha = 0.72;
+  if (!smoothedPose || smoothedPose.length !== points.length) {
+    smoothedPose = points.map((p) => p ? { ...p } : p);
+    return smoothedPose;
+  }
+  const previous = smoothedPose;
+  smoothedPose = points.map((p, i) => {
+    const prev = previous[i];
+    if (!p || !prev || (p.visibility ?? 1) < 0.25) return p ? { ...p } : p;
+    return {
+      ...p,
+      x: prev.x + (p.x - prev.x) * alpha,
+      y: prev.y + (p.y - prev.y) * alpha,
+      z: (prev.z ?? 0) + ((p.z ?? 0) - (prev.z ?? 0)) * alpha,
+    };
+  });
+  return smoothedPose;
+}
+
 function detect(now) {
   let res;
   try {
@@ -917,14 +939,16 @@ function detect(now) {
     console.warn(e);
     return;
   }
-  const lm = res?.landmarks?.[0];
-  if (!lm || lm.length < 17) {
+  const rawLm = res?.landmarks?.[0];
+  if (!rawLm || rawLm.length < 17) {
     lastPose = null;
+    smoothedPose = null;
     poseSW = 0;
     dropHandTracking();
     updateCalibration(null, 0, now);
     return;
   }
+  const lm = smoothPose(rawLm);
   lastPose = lm;
   const L = lm[11], R = lm[12];
   poseSW = Math.hypot((L.x - R.x) * vw, (L.y - R.y) * vh);
@@ -949,7 +973,15 @@ function processHand(side, lm, now, canCount) {
   const S = lm[iS], W = lm[iW];
   // نقطة القبضة (مفصل السبابة) هي التي تلمس القفاز، لا المعصم الذي يكون خلفها
   const K = lm[side === "left" ? 19 : 20];
-  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN ? K : W;
+  const TH = lm[side === "left" ? 21 : 22];
+  const thumbVisible = TH && (TH.visibility ?? 1) >= CFG.VIS_MIN;
+  // تقدير مركز القبضة من نقاط Pose المتاحة؛ هذا ليس بديلًا عن تتبع مفاصل اليد الكامل.
+  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN
+    ? {
+        x: thumbVisible ? K.x * 0.62 + W.x * 0.28 + TH.x * 0.10 : K.x * 0.69 + W.x * 0.31,
+        y: thumbVisible ? K.y * 0.62 + W.y * 0.28 + TH.y * 0.10 : K.y * 0.69 + W.y * 0.31,
+      }
+    : W;
   const hitsBefore = stats.targetHits;
 
   if (!S || !W ||
@@ -1248,7 +1280,8 @@ function targetPos(t) {
   return { x: cw / 2 + t.lane * cw * 0.3 * t.k, y };
 }
 function targetRadius(t) {
-  return Math.min(cw, ch) * (0.035 + 0.13 * Math.pow(t.k, 1.3));
+  // تكبير معتدل يجعل القفاز أوضح وأسهل للمس على شاشة الهاتف.
+  return Math.min(cw, ch) * (0.040 + 0.145 * Math.pow(t.k, 1.3));
 }
 function findTargetAt(x, y) {
   for (const t of targets) {
@@ -1446,7 +1479,12 @@ function drawTargets() {
 }
 
 // ---------- الرسم ----------
-const PAIRS = [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [11, 23], [12, 24], [23, 24]];
+const PAIRS = [
+  [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+  [11, 23], [12, 24], [23, 24],
+  [23, 25], [25, 27], [24, 26], [26, 28],
+  [15, 17], [15, 19], [15, 21], [16, 18], [16, 20], [16, 22],
+];
 
 function render(now) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1473,8 +1511,8 @@ function drawSkeleton(now) {
   const good = (i) => lm[i] && (lm[i].visibility ?? 1) > 0.3;
 
   ctx.lineCap = "round";
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = "rgba(255,255,255,0.75)";
+  ctx.lineWidth = Math.max(2.5, Math.min(4, Math.min(cw, ch) * 0.006));
+  ctx.strokeStyle = "rgba(255,255,255,0.82)";
   for (const [a, b] of PAIRS) {
     if (!good(a) || !good(b)) continue;
     const p = toScreen(lm[a].x, lm[a].y);
@@ -1484,7 +1522,7 @@ function drawSkeleton(now) {
     ctx.lineTo(q.x, q.y);
     ctx.stroke();
   }
-  for (const i of [11, 12, 13, 14]) {
+  for (const i of [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]) {
     if (!good(i)) continue;
     const p = toScreen(lm[i].x, lm[i].y);
     ctx.beginPath();
@@ -1493,12 +1531,20 @@ function drawSkeleton(now) {
     ctx.fill();
   }
 
-  // المعصمان = القفازان، ويتوهجان عند اللكمة
-  const r = Math.max(14, poseSW * scale * 0.13);
+  // مؤشر القبضة تقريبي لأن نموذج Pose لا يرى مفاصل اليد الدقيقة.
+  // نمزج السبابة والإبهام مع المعصم بدل وضع المؤشر عند أسفل اليد.
+  const r = Math.max(12, poseSW * scale * 0.105);
   for (const side of ["left", "right"]) {
-    const idx = side === "left" ? 15 : 16;
-    if (!good(idx)) continue;
-    const p = toScreen(lm[idx].x, lm[idx].y);
+    const wristIdx = side === "left" ? 15 : 16;
+    const indexIdx = side === "left" ? 19 : 20;
+    const thumbIdx = side === "left" ? 21 : 22;
+    if (!good(wristIdx)) continue;
+    const wrist = lm[wristIdx];
+    const index = good(indexIdx) ? lm[indexIdx] : wrist;
+    const thumb = good(thumbIdx) ? lm[thumbIdx] : index;
+    const fx = index.x * 0.55 + thumb.x * 0.15 + wrist.x * 0.30;
+    const fy = index.y * 0.55 + thumb.y * 0.15 + wrist.y * 0.30;
+    const p = toScreen(fx, fy);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
     ctx.arc(p.x, p.y, recent ? r * 1.25 : r, 0, Math.PI * 2);
