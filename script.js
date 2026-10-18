@@ -926,7 +926,7 @@ function updateState(dt) {
 
 // ---------- الكشف عن الجسم وتحليل اللكمات ----------
 function smoothPose(points) {
-  // تثبيت أقوى للجذع والكتفين؛ استجابة أسرع للأيدي حتى لا تتأخر اللكمة.
+  // تنعيم خفيف: يهدئ اهتزاز الجذع دون أن يجعل الهيكل يتأخر عن الحركة.
   if (!smoothedPose || smoothedPose.length !== points.length) {
     smoothedPose = points.map((p) => p ? { ...p } : p);
     return smoothedPose;
@@ -942,19 +942,19 @@ function smoothPose(points) {
     if (!prev) return { ...p };
 
     const vis = p.visibility ?? 1;
-    // إذا ضعفت الثقة، احتفظ بالموقع السابق مؤقتًا بدل القفز إلى نقطة غير موثوقة.
     if (vis < 0.25) return { ...prev, visibility: vis };
 
-    const alpha = torso.has(i) ? 0.28
-      : upperArms.has(i) ? 0.40
-      : wristsAndHands.has(i) ? 0.58
-      : 0.34;
+    // Alpha أعلى = استجابة أسرع. الأيدي أسرع من الجذع حتى لا تتأخر اللكمات.
+    const alpha = torso.has(i) ? 0.46
+      : upperArms.has(i) ? 0.68
+      : wristsAndHands.has(i) ? 0.88
+      : 0.52;
 
-    // حدّ من قفزات الكشف المفاجئة في كل إطار. حدود اليد أوسع حتى تبقى اللكمات سريعة.
-    const maxStep = torso.has(i) ? 0.035
-      : upperArms.has(i) ? 0.060
-      : wristsAndHands.has(i) ? 0.115
-      : 0.045;
+    // نسمح بحركة أكبر لكل إطار، خصوصًا المعصمين، مع إبقاء حدّ بسيط للقفزات الشاذة.
+    const maxStep = torso.has(i) ? 0.060
+      : upperArms.has(i) ? 0.105
+      : wristsAndHands.has(i) ? 0.240
+      : 0.075;
     const dx = p.x - prev.x;
     const dy = p.y - prev.y;
     const distance = Math.hypot(dx, dy);
