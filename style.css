@@ -982,3 +982,32 @@ body.hide-stats .grid { display: none; }
 @media (min-width: 480px) {
   .setup-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* ===== مكتبة التعلّم: أساسيات الملاكمة والمهارات ===== */
+.learn-feature {
+  display:flex; align-items:center; gap:14px; width:100%; min-height:96px;
+  margin:4px 0 18px; padding:15px; border-radius:20px;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(125deg,#b91c2b 0%,#63101a 52%,#211017 100%);
+  color:#fff; text-decoration:none; box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+.learn-feature:active { transform:scale(.985); }
+.learn-feature-logo {
+  width:58px;height:58px;flex-shrink:0;display:grid;place-items:center;
+  border-radius:17px;background:rgba(0,0,0,.28);font-size:31px;
+  border:1px solid rgba(255,255,255,.16);
+}
+.learn-feature-text { flex:1;min-width:0;display:flex;flex-direction:column;gap:5px; }
+.learn-feature-text b { font-size:19px;font-weight:900; }
+.learn-feature-text small { font-size:12.5px;line-height:1.65;opacity:.9; }
+.learn-feature-arrow { font-size:30px;font-weight:800;opacity:.85; }
+.learn-topic-grid { display:grid;grid-template-columns:minmax(0,1fr);gap:12px; }
+.learn-topic { margin:0;padding:15px; }
+.learn-topic-heading { display:flex;align-items:center;gap:10px;margin-bottom:9px; }
+.learn-topic-heading > span { width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.07);font-size:22px; }
+.learn-topic-heading h3 { margin:0;font-size:16px;color:var(--text); }
+.learn-topic p { margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.8; }
+.learn-topic .tips { margin-bottom:0;font-size:13px; }
+@media (min-width:560px) { .learn-topic-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
