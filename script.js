@@ -11,7 +11,7 @@
 const MP_URL   = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
 const WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
 const MODEL_URL =
-  "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task";
+  "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
 const STORAGE_KEY = "shadowbox_sessions_v1";
 const PREFS_KEY = "shadowbox_prefs_v1";
 
@@ -44,9 +44,9 @@ let lastPillarHigh = null;     // آخر حاجز: true = للرأس، false = �
 const SEQ_LEN = 4;
 const SEQ_BASE_MS = 1600;      // زمن الخطوة في التسلسل عند السرعة المتوسطة (ثابت لكل الخطوات في الجلسة)
 const SPEED_MUL = { slow: 1.35, mid: 1, fast: 0.75 };  // مضاعِف زمن الاقتراب حسب اختيار السرعة
-const LEVEL_MUL = { beginner: 1.2, intermediate: 1, advanced: 0.82 }; // مستوى ثابت في الحرّ؛ وضع التقدّم يرفع الصعوبة تدريجيًا
 // حساسية الكشف: قيم حد السرعة وحد الامتداد (الأعلى = يتطلب لكمة أقوى)
 const SENS = { low: { speed: 3.0, ext: 1.25 }, mid: { speed: 2.2, ext: 1.15 }, high: { speed: 1.7, ext: 1.05 } };
+const LEVEL_MUL = { beginner: 1.2, intermediate: 1, advanced: 0.82 };
 const MODE_LOGO = { free: "🥊", sequence: "🎯", dodge: "🛡️", progress: "📈" };
 
 // ---------- النصوص: [عربي، English] ----------
@@ -64,16 +64,12 @@ const T = {
   desc_dodge: ["حواجز تتجه نحو رأسك، تفاداها بالحركة (بدون لكمات)", "Barriers aim at your head. Slip them by moving (no punches)"],
   name_progress: ["التقدّم", "Progress"],
   desc_progress: ["تزداد سرعة الأهداف تدريجيًا مع كل جولة", "Targets gradually get faster each round"],
-  progress_hint: ["في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.", "In Progress mode, targets gradually get faster each round."],
+  progress_hint: ["في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.", "In Progress mode, targets gradually get faster each round"],
   btn_history: ["سجل التقدم الشخصي", "Personal progress"],
   btn_help: ["نصائح الإعداد", "Setup tips"],
   notice_privacy: ["🔒 <b>الخصوصية:</b> معالجة الفيديو تتم داخل متصفحك فقط. لا يتم رفع أي صورة من الكاميرا إلى أي خادم. السجل يُحفظ محليًا على جهازك.", "🔒 <b>Privacy:</b> video is processed only inside your browser. No camera image is uploaded to any server. History is saved locally on your device."],
   notice_accuracy: ["ℹ️ كشف اللكمات تقديري من كاميرا واحدة، وقد يخطئ مع الحركات السريعة جدًا أو الإضاءة الضعيفة. راجع «نصائح الإعداد» للحصول على أفضل دقة.", "ℹ️ Punch detection is an estimate from one camera and may miss very fast moves or poor lighting. See “Setup tips” for best accuracy."],
   setup_title: ["إعدادات الجلسة", "Session settings"],
-  setup_group_time: ["الوقت والجولات", "Time and rounds"],
-  setup_group_control: ["الصعوبة وحساسية اللكمات", "Difficulty and punch detection"],
-  rest_add20: ["+20 ثانية", "+20 seconds"],
-  setup_group_position: ["الوضعية والكاميرا", "Stance and camera"],
   btn_back: ["رجوع", "Back"],
   btn_start: ["ابدأ التدريب", "Start training"],
   btn_preparing: ["جارٍ تجهيز الكاميرا...", "Preparing camera..."],
@@ -81,16 +77,15 @@ const T = {
   field_rounds: ["عدد الجولات", "Number of rounds"],
   field_rest: ["الراحة بين الجولات", "Rest between rounds"],
   field_speed: ["سرعة الأهداف", "Target speed"],
-  field_stance: ["وضعية الوقوف", "Stance"],
-  field_camera: ["الكاميرا", "Camera"],
-  dur_3: ["3 دقائق", "3 minutes"],
-  dur_5: ["5 دقائق", "5 minutes"],
-  dur_7: ["7 دقائق", "7 minutes"],
-  dur_10: ["10 دقائق", "10 minutes"],
   field_level: ["مستوى الصعوبة", "Difficulty level"],
   level_beginner: ["مبتدئ", "Beginner"],
   level_intermediate: ["متوسط", "Intermediate"],
   level_advanced: ["متقدم", "Advanced"],
+  field_stance: ["وضعية الوقوف", "Stance"],
+  field_camera: ["الكاميرا", "Camera"],
+  dur_1: ["دقيقة واحدة", "1 minute"],
+  dur_2: ["دقيقتان", "2 minutes"],
+  dur_3: ["3 دقائق", "3 minutes"],
   rounds_1: ["جولة واحدة", "1 round"],
   rounds_2: ["جولتان", "2 rounds"],
   rounds_3: ["3 جولات", "3 rounds"],
@@ -120,7 +115,7 @@ const T = {
   settings_title: ["الإعدادات", "Settings"],
   field_lang: ["اللغة", "Language"],
   field_theme: ["الثيم", "Theme"],
-  theme_red: ["أحمر", "Red"],
+  theme_red: ["أحمر كلاسيكي", "Classic red"],
   theme_blue: ["أزرق", "Blue"],
   theme_green: ["أخضر", "Green"],
   theme_purple: ["بنفسجي", "Purple"],
@@ -162,7 +157,7 @@ const T = {
   btn_start_round: ["ابدأ الجولة", "Start round"],
   rest_title: ["راحة", "Rest"],
   rest_next: ["الجولة {n} ستبدأ بعد الراحة", "Round {n} starts after the rest"],
-  btn_skip_rest: ["إنهاء الراحة", "End rest"],
+  btn_skip_rest: ["ابدأ الجولة الآن", "Start round now"],
   pause_title: ["متوقف مؤقتًا", "Paused"],
   pause_hint: ["لن تُحتسب اللكمات أثناء الإيقاف.", "Punches are not counted while paused."],
   btn_resume: ["متابعة", "Resume"],
@@ -243,8 +238,8 @@ const T = {
   pb_overall: ["نسبة الدقة الإجمالية", "Overall accuracy"],
   nav_training: ["التمرين", "Training"],
   nav_training_desc: ["الحر والتسلسل والمراوغة", "Free, sequence and dodge"],
-  nav_learn: ["التعلّم", "Learning"],
-  nav_learn_desc: ["تعلّم أساسيات الملاكمة خطوة بخطوة", "Learn boxing basics step by step"],
+  nav_learn: ["التعلّم", "Learn"],
+  nav_learn_desc: ["الكومبوهات وحركة القدمين والدفاع", "Combos, footwork and defense"],
   nav_coach_desc: ["تحليل محلي لجلساتك واقتراح تمارين", "Local analysis of your sessions and suggested drills"],
   nav_activity: ["سجل النشاط", "Activity log"],
   nav_activity_desc: ["السجل والإحصائيات وتقدمك الشخصي", "History, stats and your progress"],
@@ -258,17 +253,6 @@ const T = {
   learn_def_1: ["أبقِ قبضتيك قرب وجهك دائمًا، وذقنك مائلًا قليلًا للأسفل.", "Keep your fists near your face at all times, with your chin slightly down."],
   learn_def_2: ["تفادَ بتحريك الرأس والجسم، لا بالتراجع وحده.", "Slip by moving your head and body, not by stepping back alone."],
   learn_note: ["هذه نصائح عامة للمبتدئين، وليست تحليلًا لحركتك.", "These are general beginner tips, not an analysis of your movement."],
-  coach_chat_title: ["اسأل المدرّب", "Ask the coach"],
-  coach_chat_send: ["إرسال", "Send"],
-  coach_chat_retry: ["إعادة المحاولة", "Retry"],
-  coach_chat_offline: ["خدمة الذكاء الاصطناعي غير متصلة بعد. ستظهر الإجابات هنا بعد ربط الخادم.", "The AI service is not connected yet. Answers will appear here once the server is linked."],
-  coach_chat_loading: ["جارٍ البحث والتفكير...", "Searching and thinking..."],
-  coach_chat_error: ["تعذّر الحصول على إجابة. حاول مرة أخرى.", "Could not get an answer. Please try again."],
-  coach_chat_timeout: ["انتهت مهلة الطلب. حاول مرة أخرى.", "The request timed out. Please try again."],
-  coach_chat_long: ["السؤال طويل جدًا، اختصره.", "Question is too long. Please shorten it."],
-  coach_chat_ph: ["اسأل عن الملاكمة: تاريخها، تقنياتها، تدريبك...", "Ask about boxing: history, techniques, training..."],
-  coach_chat_sources: ["المصادر", "Sources"],
-  coach_chat_note: ["الإجابات من نموذج ذكاء اصطناعي وقد لا تكون دقيقة دائمًا. راجع المصادر المعروضة.", "Answers come from an AI model and may not always be accurate. Check the sources shown."],
   coach_name: ["المدرّب الذكي", "AI Coach"],
   coach_desc: ["تحليل جلساتك واقتراح تمارين مناسبة", "Analyzes your sessions and suggests drills"],
   coach_title: ["المدرّب الذكي 🧠", "AI Coach 🧠"],
@@ -308,22 +292,21 @@ function t(key, vars) {
 const $ = (id) => document.getElementById(id);
 const IDS = [
   "homeScreen", "setupScreen", "trainScreen", "cam", "stage",
-  "roundSec", "roundCount", "restSec", "levelSel", "speedSel", "stanceSel", "facingSel", "soundToggle",
+  "roundSec", "roundCount", "restSec", "speedSel", "levelSel", "stanceSel", "facingSel", "soundToggle",
   "btnStart", "btnHistory", "btnHelp", "btnSettings", "btnSetupBack", "homeMsg", "banner",
-  "setupTitle", "setupLogo", "progressHint",
+  "setupTitle", "setupLogo",
   "roundLabel", "timer", "statusPill", "total", "leftCount", "rightCount",
   "jabCount", "crossCount", "ppm", "targetHits", "dodges", "pillarHits",
   "btnPause", "btnStance", "btnCam", "btnRotate", "btnStop", "toast",
   "calibOverlay", "calibStatus", "calibBtn", "calibCancel",
-  "restOverlay", "restCount", "restNext", "restSkip", "restAdd20",
+  "restOverlay", "restCount", "restNext", "restSkip",
   "pauseOverlay", "btnResume",
   "resultOverlay", "resultBody", "btnAgain", "btnHome",
   "historyModal", "historyBody", "btnClearHistory", "btnCloseHistory",
   "helpModal", "btnCloseHelp", "seqPrompt", "btnStats", "btnLabels", "sensSel", "countSel", "splash",
   "settingsModal", "langSel", "themeSel", "btnCloseSettings", "btnResetHistory",
   "btnCoach", "coachModal", "coachBody", "btnCloseCoach",
-  "btnTraining", "btnLearn", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack",
-  "coachChatForm", "coachChatInput", "coachChatSend", "coachChatLog", "coachChatStatus", "coachRetry",
+  "btnTraining", "btnLearn", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack", "progressHint",
 ];
 const el = {};
 for (const id of IDS) el[id] = $(id);
@@ -349,7 +332,7 @@ let seqIdx = 0;
 let statsHidden = true;        // القائمة مخفية افتراضيًا
 let labelsOn = false;            // توضيح نوع اللكمة مخفي افتراضيًا
 let sessionSpeed = "mid";        // سرعة الجلسة: slow | mid | fast
-let sessionLevel = "intermediate"; // مستوى الصعوبة المختار للوضع الحر؛ ثابت طوال الجلسة
+let sessionLevel = "intermediate"; // مستوى الصعوبة المختار
 let speedMinNow = CFG.SPEED_MIN;  // حد السرعة للجلسة الحالية (حسب الحساسية)
 let extOnNow = CFG.EXT_ON;        // حد الامتداد للجلسة الحالية (حسب الحساسية)
 let countTargetsOnly = false;     // الحرّ: احتساب اللكمات على الأهداف فقط
@@ -363,8 +346,7 @@ let activeMs = 0;                // زمن الجولات الفعلي فقط
 let stats = freshStats();
 let hands = { left: freshHand(), right: freshHand() };
 
-let lastPose = null;             // آخر مجموعة نقاط للجسم بعد التنعيم الزمني
-let smoothedPose = null;         // يقلل اهتزاز الهيكل بين الإطارات
+let lastPose = null;             // آخر مجموعة نقاط للجسم
 let poseSW = 0;                  // عرض الكتفين بالبكسل (في فضاء الفيديو)
 let stableSince = 0, calibReady = false;
 let countdownMs = -1;            // العد التنازلي قبل الجولة (-1 = غير نشط)
@@ -489,12 +471,12 @@ function savePrefs() {
     roundCount: el.roundCount.value,
     restSec: el.restSec.value,
     level: el.levelSel.value,
+    theme: el.themeSel.value,
     speed: el.speedSel.value,
     stance: el.stanceSel.value,
     facing: el.facingSel.value,
     sens: el.sensSel.value,
     count: el.countSel.value,
-    theme: el.themeSel.value,
   };
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
@@ -507,13 +489,13 @@ function applyPrefs() {
   pick(el.roundCount, prefs.roundCount);
   pick(el.restSec, prefs.restSec);
   pick(el.levelSel, prefs.level || "intermediate");
+  pick(el.themeSel, prefs.theme || "red");
+  applyTheme(el.themeSel.value || "red");
   pick(el.speedSel, prefs.speed);
   pick(el.stanceSel, prefs.stance);
   pick(el.facingSel, prefs.facing);
   pick(el.sensSel, prefs.sens);
   pick(el.countSel, prefs.count);
-  pick(el.themeSel, prefs.theme || "red");
-  applyTheme(el.themeSel.value || "red");
   if (typeof prefs.sound === "boolean") el.soundToggle.checked = prefs.sound;
   lang = prefs.lang === "en" ? "en" : "ar";
 }
@@ -580,9 +562,9 @@ async function ensureLandmarker() {
     baseOptions: { modelAssetPath: MODEL_URL, delegate },
     runningMode: "VIDEO",
     numPoses: 1,
-    minPoseDetectionConfidence: 0.55,
-    minPosePresenceConfidence: 0.55,
-    minTrackingConfidence: 0.6,
+    minPoseDetectionConfidence: 0.5,
+    minPosePresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
   });
   try {
     landmarker = await PoseLandmarker.createFromOptions(vision, opts("GPU"));
@@ -667,17 +649,17 @@ function readSettings() {
   stance = el.stanceSel.value;
   mode = pendingMode;
   sessionLevel = el.levelSel.value || "intermediate";
-  sessionSpeed = ({ beginner: "slow", intermediate: "mid", advanced: "fast" })[sessionLevel] || "mid";
+  sessionSpeed = el.speedSel.value;
   const sens = SENS[el.sensSel.value] ?? SENS.mid;
   speedMinNow = sens.speed;
   extOnNow = sens.ext;
   countTargetsOnly = el.countSel.value === "targets";
-  speedMul = LEVEL_MUL[sessionLevel] ?? 1;
+  speedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (LEVEL_MUL[sessionLevel] ?? 1);
   facingMode = el.facingSel.value;
   soundOn = el.soundToggle.checked;
   roundDurMs = Number(el.roundSec.value) * 1000;
   totalRounds = Number(el.roundCount.value);
-  restDurMs = 60000;
+  restDurMs = Number(el.restSec.value) * 1000;
 }
 
 // ---------- اختيار نوع التدريب وشاشة الإعدادات ----------
@@ -685,21 +667,7 @@ function setSetupMode() {
   el.setupScreen.dataset.mode = pendingMode;
   el.setupTitle.textContent = t("name_" + pendingMode);
   el.setupLogo.textContent = MODE_LOGO[pendingMode] || "🥊";
-  const visible = {
-    free: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
-    sequence: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldStance", "fieldCamera"],
-    dodge: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldStance", "fieldCamera"],
-    progress: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
-  }[pendingMode] || [];
-  for (const id of ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldLevel", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"]) {
-    const field = $(id);
-    if (field) field.hidden = !visible.includes(id);
-  }
-  document.querySelectorAll("#setupScreen .setup-group").forEach((group) => {
-    const fields = [...group.querySelectorAll(".field")];
-    group.hidden = fields.length > 0 && !fields.some((field) => !field.hidden);
-  });
-  if (el.progressHint) el.progressHint.hidden = pendingMode !== "progress";
+  el.progressHint.hidden = pendingMode !== "progress";
 }
 function openSetup(m) {
   pendingMode = m;
@@ -768,7 +736,7 @@ function setState(s) {
 }
 
 function startRound() {
-  const baseSpeedMul = LEVEL_MUL[sessionLevel] ?? 1;
+  const baseSpeedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (LEVEL_MUL[sessionLevel] ?? 1);
   speedMul = baseSpeedMul * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
   roundMs = 0;
   resetHands();
@@ -910,52 +878,6 @@ function updateState(dt) {
 }
 
 // ---------- الكشف عن الجسم وتحليل اللكمات ----------
-function smoothPose(points) {
-  // تثبيت أقوى للجذع والكتفين؛ استجابة أسرع للأيدي حتى لا تتأخر اللكمة.
-  if (!smoothedPose || smoothedPose.length !== points.length) {
-    smoothedPose = points.map((p) => p ? { ...p } : p);
-    return smoothedPose;
-  }
-
-  const previous = smoothedPose;
-  const torso = new Set([11, 12, 23, 24]);
-  const upperArms = new Set([13, 14]);
-  const wristsAndHands = new Set([15, 16, 17, 18, 19, 20, 21, 22]);
-  smoothedPose = points.map((p, i) => {
-    const prev = previous[i];
-    if (!p) return prev ? { ...prev, visibility: 0 } : p;
-    if (!prev) return { ...p };
-
-    const vis = p.visibility ?? 1;
-    // إذا ضعفت الثقة، احتفظ بالموقع السابق مؤقتًا بدل القفز إلى نقطة غير موثوقة.
-    if (vis < 0.25) return { ...prev, visibility: vis };
-
-    const alpha = torso.has(i) ? 0.28
-      : upperArms.has(i) ? 0.40
-      : wristsAndHands.has(i) ? 0.58
-      : 0.34;
-
-    // حدّ من قفزات الكشف المفاجئة في كل إطار. حدود اليد أوسع حتى تبقى اللكمات سريعة.
-    const maxStep = torso.has(i) ? 0.035
-      : upperArms.has(i) ? 0.060
-      : wristsAndHands.has(i) ? 0.115
-      : 0.045;
-    const dx = p.x - prev.x;
-    const dy = p.y - prev.y;
-    const distance = Math.hypot(dx, dy);
-    const factor = distance > maxStep ? maxStep / distance : 1;
-    const targetX = prev.x + dx * factor;
-    const targetY = prev.y + dy * factor;
-
-    return {
-      ...p,
-      x: prev.x + (targetX - prev.x) * alpha,
-      y: prev.y + (targetY - prev.y) * alpha,
-      z: (prev.z ?? 0) + ((p.z ?? 0) - (prev.z ?? 0)) * alpha,
-    };
-  });
-  return smoothedPose;
-}
 function detect(now) {
   let res;
   try {
@@ -964,16 +886,14 @@ function detect(now) {
     console.warn(e);
     return;
   }
-  const rawLm = res?.landmarks?.[0];
-  if (!rawLm || rawLm.length < 17) {
+  const lm = res?.landmarks?.[0];
+  if (!lm || lm.length < 17) {
     lastPose = null;
-    smoothedPose = null;
     poseSW = 0;
     dropHandTracking();
     updateCalibration(null, 0, now);
     return;
   }
-  const lm = smoothPose(rawLm);
   lastPose = lm;
   const L = lm[11], R = lm[12];
   poseSW = Math.hypot((L.x - R.x) * vw, (L.y - R.y) * vh);
@@ -998,15 +918,7 @@ function processHand(side, lm, now, canCount) {
   const S = lm[iS], W = lm[iW];
   // نقطة القبضة (مفصل السبابة) هي التي تلمس القفاز، لا المعصم الذي يكون خلفها
   const K = lm[side === "left" ? 19 : 20];
-  const TH = lm[side === "left" ? 21 : 22];
-  const thumbVisible = TH && (TH.visibility ?? 1) >= CFG.VIS_MIN;
-  // تقدير مركز القبضة من نقاط Pose المتاحة؛ هذا ليس بديلًا عن تتبع مفاصل اليد الكامل.
-  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN
-    ? {
-        x: thumbVisible ? K.x * 0.62 + W.x * 0.28 + TH.x * 0.10 : K.x * 0.69 + W.x * 0.31,
-        y: thumbVisible ? K.y * 0.62 + W.y * 0.28 + TH.y * 0.10 : K.y * 0.69 + W.y * 0.31,
-      }
-    : W;
+  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN ? K : W;
   const hitsBefore = stats.targetHits;
 
   if (!S || !W ||
@@ -1305,8 +1217,7 @@ function targetPos(t) {
   return { x: cw / 2 + t.lane * cw * 0.3 * t.k, y };
 }
 function targetRadius(t) {
-  // تكبير معتدل يجعل القفاز أوضح وأسهل للمس على شاشة الهاتف.
-  return Math.min(cw, ch) * (0.040 + 0.145 * Math.pow(t.k, 1.3));
+  return Math.min(cw, ch) * (0.035 + 0.13 * Math.pow(t.k, 1.3));
 }
 function findTargetAt(x, y) {
   for (const t of targets) {
@@ -1504,12 +1415,7 @@ function drawTargets() {
 }
 
 // ---------- الرسم ----------
-const PAIRS = [
-  [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
-  [11, 23], [12, 24], [23, 24],
-  [23, 25], [25, 27], [24, 26], [26, 28],
-  [15, 17], [15, 19], [15, 21], [16, 18], [16, 20], [16, 22],
-];
+const PAIRS = [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [11, 23], [12, 24], [23, 24]];
 
 function render(now) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1536,8 +1442,8 @@ function drawSkeleton(now) {
   const good = (i) => lm[i] && (lm[i].visibility ?? 1) > 0.3;
 
   ctx.lineCap = "round";
-  ctx.lineWidth = Math.max(2.5, Math.min(4, Math.min(cw, ch) * 0.006));
-  ctx.strokeStyle = "rgba(255,255,255,0.82)";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255,255,255,0.75)";
   for (const [a, b] of PAIRS) {
     if (!good(a) || !good(b)) continue;
     const p = toScreen(lm[a].x, lm[a].y);
@@ -1547,7 +1453,7 @@ function drawSkeleton(now) {
     ctx.lineTo(q.x, q.y);
     ctx.stroke();
   }
-  for (const i of [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]) {
+  for (const i of [11, 12, 13, 14]) {
     if (!good(i)) continue;
     const p = toScreen(lm[i].x, lm[i].y);
     ctx.beginPath();
@@ -1556,20 +1462,12 @@ function drawSkeleton(now) {
     ctx.fill();
   }
 
-  // مؤشر القبضة تقريبي لأن نموذج Pose لا يرى مفاصل اليد الدقيقة.
-  // نمزج السبابة والإبهام مع المعصم بدل وضع المؤشر عند أسفل اليد.
-  const r = Math.max(12, poseSW * scale * 0.105);
+  // المعصمان = القفازان، ويتوهجان عند اللكمة
+  const r = Math.max(14, poseSW * scale * 0.13);
   for (const side of ["left", "right"]) {
-    const wristIdx = side === "left" ? 15 : 16;
-    const indexIdx = side === "left" ? 19 : 20;
-    const thumbIdx = side === "left" ? 21 : 22;
-    if (!good(wristIdx)) continue;
-    const wrist = lm[wristIdx];
-    const index = good(indexIdx) ? lm[indexIdx] : wrist;
-    const thumb = good(thumbIdx) ? lm[thumbIdx] : index;
-    const fx = index.x * 0.55 + thumb.x * 0.15 + wrist.x * 0.30;
-    const fy = index.y * 0.55 + thumb.y * 0.15 + wrist.y * 0.30;
-    const p = toScreen(fx, fy);
+    const idx = side === "left" ? 15 : 16;
+    if (!good(idx)) continue;
+    const p = toScreen(lm[idx].x, lm[idx].y);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
     ctx.arc(p.x, p.y, recent ? r * 1.25 : r, 0, Math.PI * 2);
@@ -1859,116 +1757,15 @@ el.btnClearHistory.addEventListener("click", clearHistory);
 el.btnHelp.addEventListener("click", () => (el.helpModal.hidden = false));
 el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
-  renderCoach();
-  el.coachChatInput.placeholder = t("coach_chat_ph");
-  el.coachModal.hidden = false;
-});
-
-// ---------- المدرّب الذكي: محادثة مع الخادم الوسيط ----------
-// عنوان الـ Worker: يُضاف بعد نشره، مثال: "https://shadowbox-nox-coach.<name>.workers.dev/api/chat"
-// إذا بقي فارغًا تظهر رسالة "غير متصلة بعد" ولا تُعرض أي إجابة محلية كأنها بحث.
-const COACH_API_URL = "";
-const COACH_TIMEOUT_MS = 30000;
-let coachBusy = false;
-let coachLastQuestion = "";
-
-function coachSetStatus(text, isError = false) {
-  el.coachChatStatus.textContent = text;
-  el.coachChatStatus.className = "msg" + (isError ? " error" : "");
-}
-
-function coachAddMsg(role, text, sources = []) {
-  const box = document.createElement("div");
-  box.className = "coach-msg " + role;
-  const p = document.createElement("p");
-  p.textContent = text;
-  box.appendChild(p);
-  const safe = sources.filter((s) => s && typeof s.url === "string" && /^https:\/\//.test(s.url));
-  if (safe.length) {
-    const title = document.createElement("small");
-    title.className = "coach-src-title";
-    title.textContent = t("coach_chat_sources");
-    box.appendChild(title);
-    const ul = document.createElement("ul");
-    ul.className = "coach-sources";
-    for (const s of safe) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = s.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = s.title || s.url;
-      li.appendChild(a);
-      ul.appendChild(li);
-    }
-    box.appendChild(ul);
-  }
-  el.coachChatLog.appendChild(box);
-  el.coachChatLog.scrollTop = el.coachChatLog.scrollHeight;
-  return box;
-}
-
-async function askCoach(question) {
-  if (coachBusy) return;                       // منع الإرسال المتكرر
-  if (!COACH_API_URL) {
-    coachSetStatus(t("coach_chat_offline"), true);
-    return;
-  }
-  coachBusy = true;
-  el.coachChatSend.disabled = true;
-  el.coachRetry.hidden = true;
-  coachSetStatus("");
-  coachAddMsg("user", question);
-  const loading = coachAddMsg("bot", t("coach_chat_loading"));
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), COACH_TIMEOUT_MS);
-  try {
-    const res = await fetch(COACH_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, lang }),
-      signal: ctrl.signal,
-    });
-    let data = {};
-    try { data = await res.json(); } catch { data = {}; }
-    if (!res.ok) throw new Error(typeof data.message === "string" ? data.message : t("coach_chat_error"));
-    loading.remove();
-    coachAddMsg("bot", data.reply || t("coach_chat_error"), Array.isArray(data.sources) ? data.sources : []);
-  } catch (err) {
-    loading.remove();
-    coachSetStatus(err.name === "AbortError" ? t("coach_chat_timeout") : (err.message || t("coach_chat_error")), true);
-    coachLastQuestion = question;
-    el.coachRetry.hidden = false;
-  } finally {
-    clearTimeout(timer);
-    coachBusy = false;
-    el.coachChatSend.disabled = false;
-  }
-}
-
-el.coachChatForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const q = el.coachChatInput.value.trim();
-  if (!q) return;
-  if (!COACH_API_URL) {
-    coachSetStatus(t("coach_chat_offline"), true);
-    return;                                    // لا نمسح السؤال إن لم تكن الخدمة متصلة
-  }
-  if (q.length > 500) {
-    coachSetStatus(t("coach_chat_long"), true);
-    return;
-  }
-  el.coachChatInput.value = "";
-  askCoach(q);
-});
-el.coachRetry.addEventListener("click", () => {
-  if (coachLastQuestion) askCoach(coachLastQuestion);
+  window.location.href = "coach-preview.html";
 });
 el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
-el.btnLearn.addEventListener("click", () => showScreen("learn"));
+el.btnLearn.addEventListener("click", () => {
+  window.location.href = "learning-preview.html";
+});
 el.btnTrainBack.addEventListener("click", () => showScreen("home"));
 el.btnLearnBack.addEventListener("click", () => showScreen("home"));
 
@@ -1976,11 +1773,6 @@ el.calibBtn.addEventListener("click", () => {
   if (calibReady) startRound();
 });
 el.calibCancel.addEventListener("click", exitTraining);
-el.restAdd20.addEventListener("click", () => {
-  if (state !== "rest") return;
-  restMs += 20000;
-  updateHud();
-});
 el.restSkip.addEventListener("click", () => startRound());
 el.btnPause.addEventListener("click", togglePause);
 el.btnResume.addEventListener("click", togglePause);
@@ -2007,8 +1799,17 @@ el.btnAgain.addEventListener("click", async () => {
 });
 el.btnHome.addEventListener("click", () => exitTraining("home"));
 
+// شاشة الدخول: تظهر أول مرة فقط في الجلسة؛ الرجوع من المدرّب لا يعيدها
+try {
+  if (sessionStorage.getItem("shadowbox_entered_v1") === "1") {
+    el.splash.classList.add("hide");
+    el.splash.hidden = true;
+  }
+} catch {}
+
 // شاشة الدخول: الضغط عليها يفعّل الصوت ويشغّل نغمة الدخول
 el.splash.addEventListener("click", () => {
+  try { sessionStorage.setItem("shadowbox_entered_v1", "1"); } catch {}
   getAudio();
   tone(440, 0.15, 0.2, "sine");
   setTimeout(() => tone(660, 0.15, 0.2, "sine"), 150);
