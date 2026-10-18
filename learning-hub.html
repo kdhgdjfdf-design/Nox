@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0c">
+<title>ShadowBox Nox — التعلّم</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0c;--panel:#141619;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3;--red:#e83b4b;--soft:#32161b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#271116 0,var(--bg) 54%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+main{width:min(100%,680px);margin:auto;padding:calc(env(safe-area-inset-top) + 16px) 15px calc(env(safe-area-inset-bottom) + 28px)}
+header{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;color:white;background:#17191c;text-decoration:none;font-size:22px;flex:none}
+.logo{width:46px;height:46px;display:grid;place-items:center;background:var(--soft);border:1px solid #5c242b;border-radius:15px;font-size:24px;flex:none}
+h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.intro{font-size:14px;line-height:1.8;color:#b8bdc4;margin:0 0 20px}
+.section-head{display:flex;align-items:center;gap:9px;margin:22px 2px 11px}
+.section-head .mark{width:4px;height:22px;border-radius:5px;background:var(--red)}
+h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margin:4px 2px 12px}
+.feature{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:15px;border-radius:19px;border:1px solid #653039;background:linear-gradient(125deg,#32171c,#171619 72%);color:white;font:inherit;cursor:pointer}
+.feature .ico{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:#4a1d24;font-size:27px;flex:none}
+.feature strong{font-size:16px;display:block}.feature small{display:block;color:#c5aeb1;font-size:12px;line-height:1.6;margin-top:5px}
+.arrow{margin-right:auto;font-size:22px;color:#e88b94}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.topic{display:flex;align-items:flex-start;gap:10px;min-height:112px;padding:13px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(150deg,#171a1e,#111315)}
+.topic .ico{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:#25282d;font-size:18px;flex:none}
+.topic strong{display:block;font-size:13px;line-height:1.5}.topic p{font-size:11px;line-height:1.65;color:var(--muted);margin:5px 0 0}
+.note{margin-top:17px;border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--muted);font-size:12px;line-height:1.7;background:#111315}
+@media(max-width:390px){.grid{grid-template-columns:1fr}.topic{min-height:0}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<a class="back" href="index.html?v=20261018b" aria-label="العودة للرئيسية">‹</a>
+<div class="logo">🎓</div>
+<div><h1>التعلّم</h1><div class="sub">طوّر أساسياتك ومهاراتك خطوة بخطوة</div></div>
+</header>
+<p class="intro">ابدأ بالدروس الأساسية، ثم تعرّف على المهارات التي تساعدك على الحركة والتوازن والدفاع والتدريب الآمن.</p>
+<section>
+<div class="section-head"><span class="mark"></span><h2>أساسيات الملاكمة</h2></div>
+<button class="feature" id="openLessons" type="button">
+<span class="ico">🥊</span><span><strong>أساسيات الملاكمة</strong><small>افتح صفحة الدروس والفيديوهات وتابع التعلّم من هناك.</small></span><span class="arrow">←</span>
+</button>
+</section>
+<section>
+<div class="section-head"><span class="mark"></span><h2>مهارات الملاكمة</h2></div>
+<p class="section-note">أقسام قصيرة للتعرّف على المهارات المهمة.</p>
+<div class="grid">
+<article class="topic"><span class="ico">👣</span><div><strong>حركة القدمين والتوازن</strong><p>التحرك بخطوات صغيرة والمحافظة على التوازن أثناء الحركة.</p></div></article>
+<article class="topic"><span class="ico">🧍</span><div><strong>وضعية الحراسة والوقفة</strong><p>وقفة ثابتة ومريحة، مع إبقاء اليدين في وضع حماية مناسب.</p></div></article>
+<article class="topic"><span class="ico">⚡</span><div><strong>التناسق وسرعة الاستجابة</strong><p>التدرّب على تنسيق حركة اليدين والقدمين والانتباه للإشارات.</p></div></article>
+<article class="topic"><span class="ico">🛡️</span><div><strong>الدفاع والتفادي</strong><p>تعلّم حركة دفاعية بسيطة مع الحفاظ على المسافة والتوازن.</p></div></article>
+<article class="topic"><span class="ico">💪</span><div><strong>الإحماء واللياقة</strong><p>إحماء تدريجي وحركات لياقة مناسبة قبل بدء التدريب.</p></div></article>
+<article class="topic"><span class="ico">✅</span><div><strong>قواعد الملاكمة والسلامة</strong><p>مساحة تدريب خالية، حركة متحكّم بها، والتوقف عند الألم أو الدوار.</p></div></article>
+<article class="topic"><span class="ico">🔗</span><div><strong>الكومبوهات وتسلسل اللكمات</strong><p>ربط اللكمات الأساسية بتسلسل واضح وبسرعة بطيئة أولًا.</p></div></article>
+</div>
+</section>
+<div class="note">ملاحظة: صفحة الدروس الأصلية ستبقى كما هي؛ هذه الصفحة تنظّم مدخل التعلّم فقط.</div>
+</main>
+<script>
+document.getElementById("openLessons").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261018b";});
+</script>
+</body>
+</html>
