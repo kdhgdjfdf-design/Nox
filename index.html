@@ -149,9 +149,10 @@
           <label class="field" id="fieldRoundLen">
             <span data-i18n="field_round_len">مدة الجولة</span>
             <select id="roundSec">
-              <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
-              <option value="120" data-i18n="dur_2">دقيقتان</option>
               <option value="180" selected data-i18n="dur_3">3 دقائق</option>
+              <option value="300" data-i18n="dur_5">5 دقائق</option>
+              <option value="420" data-i18n="dur_7">7 دقائق</option>
+              <option value="600" data-i18n="dur_10">10 دقائق</option>
             </select>
           </label>
           <label class="field" id="fieldRoundCount">
@@ -180,6 +181,14 @@
       <div class="setup-group" id="setupControlGroup">
         <h3 class="setup-group-title" data-i18n="setup_group_control">السرعة وحساسية اللكمات</h3>
         <div class="setup-fields">
+          <label class="field" id="fieldLevel">
+            <span data-i18n="field_level">مستوى الصعوبة</span>
+            <select id="levelSel">
+              <option value="beginner" data-i18n="level_beginner">مبتدئ</option>
+              <option value="intermediate" selected data-i18n="level_intermediate">متوسط</option>
+              <option value="advanced" data-i18n="level_advanced">متقدم</option>
+            </select>
+          </label>
           <label class="field" id="fieldSpeed">
             <span data-i18n="field_speed">سرعة الأهداف</span>
             <select id="speedSel">
@@ -225,7 +234,7 @@
           </label>
         </div>
       </div>
-      <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.</p>
+      <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">المستوى يتغيّر تلقائيًا في وضع التقدّم فقط؛ في الوضع الحر يبقى المستوى الذي اخترته ثابتًا طوال الجلسة.</p>
     </section>
 
     <button id="btnStart" class="btn primary big" data-i18n="btn_start">ابدأ التدريب</button>
