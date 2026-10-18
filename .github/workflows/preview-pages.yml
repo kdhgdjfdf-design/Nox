@@ -19,6 +19,7 @@ on:
       - 'coach-preview.html'
       - 'shadowbox-learning-preview.html'
       - 'learning-preview.html'
+      - 'learning-hub.html'
       - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
 
