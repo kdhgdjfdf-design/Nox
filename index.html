@@ -88,6 +88,11 @@
         <span class="mode-text"><b data-i18n="name_dodge">مراوغة</b><small data-i18n="desc_dodge"></small></span>
         <span class="mode-arrow"></span>
       </button>
+      <button class="mode-card" data-mode="progress">
+        <span class="mode-logo">📈</span>
+        <span class="mode-text"><b data-i18n="name_progress">التقدّم</b><small data-i18n="desc_progress"></small></span>
+        <span class="mode-arrow"></span>
+      </button>
     </div>
   </main>
 
@@ -138,7 +143,7 @@
     <section class="card">
       <h2 data-i18n="setup_title">إعدادات الجلسة</h2>
 
-      <label class="field">
+      <label class="field" id="fieldRoundLen">
         <span data-i18n="field_round_len">مدة الجولة</span>
         <select id="roundSec">
           <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
@@ -147,7 +152,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldRoundCount">
         <span data-i18n="field_rounds">عدد الجولات</span>
         <select id="roundCount">
           <option value="1" data-i18n="rounds_1">جولة واحدة</option>
@@ -159,7 +164,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldRest">
         <span data-i18n="field_rest">الراحة بين الجولات</span>
         <select id="restSec">
           <option value="0" data-i18n="rest_0">بدون راحة</option>
@@ -169,7 +174,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldSpeed">
         <span data-i18n="field_speed">سرعة الأهداف</span>
         <select id="speedSel">
           <option value="slow" data-i18n="speed_slow">بطيء</option>
@@ -178,7 +183,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldSensitivity">
         <span data-i18n="field_sens">حساسية الكشف</span>
         <select id="sensSel">
           <option value="low" data-i18n="sens_low">منخفضة (تتطلب لكمة قوية)</option>
@@ -187,7 +192,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldCount">
         <span data-i18n="field_count">احتساب اللكمات</span>
         <select id="countSel">
           <option value="targets" selected data-i18n="count_targets">على الأهداف فقط</option>
@@ -195,7 +200,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldStance">
         <span data-i18n="field_stance">وضعية الوقوف</span>
         <select id="stanceSel">
           <option value="orthodox" selected data-i18n="stance_orth">اليد اليسرى أمامية (عادية)</option>
@@ -203,13 +208,14 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" id="fieldCamera">
         <span data-i18n="field_camera">الكاميرا</span>
         <select id="facingSel">
           <option value="user" selected data-i18n="cam_front">الأمامية (مفضّلة للتدريب)</option>
           <option value="environment" data-i18n="cam_back">الخلفية</option>
         </select>
       </label>
+      <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">في وضع التقدّم، تزداد سرعة الأهداف تدريجيًا مع كل جولة.</p>
     </section>
 
     <button id="btnStart" class="btn primary big" data-i18n="btn_start">ابدأ التدريب</button>
@@ -317,6 +323,16 @@
         <select id="langSel">
           <option value="ar">العربية</option>
           <option value="en">English</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="field_theme">الثيم</span>
+        <select id="themeSel">
+          <option value="red" data-i18n="theme_red">أحمر كلاسيكي</option>
+          <option value="blue" data-i18n="theme_blue">أزرق</option>
+          <option value="green" data-i18n="theme_green">أخضر</option>
+          <option value="purple" data-i18n="theme_purple">بنفسجي</option>
         </select>
       </label>
 
