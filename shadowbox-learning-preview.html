@@ -36,6 +36,12 @@
 </main>
 <script>
 const VIDEO_ID='2QZt0rPw_Hc';
+const lessons={
+ basic:{title:'5 لكمات الملاكمة الأساسية',desc:'تابع شرح اللكمات الأساسية في هذا الجزء من الفيديو، من 00:21 إلى 08:06.',start:21,end:486,tips:['شاهد الحركة كاملة قبل تجربتها.','ركّز على التقنية ووضعية الحراسة كما يشرح المدرّب.','تدرّب ببطء وفي مساحة خالية من العوائق.']},
+ advanced:{title:'لكمات ملاكمة متقدمة',desc:'تابع الجزء المتقدم من الفيديو من 08:06 إلى 11:53.',start:486,end:713,tips:['شاهد التسلسل كاملًا قبل تجربته.','حافظ على التوازن ووضعية الحراسة.','لا تستخدم قوة مفرطة؛ الأولوية للتقنية والتحكم.']}
+};
+const ids=Object.keys(lessons);let current='basic',player=null,finished=false;const completed=new Set();
+const $=id=>document.getElementById(id);
 const cornerScreen=$('cornerScreen'),lessonScreen=$('lessonScreen');
 function showCorners(){lessonScreen.hidden=true;cornerScreen.hidden=false;if(location.hash==='#lessons'){history.replaceState({screen:'corners'},'',location.pathname+location.search)}}
 function showLessons(push=true){cornerScreen.hidden=true;lessonScreen.hidden=false;if(push&&location.hash!=='#lessons')history.pushState({screen:'lessons'},'','#lessons');if(player&&player.cueVideoById)loadLesson(current,true)}
@@ -44,12 +50,7 @@ $('openLearning').addEventListener('click',()=>showLessons(true));
 $('backToCorners').addEventListener('click',showCorners);
 window.addEventListener('popstate',()=>showCorners());
 if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false}else{cornerScreen.hidden=false;lessonScreen.hidden=true}
-const lessons={
- basic:{title:'5 لكمات الملاكمة الأساسية',desc:'تابع شرح اللكمات الأساسية في هذا الجزء من الفيديو، من 00:21 إلى 08:06.',start:21,end:486,tips:['شاهد الحركة كاملة قبل تجربتها.','ركّز على التقنية ووضعية الحراسة كما يشرح المدرّب.','تدرّب ببطء وفي مساحة خالية من العوائق.']},
- advanced:{title:'لكمات ملاكمة متقدمة',desc:'تابع الجزء المتقدم من الفيديو من 08:06 إلى 11:53.',start:486,end:713,tips:['شاهد التسلسل كاملًا قبل تجربته.','حافظ على التوازن ووضعية الحراسة.','لا تستخدم قوة مفرطة؛ الأولوية للتقنية والتحكم.']}
-};
-const ids=Object.keys(lessons);let current='basic',player=null,finished=false;const completed=new Set();
-const $=id=>document.getElementById(id);
+
 function fmt(s){s=Math.max(0,Math.floor(Number(s)||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function endTime(l){if(l.end!==null)return l.end;if(player){const d=player.getDuration();if(d>0)return d}return null}
 function markComplete(){completed.add(current);document.querySelectorAll('.lesson').forEach(b=>b.classList.toggle('completed',completed.has(b.dataset.id)));const i=ids.indexOf(current);$('fill').style.width=(completed.size/ids.length*100)+'%';$('step').textContent='الدرس '+(i+1)+' من '+ids.length+' · المكتمل '+completed.size+'/'+ids.length;$('nextLesson').disabled=false;$('nextLesson').textContent=i===ids.length-1?'✓ تم إكمال الدروس':'⏭️ الدرس التالي';}
