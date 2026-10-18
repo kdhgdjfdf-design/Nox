@@ -44,6 +44,7 @@ let lastPillarHigh = null;     // آخر حاجز: true = للرأس، false = �
 const SEQ_LEN = 4;
 const SEQ_BASE_MS = 1600;      // زمن الخطوة في التسلسل عند السرعة المتوسطة (ثابت لكل الخطوات في الجلسة)
 const SPEED_MUL = { slow: 1.35, mid: 1, fast: 0.75 };  // مضاعِف زمن الاقتراب حسب اختيار السرعة
+const LEVEL_MUL = { beginner: 1.2, intermediate: 1, advanced: 0.82 }; // مستوى ثابت في الحرّ؛ وضع التقدّم يرفع الصعوبة تدريجيًا
 // حساسية الكشف: قيم حد السرعة وحد الامتداد (الأعلى = يتطلب لكمة أقوى)
 const SENS = { low: { speed: 3.0, ext: 1.25 }, mid: { speed: 2.2, ext: 1.15 }, high: { speed: 1.7, ext: 1.05 } };
 const MODE_LOGO = { free: "🥊", sequence: "🎯", dodge: "🛡️", progress: "📈" };
@@ -81,9 +82,14 @@ const T = {
   field_speed: ["سرعة الأهداف", "Target speed"],
   field_stance: ["وضعية الوقوف", "Stance"],
   field_camera: ["الكاميرا", "Camera"],
-  dur_1: ["دقيقة واحدة", "1 minute"],
-  dur_2: ["دقيقتان", "2 minutes"],
   dur_3: ["3 دقائق", "3 minutes"],
+  dur_5: ["5 دقائق", "5 minutes"],
+  dur_7: ["7 دقائق", "7 minutes"],
+  dur_10: ["10 دقائق", "10 minutes"],
+  field_level: ["مستوى الصعوبة", "Difficulty level"],
+  level_beginner: ["مبتدئ", "Beginner"],
+  level_intermediate: ["متوسط", "Intermediate"],
+  level_advanced: ["متقدم", "Advanced"],
   rounds_1: ["جولة واحدة", "1 round"],
   rounds_2: ["جولتان", "2 rounds"],
   rounds_3: ["3 جولات", "3 rounds"],
@@ -301,7 +307,7 @@ function t(key, vars) {
 const $ = (id) => document.getElementById(id);
 const IDS = [
   "homeScreen", "setupScreen", "trainScreen", "cam", "stage",
-  "roundSec", "roundCount", "restSec", "speedSel", "stanceSel", "facingSel", "soundToggle",
+  "roundSec", "roundCount", "restSec", "levelSel", "speedSel", "stanceSel", "facingSel", "soundToggle",
   "btnStart", "btnHistory", "btnHelp", "btnSettings", "btnSetupBack", "homeMsg", "banner",
   "setupTitle", "setupLogo", "progressHint",
   "roundLabel", "timer", "statusPill", "total", "leftCount", "rightCount",
@@ -342,6 +348,7 @@ let seqIdx = 0;
 let statsHidden = true;        // القائمة مخفية افتراضيًا
 let labelsOn = false;            // توضيح نوع اللكمة مخفي افتراضيًا
 let sessionSpeed = "mid";        // سرعة الجلسة: slow | mid | fast
+let sessionLevel = "intermediate"; // مستوى الصعوبة المختار للوضع الحر؛ ثابت طوال الجلسة
 let speedMinNow = CFG.SPEED_MIN;  // حد السرعة للجلسة الحالية (حسب الحساسية)
 let extOnNow = CFG.EXT_ON;        // حد الامتداد للجلسة الحالية (حسب الحساسية)
 let countTargetsOnly = false;     // الحرّ: احتساب اللكمات على الأهداف فقط
@@ -479,6 +486,7 @@ function savePrefs() {
     roundSec: el.roundSec.value,
     roundCount: el.roundCount.value,
     restSec: el.restSec.value,
+    level: el.levelSel.value,
     speed: el.speedSel.value,
     stance: el.stanceSel.value,
     facing: el.facingSel.value,
@@ -496,6 +504,7 @@ function applyPrefs() {
   pick(el.roundSec, prefs.roundSec);
   pick(el.roundCount, prefs.roundCount);
   pick(el.restSec, prefs.restSec);
+  pick(el.levelSel, prefs.level || "intermediate");
   pick(el.speedSel, prefs.speed);
   pick(el.stanceSel, prefs.stance);
   pick(el.facingSel, prefs.facing);
@@ -655,6 +664,7 @@ function readSettings() {
   videoKey = "";
   stance = el.stanceSel.value;
   mode = pendingMode;
+  sessionLevel = el.levelSel.value || "intermediate";
   sessionSpeed = el.speedSel.value;
   const sens = SENS[el.sensSel.value] ?? SENS.mid;
   speedMinNow = sens.speed;
@@ -674,12 +684,12 @@ function setSetupMode() {
   el.setupTitle.textContent = t("name_" + pendingMode);
   el.setupLogo.textContent = MODE_LOGO[pendingMode] || "🥊";
   const visible = {
-    free: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
+    free: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldLevel", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
     sequence: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldStance", "fieldCamera"],
     dodge: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldStance", "fieldCamera"],
     progress: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
   }[pendingMode] || [];
-  for (const id of ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"]) {
+  for (const id of ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldLevel", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"]) {
     const field = $(id);
     if (field) field.hidden = !visible.includes(id);
   }
@@ -756,7 +766,8 @@ function setState(s) {
 }
 
 function startRound() {
-  speedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
+  const baseSpeedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (mode === "free" ? (LEVEL_MUL[sessionLevel] ?? 1) : 1);
+  speedMul = baseSpeedMul * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
   roundMs = 0;
   resetHands();
   targets = [];
