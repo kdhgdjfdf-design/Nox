@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0e14">
+<title>ShadowBoxNox — Training Preview</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e14;--panel:#131925;--panel2:#192232;--line:#293346;--text:#f3f6fc;--muted:#9ca9bc;--accent:#a6c7ff;--accent2:#638fe7;--good:#9de3c0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#1c2a42 0,transparent 45%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.app{width:min(100%,520px);margin:auto;padding:22px 16px 34px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.brand{font-weight:800;letter-spacing:.2px}.brand span{color:var(--accent)}.eyebrow{font-size:12px;color:var(--muted);margin-top:4px}.avatar{width:42px;height:42px;border:1px solid var(--line);background:var(--panel);border-radius:15px;display:grid;place-items:center;font-size:20px}
+h1{font-size:27px;line-height:1.25;margin:0 0 8px}p{margin:0}.sub{color:var(--muted);font-size:14px;line-height:1.65}
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#0e131d;border:1px solid var(--line);padding:5px;border-radius:16px;margin:22px 0 20px}.mode{border:0;border-radius:12px;background:transparent;padding:12px 8px;color:var(--muted);font-weight:750}.mode.active{background:var(--panel2);color:var(--text);box-shadow:inset 0 0 0 1px #34435c}.mode small{display:block;font-size:11px;font-weight:500;margin-top:3px;color:inherit;opacity:.8}
+.section{margin-top:22px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}.section h2{font-size:15px;margin:0}.hint{font-size:11px;color:var(--muted)}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:10px}.type{border:1px solid var(--line);border-radius:17px;background:var(--panel);padding:15px;text-align:right;min-height:130px;transition:.15s}.type.active{border-color:var(--accent2);background:linear-gradient(145deg,#1c2a40,#141c2a);box-shadow:0 0 0 1px #638fe733}.type .ico{width:38px;height:38px;border-radius:12px;background:#25334a;display:grid;place-items:center;font-size:20px;margin-bottom:12px}.type strong{display:block;font-size:15px}.type span{display:block;color:var(--muted);font-size:12px;margin-top:5px;line-height:1.5}
+.options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.pill{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 3px;color:var(--muted);font-weight:700}.pill.active{border-color:var(--accent2);background:#213450;color:var(--text)}.pill small{display:block;font-size:10px;font-weight:500;margin-top:2px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.level{border:1px solid var(--line);background:var(--panel);border-radius:13px;padding:12px 6px;color:var(--muted)}.level.active{border-color:var(--accent2);background:#213450;color:var(--text)}.level strong{display:block;font-size:13px}.level small{display:block;font-size:10px;margin-top:4px}
+.speedrow{display:flex;gap:8px}.speed{flex:1;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:11px 5px;color:var(--muted);font-size:13px}.speed.active{border-color:var(--accent2);background:#213450;color:var(--text)}
+.progress-card{background:linear-gradient(135deg,#1b2b42,#141a27);border:1px solid #34455f;border-radius:18px;padding:16px;margin-top:4px}.progress-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.tag{font-size:11px;border-radius:99px;padding:5px 9px;background:#263e5d;color:#dce9ff}.progress-title{font-size:18px;font-weight:800;margin-top:13px}.bar{height:7px;background:#0d1420;border-radius:99px;overflow:hidden;margin:12px 0 8px}.bar span{display:block;width:33%;height:100%;background:var(--accent2);border-radius:99px}.progress-foot{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.steps{display:grid;gap:8px;margin-top:12px}.step{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);background:var(--panel);border-radius:13px}.step .num{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;background:#222d3e;color:var(--muted);font-weight:800}.step.current{border-color:var(--accent2)}.step.current .num{background:var(--accent2);color:white}.step.locked{opacity:.62}.step-copy{flex:1}.step-copy strong{display:block;font-size:13px}.step-copy small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.step-status{font-size:11px;color:var(--muted)}
+.note{border:1px solid var(--line);background:#101620;border-radius:13px;padding:12px;color:var(--muted);font-size:12px;line-height:1.6;margin-top:16px}.start{width:100%;margin-top:22px;padding:15px;border:0;border-radius:15px;background:var(--accent);color:#0b1423;font-weight:850;font-size:15px;box-shadow:0 8px 24px #4d7cc322}.start:active{transform:scale(.99)}.result{display:none;margin-top:13px;border:1px solid #3c6c5c;background:#10221d;border-radius:13px;padding:13px;color:var(--good);font-size:13px;line-height:1.6}.footer{text-align:center;color:#68778d;font-size:11px;margin-top:24px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top"><div><div class="brand">SHADOW<span>BOX</span>NOX</div><div class="eyebrow">مساحة تدريبك، على طريقتك</div></div><div class="avatar" aria-hidden="true">🥊</div></header>
+<section><h1>جهّز جلستك</h1><p class="sub">اختر طريقة التدريب، واضبط الوقت والسرعة قبل أن تبدأ.</p></section>
+<div class="mode-tabs" role="tablist" aria-label="وضع التدريب">
+<button class="mode active" id="freeTab" role="tab" aria-selected="true">التمرين الحر<small>أنت تختار الإعدادات</small></button>
+<button class="mode" id="progressTab" role="tab" aria-selected="false">تقدّم المستوى<small>تحديات متدرجة</small></button>
+</div>
+<section id="freePanel">
+<div class="section"><div class="section-head"><h2>نوع التمرين</h2><span class="hint">اختر واحدًا</span></div>
+<div class="types">
+<button class="type active" data-type="combo"><span class="ico">🥊</span><strong>الكومبوهات</strong><span>تسلسلات حركية مرتبة تتدرّب عليها.</span></button>
+<button class="type" data-type="dodge"><span class="ico">↔️</span><strong>المراوغة</strong><span>حركة وتفادي إشارات بصرية بتدرّج مريح.</span></button>
+</div></div>
+<div class="section"><div class="section-head"><h2>مدة الجلسة</h2><span class="hint">بالدقائق</span></div><div class="options" id="durationOptions"><button class="pill" data-value="3">3<small>دقائق</small></button><button class="pill active" data-value="5">5<small>دقائق</small></button><button class="pill" data-value="7">7<small>دقائق</small></button><button class="pill" data-value="10">10<small>دقائق</small></button></div></div>
+<div class="section"><div class="section-head"><h2>المستوى</h2><span class="hint">ثابت طوال الجلسة</span></div><div class="levels" id="levelOptions"><button class="level active" data-value="beginner"><strong>مبتدئ</strong><small>أساسيات</small></button><button class="level" data-value="amateur"><strong>هاوٍ</strong><small>متوسط</small></button><button class="level" data-value="advanced"><strong>متقدم</strong><small>أكثر تعقيدًا</small></button></div></div>
+<div class="section"><div class="section-head"><h2>سرعة الإشارات</h2><span class="hint">يمكن ضبطها قبل البدء</span></div><div class="speedrow" id="speedOptions"><button class="speed active" data-value="slow">هادئة</button><button class="speed" data-value="medium">متوسطة</button><button class="speed" data-value="fast">سريعة</button></div></div>
+</section>
+<section id="progressPanel" hidden>
+<div class="progress-card"><div class="progress-top"><span class="tag">مسار تدريجي</span><span class="hint">تتغير الصعوبة بين المراحل فقط</span></div><div class="progress-title">رحلتك نحو المستوى التالي</div><p class="sub" style="font-size:12px;margin-top:5px">أكمل المرحلة وحقق معيار النجاح لفتح المرحلة التالية.</p><div class="bar"><span></span></div><div class="progress-foot"><span>مرحلة 1 من 3</span><span>بداية الرحلة</span></div></div>
+<div class="section"><div class="section-head"><h2>مراحل التدريب</h2><span class="hint">معاينة تجريبية</span></div><div class="steps"><div class="step current"><div class="num">1</div><div class="step-copy"><strong>الأساسيات</strong><small>حركات بسيطة وتوقيت هادئ</small></div><span class="step-status">متاحة</span></div><div class="step locked"><div class="num">2</div><div class="step-copy"><strong>ربط الحركات</strong><small>تسلسلات أطول وتنوع أكبر</small></div><span class="step-status">🔒</span></div><div class="step locked"><div class="num">3</div><div class="step-copy"><strong>التحدي المتقدم</strong><small>تنسيق وتغيير في الإيقاع</small></div><span class="step-status">🔒</span></div></div></div>
+<div class="section"><div class="section-head"><h2>نوع التمرين</h2><span class="hint">يتناوب حسب المرحلة</span></div><div class="types"><button class="type active" data-ptype="combo"><span class="ico">🥊</span><strong>الكومبوهات</strong><span>تدريبات تسلسلية</span></button><button class="type" data-ptype="dodge"><span class="ico">↔️</span><strong>المراوغة</strong><span>تدريبات حركة وتفادٍ</span></button></div></div>
+<div class="section"><div class="section-head"><h2>مدة المرحلة</h2><span class="hint">اختر وقتك</span></div><div class="options" id="progressDuration"><button class="pill" data-value="3">3<small>دقائق</small></button><button class="pill active" data-value="5">5<small>دقائق</small></button><button class="pill" data-value="7">7<small>دقائق</small></button><button class="pill" data-value="10">10<small>دقائق</small></button></div></div>
+<div class="note">في هذا الوضع، تتغير الصعوبة فقط عند الانتقال إلى مرحلة جديدة. النموذج يعرض شكل النظام؛ فتح المراحل وحفظ النتائج يحتاجان ربطًا بمنطق التطبيق لاحقًا.</div>
+</section>
+<button class="start" id="startBtn">ابدأ الجلسة ←</button><div class="result" id="result" role="status" aria-live="polite"></div>
+<div class="footer">واجهة تجريبية مستقلة • لا تغيّر التطبيق الرئيسي</div>
+</main>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let mode='free',type='combo',duration='5',level='beginner',speed='slow',progressType='combo',progressDuration='5';
+const levelLabels={beginner:'مبتدئ',amateur:'هاوٍ',advanced:'متقدم'},speedLabels={slow:'هادئة',medium:'متوسطة',fast:'سريعة'};
+function choose(container,selector,value,attr='data-value'){ $$(container+' '+selector).forEach(b=>b.classList.toggle('active',b.getAttribute(attr)===value)); }
+function setMode(next){mode=next;$('#freeTab').classList.toggle('active',mode==='free');$('#progressTab').classList.toggle('active',mode==='progress');$('#freeTab').setAttribute('aria-selected',String(mode==='free'));$('#progressTab').setAttribute('aria-selected',String(mode==='progress'));$('#freePanel').hidden=mode!=='free';$('#progressPanel').hidden=mode!=='progress';$('#result').style.display='none';}
+$('#freeTab').addEventListener('click',()=>setMode('free'));$('#progressTab').addEventListener('click',()=>setMode('progress'));
+$$('#freePanel [data-type]').forEach(b=>b.addEventListener('click',()=>{type=b.dataset.type;$$('#freePanel [data-type]').forEach(x=>x.classList.toggle('active',x===b));}));
+$$('#durationOptions [data-value]').forEach(b=>b.addEventListener('click',()=>{duration=b.dataset.value;choose('#durationOptions','.pill',duration);}));
+$$('#levelOptions [data-value]').forEach(b=>b.addEventListener('click',()=>{level=b.dataset.value;choose('#levelOptions','.level',level);}));
+$$('#speedOptions [data-value]').forEach(b=>b.addEventListener('click',()=>{speed=b.dataset.value;choose('#speedOptions','.speed',speed);}));
+$$('#progressPanel [data-ptype]').forEach(b=>b.addEventListener('click',()=>{progressType=b.dataset.ptype;$$('#progressPanel [data-ptype]').forEach(x=>x.classList.toggle('active',x===b));}));
+$$('#progressDuration [data-value]').forEach(b=>b.addEventListener('click',()=>{progressDuration=b.dataset.value;choose('#progressDuration','.pill',progressDuration);}));
+$('#startBtn').addEventListener('click',()=>{const t=mode==='free'?type:progressType,d=mode==='free'?duration:progressDuration;const label=t==='combo'?'الكومبوهات':'المراوغة';const details=mode==='free'?'الوضع الحر • '+levelLabels[level]+' • سرعة '+speedLabels[speed]:'تقدّم المستوى • المرحلة الأولى';$('#result').textContent='تم إعداد الجلسة التجريبية: '+label+'، '+d+' دقائق. '+details+'. هذه معاينة للواجهة فقط ولم يبدأ تتبع الكاميرا.';$('#result').style.display='block';$('#result').scrollIntoView({behavior:'smooth',block:'nearest'});});
+</script>
+</body>
+</html>
