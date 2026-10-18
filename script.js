@@ -71,7 +71,9 @@ const T = {
   notice_accuracy: ["ℹ️ كشف اللكمات تقديري من كاميرا واحدة، وقد يخطئ مع الحركات السريعة جدًا أو الإضاءة الضعيفة. راجع «نصائح الإعداد» للحصول على أفضل دقة.", "ℹ️ Punch detection is an estimate from one camera and may miss very fast moves or poor lighting. See “Setup tips” for best accuracy."],
   setup_title: ["إعدادات الجلسة", "Session settings"],
   setup_group_time: ["الوقت والجولات", "Time and rounds"],
-  setup_group_control: ["السرعة وحساسية اللكمات", "Speed and punch detection"],
+  setup_group_control: ["الصعوبة وحساسية اللكمات", "Difficulty and punch detection"],
+  rest_add20: ["+20 ثانية", "+20 seconds"],
+  btn_skip_rest: ["إنهاء الراحة", "End rest"],
   setup_group_position: ["الوضعية والكاميرا", "Stance and camera"],
   btn_back: ["رجوع", "Back"],
   btn_start: ["ابدأ التدريب", "Start training"],
@@ -314,7 +316,7 @@ const IDS = [
   "jabCount", "crossCount", "ppm", "targetHits", "dodges", "pillarHits",
   "btnPause", "btnStance", "btnCam", "btnRotate", "btnStop", "toast",
   "calibOverlay", "calibStatus", "calibBtn", "calibCancel",
-  "restOverlay", "restCount", "restNext", "restSkip",
+  "restOverlay", "restCount", "restNext", "restSkip", "restAdd20",
   "pauseOverlay", "btnResume",
   "resultOverlay", "resultBody", "btnAgain", "btnHome",
   "historyModal", "historyBody", "btnClearHistory", "btnCloseHistory",
@@ -665,17 +667,17 @@ function readSettings() {
   stance = el.stanceSel.value;
   mode = pendingMode;
   sessionLevel = el.levelSel.value || "intermediate";
-  sessionSpeed = el.speedSel.value;
+  sessionSpeed = ({ beginner: "slow", intermediate: "mid", advanced: "fast" })[sessionLevel] || "mid";
   const sens = SENS[el.sensSel.value] ?? SENS.mid;
   speedMinNow = sens.speed;
   extOnNow = sens.ext;
   countTargetsOnly = el.countSel.value === "targets";
-  speedMul = SPEED_MUL[sessionSpeed] ?? 1;
+  speedMul = LEVEL_MUL[sessionLevel] ?? 1;
   facingMode = el.facingSel.value;
   soundOn = el.soundToggle.checked;
   roundDurMs = Number(el.roundSec.value) * 1000;
   totalRounds = Number(el.roundCount.value);
-  restDurMs = Number(el.restSec.value) * 1000;
+  restDurMs = 60000;
 }
 
 // ---------- اختيار نوع التدريب وشاشة الإعدادات ----------
@@ -684,10 +686,10 @@ function setSetupMode() {
   el.setupTitle.textContent = t("name_" + pendingMode);
   el.setupLogo.textContent = MODE_LOGO[pendingMode] || "🥊";
   const visible = {
-    free: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldLevel", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
-    sequence: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldStance", "fieldCamera"],
-    dodge: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldStance", "fieldCamera"],
-    progress: ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
+    free: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
+    sequence: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldStance", "fieldCamera"],
+    dodge: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldStance", "fieldCamera"],
+    progress: ["fieldRoundLen", "fieldRoundCount", "fieldLevel", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"],
   }[pendingMode] || [];
   for (const id of ["fieldRoundLen", "fieldRoundCount", "fieldRest", "fieldLevel", "fieldSpeed", "fieldSensitivity", "fieldCount", "fieldStance", "fieldCamera"]) {
     const field = $(id);
@@ -766,7 +768,7 @@ function setState(s) {
 }
 
 function startRound() {
-  const baseSpeedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (mode === "free" ? (LEVEL_MUL[sessionLevel] ?? 1) : 1);
+  const baseSpeedMul = LEVEL_MUL[sessionLevel] ?? 1;
   speedMul = baseSpeedMul * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
   roundMs = 0;
   resetHands();
@@ -1904,6 +1906,11 @@ el.calibBtn.addEventListener("click", () => {
   if (calibReady) startRound();
 });
 el.calibCancel.addEventListener("click", exitTraining);
+el.restAdd20.addEventListener("click", () => {
+  if (state !== "rest") return;
+  restMs += 20000;
+  updateHud();
+});
 el.restSkip.addEventListener("click", () => startRound());
 el.btnPause.addEventListener("click", togglePause);
 el.btnResume.addEventListener("click", togglePause);
