@@ -19,7 +19,7 @@ h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px
 .section-head .mark{width:4px;height:22px;border-radius:5px;background:var(--red)}
 h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margin:4px 2px 12px}
 .feature{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:15px;border-radius:19px;border:1px solid #653039;background:linear-gradient(125deg,#32171c,#171619 72%);color:white;font:inherit;cursor:pointer}
-.feature .ico{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:#4a1d24;font-size:27px;flex:none}
+.feature .ico{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:#4a1d24;font-size:27px;flex:none}.feature-alt{border-color:#343b68;background:linear-gradient(125deg,#1b2340,#171619 72%)}.feature-alt .ico{background:#252e55}.feature-alt .small-label{color:#b9c5ff}.feature-alt .arrow{color:#a7b5ff}
 .feature strong{font-size:16px;display:block}.feature small{display:block;color:#c5aeb1;font-size:12px;line-height:1.6;margin-top:5px}
 .arrow{margin-right:auto;font-size:22px;color:#e88b94}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -37,18 +37,25 @@ h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margi
 <div class="logo">🎓</div>
 <div><h1>التعلّم</h1><div class="sub">ابدأ بالدروس الأساسية، واسأل المدرّب الذكي عن القواعد والمهارات</div></div>
 </header>
-<p class="intro">هنا تجد الدروس الأساسية فقط. أمّا أسئلة القواعد والوقفة والدفاع والكومبوهات، فاسأل عنها المدرّب الذكي.</p>
+<p class="intro">اختر أحد الركنين: دروس أساسيات الملاكمة الحالية، أو فيديو اللكمات مقسّمًا إلى درسين مع مؤقّت يتوقف عند نهاية كل جزء.</p>
 <section>
 <div class="section-head"><span class="mark"></span><h2>أساسيات الملاكمة</h2></div>
 <button class="feature" id="openLessons" type="button">
 <span class="ico">🥊</span><span><strong>أساسيات الملاكمة</strong><small>افتح صفحة الدروس والفيديوهات وتابع التعلّم من هناك.</small></span><span class="arrow">←</span>
 </button>
 </section>
+<section>
+<div class="section-head"><span class="mark"></span><h2>اللكمات الأساسية والمتقدمة</h2></div>
+<button class="feature feature-alt" id="openPunchLessons" type="button">
+<span class="ico">⚡</span><span><strong>اللكمات الأساسية والمتقدمة</strong><small class="small-label">فيديو مقسّم إلى درسين مع مؤقّت تلقائي.</small></span><span class="arrow">←</span>
+</button>
+</section>
 
 <div class="note">تريد معرفة قواعد الملاكمة أو طريقة الوقفة والدفاع؟ افتح <a href="coach-preview.html?v=20261018d" style="color:#f08b95">المدرّب الذكي</a> واسأله مباشرة.</div>
 </main>
 <script>
-document.getElementById("openLessons").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261018b";});
+document.getElementById("openLessons").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261018c";});
+document.getElementById("openPunchLessons").addEventListener("click",function(){window.location.href="shadowbox-learning-preview.html?v=20261018c";});
 </script>
 </body>
 </html>
