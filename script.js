@@ -279,6 +279,7 @@ const T = {
   coach_quick_combo: ["أعطني كومبو للمبتدئين", "Give me a beginner combo"],
   coach_quick_accuracy: ["كيف أحسّن دقة اللكمات؟", "How can I improve punch accuracy?"],
   coach_quick_defense: ["علّمني أساسيات الدفاع", "Teach me basic defense"],
+  coach_quick_progress: ["كيف أطور نفسي حسب تقدمي؟", "How can I improve based on my progress?"],
   coach_name: ["المدرّب الذكي", "AI Coach"],
   coach_desc: ["تحليل جلساتك واقتراح تمارين مناسبة", "Analyzes your sessions and suggests drills"],
   coach_title: ["المدرّب الذكي 🧠", "AI Coach 🧠"],
@@ -1913,6 +1914,11 @@ el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
   renderCoach();
   el.coachChatInput.placeholder = t("coach_chat_ph");
+  if (!el.coachChatLog.children.length) {
+    coachAddMsg("bot", lang === "en"
+      ? "Welcome. Ask me about your progress, target tracking, or a safe beginner routine. I can use saved session history privately to tailor general suggestions; session statistics stay in the History screen."
+      : "أهلًا بك! اسألني عن تقدمك أو دقة التتبّع أو روتين مناسب للمبتدئين. أستطيع الاستفادة من سجل جلساتك لتخصيص النصائح العامة دون عرض إحصائياتك هنا؛ ستبقى الإحصائيات في صفحة السجل.");
+  }
   el.coachModal.hidden = false;
 });
 
@@ -2066,7 +2072,8 @@ const COACH_QUICK_PROMPTS = {
   session: ["قيّم آخر جلسة", "Review my last session"],
   combo: ["أعطني كومبو للمبتدئين", "Give me a beginner combo"],
   accuracy: ["كيف أحسّن دقة اللكمات؟", "How can I improve punch accuracy?"],
-  defense: ["علّمني أساسيات الدفاع", "Teach me basic defense"]
+  defense: ["علّمني أساسيات الدفاع", "Teach me basic defense"],
+  progress: ["كيف أطور نفسي حسب تقدمي؟", "How can I improve based on my progress?"]
 };
 document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
   button.addEventListener("click", () => askCoach(COACH_QUICK_PROMPTS[button.dataset.coachPrompt][lang === "en" ? 1 : 0]));
