@@ -824,6 +824,18 @@ body.hide-stats .grid { display: none; }
 .coach-card .mode-text b { font-size: 20px; font-weight: 900; }
 .coach-card .mode-text small { font-size: 13px; line-height: 1.5; opacity: 0.9; }
 
+/* ===== ثيمات الواجهة: لا تغيّر بنية التصميم ===== */
+:root[data-theme="red"] { --red:#e11d2e; --red-dark:#7f0b14; }
+:root[data-theme="blue"] { --red:#3b82f6; --red-dark:#1e3a8a; --line:#26384f; }
+:root[data-theme="green"] { --red:#14b8a6; --red-dark:#0b4f49; --line:#24443f; }
+:root[data-theme="purple"] { --red:#a855f7; --red-dark:#581c87; --line:#3c2a50; }
+:root[data-theme="blue"] body { background: radial-gradient(circle at top,#071c3a 0%,#0a0a0a 55%) fixed; }
+:root[data-theme="green"] body { background: radial-gradient(circle at top,#062b24 0%,#0a0a0a 55%) fixed; }
+:root[data-theme="purple"] body { background: radial-gradient(circle at top,#24083b 0%,#0a0a0a 55%) fixed; }
+.mode-card[data-mode="free"] { --accent1:var(--red); --accent2:var(--red-dark); }
+.mode-card[data-mode="progress"] { --accent1:#64748b; --accent2:#263449; }
+#setupScreen .field[hidden] { display:none !important; }
+
 /* ===== شريط الدقة ===== */
 .acc-track {
   height: 10px;
