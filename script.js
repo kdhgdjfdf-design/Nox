@@ -225,6 +225,8 @@ const T = {
   res_avg_hit: ["متوسط وقت الإصابة", "Avg time to hit"],
   res_rounds: ["جولات مكتملة", "Rounds completed"],
   coach_tip_accuracy: ["دقتك في لمس الأهداف منخفضة. ركّز على لمس القفاز بقبضتك قبل زيادة السرعة.", "Your target accuracy is low. Focus on landing the glove with your fist before increasing speed."],
+  coach_tip_guard: ["مؤشر الكاميرا يوحي أن يديك تنخفضان كثيرًا بين اللكمات. جرّب إرجاعهما إلى وضع الحراسة بعد كل ضربة؛ التقدير تقريبي.", "Camera samples suggest your hands may drop between punches. Practice returning them to guard after each punch; this estimate is approximate."],
+  coach_tip_balance: ["رصدت الكاميرا ميلًا جانبيًا متكررًا للجذع. جرّب الوقوف بتوازن وحرّك رأسك بهدوء دون مبالغة؛ هذا مؤشر تقريبي.", "The camera repeatedly detected a sideways torso lean. Try a balanced stance and controlled head movement; this is only an approximate signal."],
   hist_sessions: ["جلسة", "sessions"],
   hist_punches: ["لكمة إجمالًا", "total punches"],
   hist_minutes: ["دقيقة تدريب", "training minutes"],
@@ -277,7 +279,7 @@ const T = {
   coach_desc: ["تحليل جلساتك واقتراح تمارين مناسبة", "Analyzes your sessions and suggests drills"],
   coach_title: ["المدرّب الذكي 🧠", "AI Coach 🧠"],
   coach_empty: ["أكمل جلسة واحدة على الأقل ليبدأ المدرّب بتحليل أدائك.", "Complete at least one session so the coach can analyze your performance."],
-  coach_note: ["التحليل يتم محليًا على جهازك من أرقام الجلسات فقط، دون رفع أي صورة أو استخدام خدمة خارجية.", "Analysis runs locally on your device from session numbers only. No images are uploaded and no external service is used."],
+  coach_note: ["المدرّب يحلل أرقام الجلسات وبعض مؤشرات وضعية الجسم المحسوبة محليًا من نقاط الهيكل؛ لا تُرفع صور الكاميرا. المؤشرات تقريبية وليست حكمًا احترافيًا على التقنية.", "The coach analyzes session stats and a few posture indicators computed locally from pose landmarks. Camera images are not uploaded. These estimates are not a professional technique assessment."],
   coach_stat_sessions: ["جلسات محللة", "sessions analyzed"],
   coach_stat_ppm: ["متوسط لكمات/دقيقة", "avg punches/min"],
   coach_stat_glove: ["دقة القفاز", "glove accuracy"],
@@ -366,6 +368,7 @@ let activeMs = 0;                // زمن الجولات الفعلي فقط
 
 let stats = freshStats();
 let hands = { left: freshHand(), right: freshHand() };
+let lastCoachSampleAt = 0;
 
 let lastPose = null;             // آخر مجموعة نقاط للجسم بعد التنعيم الزمني
 let smoothedPose = null;         // يقلل اهتزاز الهيكل بين الإطارات
@@ -395,7 +398,8 @@ let toastTimer = 0;
 function freshStats() {
   return { total: 0, left: 0, right: 0, jab: 0, cross: 0, hits: 0,
            targetHits: 0, targetMiss: 0, dodges: 0, pillarHits: 0, seqDone: 0, wrongHand: 0,
-           punchHit: 0, punchMiss: 0, missJab: 0, missCross: 0, hitJab: 0, hitCross: 0, reactSum: 0, reactN: 0, roundsDone: 0 };
+           punchHit: 0, punchMiss: 0, missJab: 0, missCross: 0, hitJab: 0, hitCross: 0, reactSum: 0, reactN: 0, roundsDone: 0,
+           poseSamples: 0, lowGuardSamples: 0, leanSamples: 0 };
 }
 function freshHand() {
   return { armed: true, hist: [], lastPunch: -1e9, lastJudge: -1e9, contactUntil: 0, ep: freshEpisode() };
@@ -839,6 +843,9 @@ function finishSession() {
     accuracy: stats.punchHit + stats.punchMiss
       ? Math.round((100 * stats.punchHit) / (stats.punchHit + stats.punchMiss)) : null,
     avgHitMs: stats.reactN ? Math.round(stats.reactSum / stats.reactN) : null,
+    poseSamples: stats.poseSamples,
+    lowGuardRate: stats.poseSamples ? Math.round((100 * stats.lowGuardSamples) / (2 * stats.poseSamples)) : null,
+    leanRate: stats.poseSamples ? Math.round((100 * stats.leanSamples) / stats.poseSamples) : null,
   };
   if (stats.total > 0 || activeMs > 5000) saveSession(sess);
 
@@ -960,6 +967,29 @@ function smoothPose(points) {
   });
   return smoothedPose;
 }
+function sampleCoachPose(lm, now) {
+  // Sample at a low rate to avoid counting many nearly identical video frames.
+  if (state !== "round" || now - lastCoachSampleAt < 650) return;
+  lastCoachSampleAt = now;
+  const ls = lm[11], rs = lm[12], lw = lm[15], rw = lm[16], lh = lm[23], rh = lm[24];
+  const visible = (p) => !!p && (p.visibility ?? 1) >= 0.55;
+  if (![ls, rs, lw, rw, lh, rh].every(visible) || poseSW < 2) return;
+
+  stats.poseSamples++;
+  const shoulderWidth = Math.max(0.001, Math.hypot(ls.x - rs.x, ls.y - rs.y));
+  let lowHands = 0;
+  // Ignore extended arms so the punch itself isn't treated as a dropped guard.
+  const leftExt = Math.hypot(lw.x - ls.x, lw.y - ls.y) / shoulderWidth;
+  const rightExt = Math.hypot(rw.x - rs.x, rw.y - rs.y) / shoulderWidth;
+  if (leftExt < CFG.EXT_OFF && lw.y > ls.y + 0.10) lowHands++;
+  if (rightExt < CFG.EXT_OFF && rw.y > rs.y + 0.10) lowHands++;
+  stats.lowGuardSamples += lowHands;
+
+  const shoulderMidX = (ls.x + rs.x) / 2;
+  const hipMidX = (lh.x + rh.x) / 2;
+  if (Math.abs(shoulderMidX - hipMidX) / shoulderWidth > 0.38) stats.leanSamples++;
+}
+
 function detect(now) {
   let res;
   try {
@@ -979,6 +1009,7 @@ function detect(now) {
   }
   const lm = smoothPose(rawLm);
   lastPose = lm;
+  sampleCoachPose(lm, now);
   const L = lm[11], R = lm[12];
   poseSW = Math.hypot((L.x - R.x) * vw, (L.y - R.y) * vh);
   updateCalibration(lm, poseSW, now);
@@ -1796,6 +1827,13 @@ function analyzeSessions(arr) {
   if (dodgePct !== null && dodgePct < 50) tips.push(t("coach_tip_dodge"));
   if (punches >= 20 && crosses / punches < 0.25) tips.push(t("coach_tip_cross"));
   if (wrong >= 3) tips.push(t("coach_tip_sequence"));
+  const poseSessions = recent.filter((x) => (x.poseSamples || 0) >= 8);
+  if (poseSessions.length) {
+    const guardRate = poseSessions.reduce((n, x) => n + (Number(x.lowGuardRate) || 0), 0) / poseSessions.length;
+    const leanRate = poseSessions.reduce((n, x) => n + (Number(x.leanRate) || 0), 0) / poseSessions.length;
+    if (guardRate >= 42) tips.push(t("coach_tip_guard"));
+    if (leanRate >= 28) tips.push(t("coach_tip_balance"));
+  }
   const accs = arr.filter((x) => typeof x.accuracy === "number").map((x) => x.accuracy);
   if (accs.length && accs.reduce((a, b) => a + b, 0) / accs.length < 50) tips.push(t("coach_tip_accuracy"));
   if (arr.length >= 2 && (arr[0].ppm || 0) > (arr[1].ppm || 0)) tips.push(t("coach_tip_improving"));
