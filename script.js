@@ -2134,6 +2134,7 @@ el.btnHome.addEventListener("click", () => exitTraining("home"));
 
 // شاشة الدخول: الضغط عليها يفعّل الصوت ويشغّل نغمة الدخول
 el.splash.addEventListener("click", () => {
+  try { sessionStorage.setItem("nox_splash_dismissed", "1"); } catch {}
   getAudio();
   tone(440, 0.15, 0.2, "sine");
   setTimeout(() => tone(660, 0.15, 0.2, "sine"), 150);
@@ -2156,6 +2157,13 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ---------- التهيئة ----------
+// عند الرجوع من صفحة المدرّب إلى التطبيق، لا نعرض شاشة «اضغط للدخول» مرة ثانية في الجلسة نفسها.
+try {
+  if (sessionStorage.getItem("nox_splash_dismissed") === "1") {
+    el.splash.classList.add("hide");
+    el.splash.hidden = true;
+  }
+} catch {}
 applyPrefs();
 applyLang();
 if (!window.isSecureContext) el.banner.hidden = false;
