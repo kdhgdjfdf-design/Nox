@@ -57,7 +57,10 @@ $('backFromCorners').addEventListener('click',()=>{location.href='https://kdhgdj
 $('openLearning').addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'});
 $('openBasics').addEventListener('click',()=>showLessons(true));
 ['openTraining','openCoach','openHistory'].forEach(id=>$(id).addEventListener('click',()=>{location.href='https://kdhgdjfdf-design.github.io/shadowbox/'}));
-$('backToCorners').addEventListener('click',()=>{if(location.hash==='#lessons')history.back();else showCorners(false)});
+$('backToCorners').addEventListener('click',()=>{
+  lessonScreen.hidden=true;cornerScreen.hidden=false;
+  history.replaceState({screen:'corners'},'',location.pathname+location.search+'#corners');
+});
 window.addEventListener('popstate',()=>{
  if(location.hash==='#lessons'){cornerScreen.hidden=true;lessonScreen.hidden=false;}
  else if(location.hash==='#corners'){cornerScreen.hidden=false;lessonScreen.hidden=true;}
