@@ -69,6 +69,9 @@ const T = {
   notice_privacy: ["🔒 <b>الخصوصية:</b> معالجة الفيديو تتم داخل متصفحك فقط. لا يتم رفع أي صورة من الكاميرا إلى أي خادم. السجل يُحفظ محليًا على جهازك.", "🔒 <b>Privacy:</b> video is processed only inside your browser. No camera image is uploaded to any server. History is saved locally on your device."],
   notice_accuracy: ["ℹ️ كشف اللكمات تقديري من كاميرا واحدة، وقد يخطئ مع الحركات السريعة جدًا أو الإضاءة الضعيفة. راجع «نصائح الإعداد» للحصول على أفضل دقة.", "ℹ️ Punch detection is an estimate from one camera and may miss very fast moves or poor lighting. See “Setup tips” for best accuracy."],
   setup_title: ["إعدادات الجلسة", "Session settings"],
+  setup_group_time: ["الوقت والجولات", "Time and rounds"],
+  setup_group_control: ["السرعة وحساسية اللكمات", "Speed and punch detection"],
+  setup_group_position: ["الوضعية والكاميرا", "Stance and camera"],
   btn_back: ["رجوع", "Back"],
   btn_start: ["ابدأ التدريب", "Start training"],
   btn_preparing: ["جارٍ تجهيز الكاميرا...", "Preparing camera..."],
@@ -680,6 +683,10 @@ function setSetupMode() {
     const field = $(id);
     if (field) field.hidden = !visible.includes(id);
   }
+  document.querySelectorAll("#setupScreen .setup-group").forEach((group) => {
+    const fields = [...group.querySelectorAll(".field")];
+    group.hidden = fields.length > 0 && !fields.some((field) => !field.hidden);
+  });
   if (el.progressHint) el.progressHint.hidden = pendingMode !== "progress";
 }
 function openSetup(m) {
