@@ -1,6 +1,6 @@
 {
-  "name": "ShadowBox AI",
-  "short_name": "ShadowBox",
+  "name": "Nox",
+  "short_name": "Nox",
   "description": "كيس ملاكمة افتراضي يعدّ لكماتك بكاميرا الهاتف",
   "start_url": "./index.html",
   "scope": "./",
