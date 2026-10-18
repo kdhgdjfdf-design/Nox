@@ -911,26 +911,51 @@ function updateState(dt) {
 
 // ---------- الكشف عن الجسم وتحليل اللكمات ----------
 function smoothPose(points) {
-  // نمزج أغلب الإطار الجديد مع السابق لتخفيف اهتزاز المفاصل دون تأخير كبير.
-  const alpha = 0.72;
+  // تثبيت أقوى للجذع والكتفين؛ استجابة أسرع للأيدي حتى لا تتأخر اللكمة.
   if (!smoothedPose || smoothedPose.length !== points.length) {
     smoothedPose = points.map((p) => p ? { ...p } : p);
     return smoothedPose;
   }
+
   const previous = smoothedPose;
+  const torso = new Set([11, 12, 23, 24]);
+  const upperArms = new Set([13, 14]);
+  const wristsAndHands = new Set([15, 16, 17, 18, 19, 20, 21, 22]);
   smoothedPose = points.map((p, i) => {
     const prev = previous[i];
-    if (!p || !prev || (p.visibility ?? 1) < 0.25) return p ? { ...p } : p;
+    if (!p) return prev ? { ...prev, visibility: 0 } : p;
+    if (!prev) return { ...p };
+
+    const vis = p.visibility ?? 1;
+    // إذا ضعفت الثقة، احتفظ بالموقع السابق مؤقتًا بدل القفز إلى نقطة غير موثوقة.
+    if (vis < 0.25) return { ...prev, visibility: vis };
+
+    const alpha = torso.has(i) ? 0.28
+      : upperArms.has(i) ? 0.40
+      : wristsAndHands.has(i) ? 0.58
+      : 0.34;
+
+    // حدّ من قفزات الكشف المفاجئة في كل إطار. حدود اليد أوسع حتى تبقى اللكمات سريعة.
+    const maxStep = torso.has(i) ? 0.035
+      : upperArms.has(i) ? 0.060
+      : wristsAndHands.has(i) ? 0.115
+      : 0.045;
+    const dx = p.x - prev.x;
+    const dy = p.y - prev.y;
+    const distance = Math.hypot(dx, dy);
+    const factor = distance > maxStep ? maxStep / distance : 1;
+    const targetX = prev.x + dx * factor;
+    const targetY = prev.y + dy * factor;
+
     return {
       ...p,
-      x: prev.x + (p.x - prev.x) * alpha,
-      y: prev.y + (p.y - prev.y) * alpha,
+      x: prev.x + (targetX - prev.x) * alpha,
+      y: prev.y + (targetY - prev.y) * alpha,
       z: (prev.z ?? 0) + ((p.z ?? 0) - (prev.z ?? 0)) * alpha,
     };
   });
   return smoothedPose;
 }
-
 function detect(now) {
   let res;
   try {
