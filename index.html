@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="description" content="ShadowBox Nox - shadow boxing trainer with your phone camera. تدريب الملاكمة الافتراضي بكاميرا هاتفك." />
   <title>ShadowBox Nox 🥊</title>
-  <link rel="stylesheet" href="style.css?v=20261018b" />
+  <link rel="stylesheet" href="style.css?v=20261018c" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 </head>
@@ -306,9 +306,12 @@
     <div id="restOverlay" class="overlay" hidden>
       <div class="sheet">
         <h2 data-i18n="rest_title">راحة</h2>
-        <div class="big-num" id="restCount">30</div>
+        <div class="big-num" id="restCount">60</div>
         <p id="restNext" class="hint"></p>
-        <button id="restSkip" class="btn primary big" data-i18n="btn_skip_rest">ابدأ الجولة الآن</button>
+        <div class="row">
+          <button id="restAdd20" class="btn ghost" data-i18n="rest_add20">+20 ثانية</button>
+          <button id="restSkip" class="btn primary" data-i18n="btn_skip_rest">إنهاء الراحة</button>
+        </div>
       </div>
     </div>
 
@@ -419,6 +422,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261018b" type="module"></script>
+  <script src="script.js?v=20261018c" type="module"></script>
 </body>
 </html>
