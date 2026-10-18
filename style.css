@@ -824,18 +824,6 @@ body.hide-stats .grid { display: none; }
 .coach-card .mode-text b { font-size: 20px; font-weight: 900; }
 .coach-card .mode-text small { font-size: 13px; line-height: 1.5; opacity: 0.9; }
 
-/* ===== ثيمات الواجهة: لا تغيّر بنية التصميم ===== */
-:root[data-theme="red"] { --red:#e11d2e; --red-dark:#7f0b14; }
-:root[data-theme="blue"] { --red:#3b82f6; --red-dark:#1e3a8a; --line:#26384f; }
-:root[data-theme="green"] { --red:#14b8a6; --red-dark:#0b4f49; --line:#24443f; }
-:root[data-theme="purple"] { --red:#a855f7; --red-dark:#581c87; --line:#3c2a50; }
-:root[data-theme="blue"] body { background: radial-gradient(circle at top,#071c3a 0%,#0a0a0a 55%) fixed; }
-:root[data-theme="green"] body { background: radial-gradient(circle at top,#062b24 0%,#0a0a0a 55%) fixed; }
-:root[data-theme="purple"] body { background: radial-gradient(circle at top,#24083b 0%,#0a0a0a 55%) fixed; }
-.mode-card[data-mode="free"] { --accent1:var(--red); --accent2:var(--red-dark); }
-.mode-card[data-mode="progress"] { --accent1:#64748b; --accent2:#263449; }
-#setupScreen .field[hidden] { display:none !important; }
-
 /* ===== شريط الدقة ===== */
 .acc-track {
   height: 10px;
@@ -928,86 +916,13 @@ body.hide-stats .grid { display: none; }
 .nav-bar .mode-text b { font-size: 20px; font-weight: 900; }
 .nav-bar .mode-text small { font-size: 13px; line-height: 1.5; opacity: 0.9; }
 
-/* ===== محادثة المدرّب ===== */
-.coach-chat { margin-top: 6px; text-align: start; }
-.coach-chat .section-title { margin: 6px 0 8px; }
-.coach-log {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 280px;
-  overflow-y: auto;
-  padding: 2px 0 6px;
-}
-.coach-log:empty { display: none; }
-.coach-msg {
-  max-width: 92%;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-}
-.coach-msg.user { align-self: flex-start; background: rgba(225, 29, 46, 0.18); border-color: var(--red); }
-.coach-msg.bot { align-self: flex-end; }
-.coach-msg p { margin: 0; line-height: 1.7; font-size: 15px; white-space: pre-wrap; }
-.coach-src-title { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
-.coach-sources { margin: 4px 0 0; padding-inline-start: 18px; font-size: 13px; line-height: 1.6; }
-.coach-sources a { color: #ffb3b8; word-break: break-word; }
-.coach-input-row { display: flex; gap: 8px; margin-top: 10px; }
-#coachChatInput {
-  flex: 1;
-  min-width: 0;
-  min-height: 48px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid #333;
-  background: var(--panel-2);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 16px;
-}
-#coachChatInput:focus { outline: 2px solid var(--red); outline-offset: 2px; }
-.coach-input-row .btn { min-height: 48px; padding: 0 16px; font-size: 15px; }
-.coach-chat .btn.ghost { margin-top: 6px; width: 100%; }
 
-
-/* تنظيم إعدادات التمرين قبل البدء */
-#setupScreen .setup-card { padding: 16px; }
-.setup-group { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--line); }
-.setup-group-title { margin: 0 0 12px; color: var(--red); font-size: 14px; font-weight: 800; }
-.setup-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 12px; }
-.setup-fields .field { min-width: 0; margin-bottom: 12px; }
-#setupScreen .setup-group[hidden] { display: none !important; }
-#setupScreen .field[hidden] { display: none !important; }
-@media (min-width: 480px) {
-  .setup-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-
-/* ===== مكتبة التعلّم: أساسيات الملاكمة والمهارات ===== */
-.learn-feature {
-  display:flex; align-items:center; gap:14px; width:100%; min-height:96px;
-  margin:4px 0 18px; padding:15px; border-radius:20px;
-  border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(125deg,#b91c2b 0%,#63101a 52%,#211017 100%);
-  color:#fff; text-decoration:none; box-shadow:0 14px 30px rgba(0,0,0,.35);
-}
-.learn-feature:active { transform:scale(.985); }
-.learn-feature-logo {
-  width:58px;height:58px;flex-shrink:0;display:grid;place-items:center;
-  border-radius:17px;background:rgba(0,0,0,.28);font-size:31px;
-  border:1px solid rgba(255,255,255,.16);
-}
-.learn-feature-text { flex:1;min-width:0;display:flex;flex-direction:column;gap:5px; }
-.learn-feature-text b { font-size:19px;font-weight:900; }
-.learn-feature-text small { font-size:12.5px;line-height:1.65;opacity:.9; }
-.learn-feature-arrow { font-size:30px;font-weight:800;opacity:.85; }
-.learn-topic-grid { display:grid;grid-template-columns:minmax(0,1fr);gap:12px; }
-.learn-topic { margin:0;padding:15px; }
-.learn-topic-heading { display:flex;align-items:center;gap:10px;margin-bottom:9px; }
-.learn-topic-heading > span { width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.07);font-size:22px; }
-.learn-topic-heading h3 { margin:0;font-size:16px;color:var(--text); }
-.learn-topic p { margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.8; }
-.learn-topic .tips { margin-bottom:0;font-size:13px; }
-@media (min-width:560px) { .learn-topic-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-
+/* ===== الثيمات الإضافية في النسخة التجريبية ===== */
+:root[data-theme="red"] { --red:#e11d2e; --red-dark:#7f0b14; }
+:root[data-theme="blue"] { --red:#3b82f6; --red-dark:#1e3a8a; --line:#26384f; }
+:root[data-theme="green"] { --red:#14b8a6; --red-dark:#0b4f49; --line:#24443f; }
+:root[data-theme="purple"] { --red:#a855f7; --red-dark:#581c87; --line:#3c2a50; }
+:root[data-theme="blue"] body { background:radial-gradient(circle at top,#071c3a 0%,#0a0a0a 55%) fixed; }
+:root[data-theme="green"] body { background:radial-gradient(circle at top,#062b24 0%,#0a0a0a 55%) fixed; }
+:root[data-theme="purple"] body { background:radial-gradient(circle at top,#24083b 0%,#0a0a0a 55%) fixed; }
+.mode-card[data-mode="progress"] { --accent1:#64748b; --accent2:#263449; }
