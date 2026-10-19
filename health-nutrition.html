@@ -12,12 +12,19 @@
 .health-top h1{font-size:23px;margin:0}
 .health-intro{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 16px}
 .health-grid{display:grid;grid-template-columns:1fr;gap:12px}
-.health-card{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--panel);margin-bottom:12px}
-.health-card h2{font-size:17px;margin:0 0 8px;color:var(--red)}
-.health-card p,.health-card li{font-size:14px;line-height:1.8;color:#e1e1e1}
-.health-card ul{margin:0;padding-right:20px}
-.health-card li+li{margin-top:5px}
+.health-card{width:100%;text-align:right;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);margin:0;cursor:pointer}
+.health-card h2{font-size:17px;margin:0 0 6px;color:var(--red)}
+.health-card p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
+.health-card:focus-visible,.health-back:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 .health-callout{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--theme-soft);font-size:13px;line-height:1.8}
+.health-back{min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit;cursor:pointer}
+.detail-panel[hidden],#healthOverview[hidden]{display:none}
+.detail-panel{animation:healthIn .16s ease-out}
+.detail-panel .health-card{cursor:default;margin-top:10px}
+.detail-panel h2{font-size:19px;margin:0 0 12px}
+.detail-panel ul{margin:0;padding-right:22px}
+.detail-panel li{font-size:14px;line-height:1.9;color:var(--text)}
+.detail-panel li+li{margin-top:7px}
 .body-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}
 .body-field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
 .body-field input{width:100%;min-width:0;padding:12px 8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
@@ -26,37 +33,78 @@
 .body-result{margin-top:12px;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--theme-soft);line-height:1.8}
 .body-result strong{font-size:22px;display:block;margin:3px 0}
 .body-result[hidden]{display:none}
+@keyframes healthIn{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:420px){.body-fields{grid-template-columns:1fr}.body-field input{padding:10px}}
 @media(min-width:650px){.health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.detail-panel{animation:none}}
 </style>
 </head>
 <body>
 <main class="health-page">
-<header class="health-top"><a class="chip" href="index.html?v=20261020-healthbody1">رجوع</a><h1>🌿 الصحة والتغذية</h1></header>
-<p class="health-intro">معلومات عملية وآمنة تساعدك على الاهتمام بجسمك والتدرّب بعقلانية. هذا القسم للتوعية وليس تشخيصًا طبيًا.</p>
+<header class="health-top">
+<button class="health-back" id="healthExit" type="button">← رجوع</button>
+<h1 id="healthTitle">🌿 الصحة والتغذية</h1>
+</header>
+<section id="healthOverview">
+<p class="health-intro">اختر موضوعًا لفتح صفحة معلوماته. هذا القسم للتوعية وليس تشخيصًا طبيًا.</p>
+<div class="health-grid">
+<button class="health-card" type="button" data-detail="nutrition"><h2>🥗 غذاء متوازن</h2><p>أفكار بسيطة لدعم الجسم والطاقة خلال اليوم.</p></button>
+<button class="health-card" type="button" data-detail="hydration"><h2>💧 الماء والترطيب</h2><p>كيف تحافظ على الترطيب أثناء الدراسة والتدريب.</p></button>
+<button class="health-card" type="button" data-detail="recovery"><h2>😴 الراحة والتعافي</h2><p>النوم والراحة والإحماء بعد التمرين.</p></button>
+<button class="health-card" type="button" data-detail="training"><h2>🥊 تدريب آمن</h2><p>نصائح لتقليل مخاطر التدريب في المنزل.</p></button>
+<button class="health-card" type="button" data-detail="body"><h2>📏 معلومات الجسم</h2><p>أدخل بياناتك لحساب مؤشر كتلة الجسم دون تصنيف صحي مضلل.</p></button>
+</div>
+<div class="health-callout">تختلف احتياجات الجسم من شخص لآخر، وخصوصًا خلال مرحلة النمو. عند وجود قلق صحي، تحدث مع ولي أمرك ومختص صحي.</div>
+</section>
 
-<section class="health-card" aria-labelledby="bodyInfoTitle">
-<h2 id="bodyInfoTitle">📏 معلومات الجسم وحساب مؤشر الكتلة</h2>
-<p>أدخل العمر والطول والوزن لحساب مؤشر كتلة الجسم (BMI) كرقم تقريبي فقط.</p>
+<section class="detail-panel" id="detail-nutrition" hidden>
+<h2>🥗 غذاء متوازن</h2><article class="health-card"><ul>
+<li>نوّع بين الخضار والفواكه، الحبوب، مصادر البروتين، ومنتجات الألبان أو بدائلها المناسبة.</li>
+<li>تناول وجبات منتظمة ومتنوعة، ولا تتجاوز الوجبات عمدًا من أجل التدريب.</li>
+<li>لا تحتاج إلى مكملات خاصة كي تبدأ بالتعلّم؛ اسأل ولي أمرك ومختصًا صحيًا قبل استعمال أي مكمل.</li>
+<li>تجنب الحميات القاسية؛ يحتاج الجسم في مرحلة النمو إلى غذاء كافٍ ومتنوع.</li>
+</ul></article>
+</section>
+<section class="detail-panel" id="detail-hydration" hidden>
+<h2>💧 الماء والترطيب</h2><article class="health-card"><ul>
+<li>اشرب الماء بانتظام خلال اليوم، وخذ رشفات أثناء التمرين وعند الحاجة.</li>
+<li>في الجو الحار أو عند التعرق، خفّف الشدة وخذ فترات راحة.</li>
+<li>لا تعتمد على مشروبات الطاقة لتحمّل التدريب.</li>
+<li>إذا شعرت بدوار أو ضعف غير معتاد، توقف وخبر شخصًا بالغًا موثوقًا.</li>
+</ul></article>
+</section>
+<section class="detail-panel" id="detail-recovery" hidden>
+<h2>😴 الراحة والتعافي</h2><article class="health-card"><ul>
+<li>اجعل النوم الكافي والراحة جزءًا من البرنامج، لا مكافأة بعده.</li>
+<li>ابدأ بإحماء لطيف، وأنهِ الجلسة تدريجيًا بدل التوقف المفاجئ.</li>
+<li>زد صعوبة التدريب قليلًا فقط عندما تشعر أنك مستعد، واترك وقتًا للتعافي.</li>
+<li>لا تتمرن بقوة فوق الألم؛ خذ استراحة واطلب المساعدة عند الحاجة.</li>
+</ul></article>
+</section>
+<section class="detail-panel" id="detail-training" hidden>
+<h2>🥊 تدريب آمن</h2><article class="health-card"><ul>
+<li>اترك مساحة خالية حولك وثبّت الهاتف على سطح آمن بعيدًا عن مسار الحركة.</li>
+<li>تدرّب بلكمات مضبوطة، ولا تضرب الجدران أو الأثاث أو الأشخاص.</li>
+<li>إذا شعرت بألم أو دوار أو ضيق نفس غير معتاد، أوقف التمرين وأخبر شخصًا بالغًا موثوقًا.</li>
+<li>تعلم الأساسيات تدريجيًا، واستخدم معدات الحماية المناسبة عند التدريب على كيس الملاكمة.</li>
+</ul></article>
+</section>
+<section class="detail-panel" id="detail-body" hidden>
+<h2>📏 معلومات الجسم وحساب مؤشر الكتلة</h2>
+<article class="health-card">
+<p>أدخل العمر والطول والوزن بنفسك، ثم اضغط «احسب المؤشر» لإظهار النتيجة.</p>
 <form id="bodyInfoForm">
 <div class="body-fields">
-<label class="body-field">العمر (بالسنوات)<input id="bodyAge" type="number" min="5" max="19" step="1" value="15" required></label>
-<label class="body-field">الطول (سم)<input id="bodyHeight" type="number" min="50" max="230" step="0.1" value="156" required></label>
-<label class="body-field">الوزن (كغ)<input id="bodyWeight" type="number" min="10" max="300" step="0.1" value="36" required></label>
+<label class="body-field">العمر (بالسنوات)<input id="bodyAge" type="number" min="5" max="19" step="1" placeholder="xx" required></label>
+<label class="body-field">الطول (سم)<input id="bodyHeight" type="number" min="50" max="230" step="0.1" placeholder="xx" required></label>
+<label class="body-field">الوزن (كغ)<input id="bodyWeight" type="number" min="10" max="300" step="0.1" placeholder="xx" required></label>
 </div>
-<div class="body-actions"><button class="btn primary" type="submit">احسب المؤشر</button><button class="btn ghost" id="bodyReset" type="button">إعادة القيم التجريبية</button></div>
+<div class="body-actions"><button class="btn primary" type="submit">احسب المؤشر</button><button class="btn ghost" id="bodyClear" type="button">مسح الخانات</button></div>
 </form>
 <div class="body-result" id="bodyResult" role="status" aria-live="polite" hidden></div>
-<div class="health-callout">مهم لمن هم دون 18 سنة: لا تُفسَّر النتيجة بحدود البالغين، ولا تكفي وحدها لتحديد حالة صحية. يحتاج التقييم الصحيح إلى مخططات نمو مناسبة للعمر الدقيق والجنس، ويشرحه مختص صحي. لن يصنّف هذا الحساب جسمك ولن يقترح وزنًا مستهدفًا أو حمية.</div>
+<div class="health-callout">مهم لمن هم دون 18 سنة: مؤشر كتلة الجسم رقم حسابي فقط، ولا يُفسَّر بحدود البالغين. يحتاج التقييم الصحيح إلى مخططات نمو مناسبة للعمر والجنس، ويشرحه مختص صحي. هذه الأداة لا تشخّص الحالة الصحية ولا تصنّف الجسم.</div>
+</article>
 </section>
-
-<section class="health-grid">
-<article class="health-card"><h2>🥗 غذاء متوازن</h2><ul><li>نوّع بين الخضار والفواكه، الحبوب، مصادر البروتين، ومنتجات الألبان أو بدائلها المناسبة.</li><li>تناول وجبات منتظمة ومتنوعة، ولا تتجاوز الوجبات عمدًا من أجل التدريب.</li><li>لا تحتاج إلى مكملات خاصة كي تبدأ بالتعلّم؛ اسأل ولي أمرك ومختصًا صحيًا قبل استعمال أي مكمل.</li></ul></article>
-<article class="health-card"><h2>💧 الماء والترطيب</h2><ul><li>اشرب الماء بانتظام خلال اليوم، وخذ رشفات أثناء التمرين وعند الحاجة.</li><li>في الجو الحار أو عند التعرق، خفّف الشدة وخذ فترات راحة.</li><li>لا تعتمد على مشروبات الطاقة لتحمّل التدريب.</li></ul></article>
-<article class="health-card"><h2>😴 الراحة والتعافي</h2><ul><li>اجعل النوم الكافي والراحة جزءًا من البرنامج، لا مكافأة بعده.</li><li>ابدأ بإحماء لطيف، وأنهِ الجلسة تدريجيًا بدل التوقف المفاجئ.</li><li>زد صعوبة التدريب قليلًا فقط عندما تشعر أنك مستعد، واترك وقتًا للتعافي.</li></ul></article>
-<article class="health-card"><h2>🥊 تدريب آمن</h2><ul><li>اترك مساحة خالية حولك وثبّت الهاتف على سطح آمن بعيدًا عن مسار الحركة.</li><li>تدرّب بلكمات مضبوطة، ولا تضرب الجدران أو الأثاث أو الأشخاص.</li><li>إذا شعرت بألم أو دوار أو ضيق نفس غير معتاد، أوقف التمرين وأخبر شخصًا بالغًا موثوقًا.</li></ul></article>
-</section>
-<div class="health-callout">احتياجات الجسم تختلف خلال مرحلة النمو. إذا كان لديك قلق بشأن النمو أو الشهية أو الطاقة، تحدث مع ولي أمرك ومختص صحي بدل اتباع حمية قاسية أو نصائح عشوائية.</div>
 </main>
 <script>
 (() => {
@@ -66,13 +114,58 @@
     document.documentElement.dataset.theme = allowed.includes(prefs.theme) ? prefs.theme : "red";
   } catch { document.documentElement.dataset.theme = "red"; }
 
+  const overview = document.getElementById("healthOverview");
+  const title = document.getElementById("healthTitle");
+  const exit = document.getElementById("healthExit");
+  const details = [...document.querySelectorAll(".detail-panel")];
+  let currentDetail = null;
+  function showOverview() {
+    currentDetail = null;
+    details.forEach(panel => panel.hidden = true);
+    overview.hidden = false;
+    title.textContent = "🌿 الصحة والتغذية";
+    exit.textContent = "← رجوع";
+  }
+  function showDetail(key, addHistory = true) {
+    const panel = document.getElementById("detail-" + key);
+    if (!panel) return;
+    currentDetail = key;
+    overview.hidden = true;
+    details.forEach(item => item.hidden = item !== panel);
+    const heading = panel.querySelector("h2");
+    title.textContent = heading ? heading.textContent : "معلومات";
+    exit.textContent = "← قسم الصحة";
+    if (addHistory) history.pushState({healthDetail:key}, "", "#health-" + key);
+    window.scrollTo({top:0,behavior:"auto"});
+  }
+  document.querySelectorAll("[data-detail]").forEach(button => {
+    button.addEventListener("click", () => showDetail(button.dataset.detail));
+  });
+  exit.addEventListener("click", () => {
+    if (currentDetail) {
+      if (history.state && history.state.healthDetail) history.back();
+      else showOverview();
+    } else {
+      window.location.href = "index.html?v=20261020-healthbody1";
+    }
+  });
+  window.addEventListener("popstate", event => {
+    if (event.state && event.state.healthDetail) showDetail(event.state.healthDetail, false);
+    else showOverview();
+  });
+  if (location.hash.startsWith("#health-")) {
+    const key = location.hash.slice("#health-".length);
+    if (document.getElementById("detail-" + key)) showDetail(key, false);
+  }
+
   const form = document.getElementById("bodyInfoForm");
   const result = document.getElementById("bodyResult");
   const age = document.getElementById("bodyAge");
   const height = document.getElementById("bodyHeight");
   const weight = document.getElementById("bodyWeight");
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", event => {
     event.preventDefault();
+    if (!form.reportValidity()) return;
     const a = Number(age.value), h = Number(height.value), w = Number(weight.value);
     if (!Number.isFinite(a) || !Number.isFinite(h) || !Number.isFinite(w) ||
         a < 5 || a > 19 || h < 50 || h > 230 || w < 10 || w > 300) {
@@ -91,9 +184,10 @@
     note.textContent = "هذا رقم حسابي فقط، وليس تشخيصًا أو تصنيفًا لصحتك. للمراهقين، يجب تفسيره على مخططات النمو المناسبة بواسطة مختص صحي.";
     result.append(label, value, note);
   });
-  document.getElementById("bodyReset").addEventListener("click", () => {
-    age.value = "15"; height.value = "156"; weight.value = "36";
-    result.hidden = true; result.replaceChildren();
+  document.getElementById("bodyClear").addEventListener("click", () => {
+    form.reset();
+    result.hidden = true;
+    result.replaceChildren();
   });
 })();
 </script>
