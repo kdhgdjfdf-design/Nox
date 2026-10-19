@@ -71,3 +71,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 # Refresh Pages after the latest main round-settings merge.
+# Redeploy main after cleaning the training setup UI.
