@@ -118,8 +118,10 @@
         <span data-i18n="field_round_len">مدة الجولة</span>
         <select id="roundSec">
           <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
-          <option value="120" data-i18n="dur_2">دقيقتان</option>
           <option value="180" selected data-i18n="dur_3">3 دقائق</option>
+          <option value="300" data-i18n="dur_5">5 دقائق</option>
+          <option value="420" data-i18n="dur_7">7 دقائق</option>
+          <option value="600" data-i18n="dur_10">10 دقائق</option>
         </select>
       </label>
 
@@ -127,11 +129,10 @@
         <span data-i18n="field_rounds">عدد الجولات</span>
         <select id="roundCount">
           <option value="1" data-i18n="rounds_1">جولة واحدة</option>
-          <option value="2" data-i18n="rounds_2">جولتان</option>
           <option value="3" selected data-i18n="rounds_3">3 جولات</option>
-          <option value="4" data-i18n="rounds_4">4 جولات</option>
-          <option value="6" data-i18n="rounds_6">6 جولات</option>
-          <option value="12" data-i18n="rounds_12">12 جولة</option>
+          <option value="5" data-i18n="rounds_5">5 جولات</option>
+          <option value="7" data-i18n="rounds_7">7 جولات</option>
+          <option value="10" data-i18n="rounds_10">10 جولات</option>
         </select>
       </label>
       <label class="field">
@@ -141,9 +142,10 @@
           <option value="intermediate" selected data-i18n="level_intermediate">متوسط</option>
           <option value="advanced" data-i18n="level_advanced">متقدم</option>
         </select>
+        <small class="field-hint" data-i18n="difficulty_speed_hint">سرعة الأهداف تتغير تلقائيًا حسب مستوى الصعوبة.</small>
       </label>
 
-      <label class="field">
+      <label class="field" hidden>
         <span data-i18n="field_rest">الراحة بين الجولات</span>
         <select id="restSec">
           <option value="0" data-i18n="rest_0">بدون راحة</option>
@@ -152,8 +154,9 @@
           <option value="90" data-i18n="rest_90">دقيقة ونصف</option>
         </select>
       </label>
+      <p class="field-hint" data-i18n="rest_fixed_hint">الراحة دقيقة دائمًا، ويمكنك إضافة 20 ثانية أو إنهاؤها مبكرًا.</p>
 
-      <label class="field">
+      <label class="field" hidden>
         <span data-i18n="field_speed">سرعة الأهداف</span>
         <select id="speedSel">
           <option value="slow" data-i18n="speed_slow">بطيء</option>
@@ -266,9 +269,10 @@
     <div id="restOverlay" class="overlay" hidden>
       <div class="sheet">
         <h2 data-i18n="rest_title">راحة</h2>
-        <div class="big-num" id="restCount">30</div>
+        <div class="big-num" id="restCount">60</div>
         <p id="restNext" class="hint"></p>
-        <button id="restSkip" class="btn primary big" data-i18n="btn_skip_rest">ابدأ الجولة الآن</button>
+        <button id="restAdd20" class="btn ghost" data-i18n="btn_rest_add20">إضافة 20 ثانية</button>
+        <button id="restSkip" class="btn primary big" data-i18n="btn_skip_rest">إنهاء الراحة</button>
       </div>
     </div>
 
@@ -367,6 +371,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261019-gold-theme" type="module"></script>
+  <script src="script.js?v=20261019-round-rest-stability4" type="module"></script>
 </body>
 </html>
