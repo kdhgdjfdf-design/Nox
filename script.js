@@ -77,6 +77,9 @@ const T = {
   field_rounds: ["عدد الجولات", "Number of rounds"],
   field_rest: ["الراحة بين الجولات", "Rest between rounds"],
   field_speed: ["سرعة الأهداف", "Target speed"],
+  difficulty_speed_hint: ["سرعة الأهداف تتغير تلقائيًا حسب مستوى الصعوبة.", "Target speed adjusts automatically to the difficulty level."],
+  rest_fixed_hint: ["الراحة دقيقة دائمًا، ويمكنك إضافة 20 ثانية أو إنهاؤها مبكرًا.", "Rest is always 1 minute. Add 20 seconds or end the rest early."],
+  btn_rest_add20: ["إضافة 20 ثانية", "Add 20 seconds"],
   field_level: ["مستوى الصعوبة", "Difficulty level"],
   level_beginner: ["مبتدئ", "Beginner"],
   level_intermediate: ["متوسط", "Intermediate"],
@@ -86,9 +89,15 @@ const T = {
   dur_1: ["دقيقة واحدة", "1 minute"],
   dur_2: ["دقيقتان", "2 minutes"],
   dur_3: ["3 دقائق", "3 minutes"],
+  dur_5: ["5 دقائق", "5 minutes"],
+  dur_7: ["7 دقائق", "7 minutes"],
+  dur_10: ["10 دقائق", "10 minutes"],
   rounds_1: ["جولة واحدة", "1 round"],
   rounds_2: ["جولتان", "2 rounds"],
   rounds_3: ["3 جولات", "3 rounds"],
+  rounds_5: ["5 جولات", "5 rounds"],
+  rounds_7: ["7 جولات", "7 rounds"],
+  rounds_10: ["10 جولات", "10 rounds"],
   rounds_4: ["4 جولات", "4 rounds"],
   rounds_6: ["6 جولات", "6 rounds"],
   lbl_show: ["إظهار التوضيح", "Show hints"],
@@ -300,7 +309,7 @@ const IDS = [
   "jabCount", "crossCount", "ppm", "targetHits", "dodges", "pillarHits",
   "btnPause", "btnStance", "btnCam", "btnRotate", "btnStop", "toast",
   "calibOverlay", "calibStatus", "calibBtn", "calibCancel",
-  "restOverlay", "restCount", "restNext", "restSkip",
+  "restOverlay", "restCount", "restNext", "restSkip", "restAdd20",
   "pauseOverlay", "btnResume",
   "resultOverlay", "resultBody", "btnAgain", "btnHome",
   "historyModal", "historyBody", "btnClearHistory", "btnCloseHistory",
@@ -348,6 +357,7 @@ let stats = freshStats();
 let hands = { left: freshHand(), right: freshHand() };
 
 let lastPose = null;             // آخر مجموعة نقاط للجسم
+let smoothedPose = null;         // يقلل اهتزاز الهيكل بين الإطارات
 let poseSW = 0;                  // عرض الكتفين بالبكسل (في فضاء الفيديو)
 let stableSince = 0, calibReady = false;
 let countdownMs = -1;            // العد التنازلي قبل الجولة (-1 = غير نشط)
@@ -650,17 +660,17 @@ function readSettings() {
   stance = el.stanceSel.value;
   mode = pendingMode;
   sessionLevel = el.levelSel.value || "intermediate";
-  sessionSpeed = el.speedSel.value;
+  sessionSpeed = ({ beginner: "slow", intermediate: "mid", advanced: "fast" })[sessionLevel] || "mid";
   const sens = SENS[el.sensSel.value] ?? SENS.mid;
   speedMinNow = sens.speed;
   extOnNow = sens.ext;
   countTargetsOnly = el.countSel.value === "targets";
-  speedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (LEVEL_MUL[sessionLevel] ?? 1);
+  speedMul = LEVEL_MUL[sessionLevel] ?? 1;
   facingMode = el.facingSel.value;
   soundOn = el.soundToggle.checked;
   roundDurMs = Number(el.roundSec.value) * 1000;
   totalRounds = Number(el.roundCount.value);
-  restDurMs = Number(el.restSec.value) * 1000;
+  restDurMs = 60000;
 }
 
 // ---------- اختيار نوع التدريب وشاشة الإعدادات ----------
@@ -737,7 +747,7 @@ function setState(s) {
 }
 
 function startRound() {
-  const baseSpeedMul = (SPEED_MUL[sessionSpeed] ?? 1) * (LEVEL_MUL[sessionLevel] ?? 1);
+  const baseSpeedMul = LEVEL_MUL[sessionLevel] ?? 1;
   speedMul = baseSpeedMul * (mode === "progress" ? Math.max(0.65, 1 - (currentRound - 1) * 0.12) : 1);
   roundMs = 0;
   resetHands();
@@ -887,7 +897,8 @@ function detect(now) {
     console.warn(e);
     return;
   }
-  const lm = res?.landmarks?.[0];
+  const rawLm = res?.landmarks?.[0];
+  const lm = rawLm ? smoothPose(rawLm) : null;
   if (!lm || lm.length < 17) {
     lastPose = null;
     poseSW = 0;
@@ -912,17 +923,56 @@ function detect(now) {
   3) speed: سرعة المعصم خلال آخر WINDOW_MS (بوحدة عرض كتف/ثانية)
   - الذراع "مسلّحة" بعد أن تعود للاسترخاء، وتُقفل بعد كل لكمة (يمنع العدّ المزدوج)
 */
+function smoothPose(points) {
+  if (!smoothedPose || smoothedPose.length !== points.length) {
+    smoothedPose = points.map((p) => p ? { ...p } : p);
+    return smoothedPose;
+  }
+  const previous = smoothedPose;
+  const torso = new Set([11, 12, 23, 24]);
+  const upperArms = new Set([13, 14]);
+  const wristsAndHands = new Set([15, 16, 17, 18, 19, 20, 21, 22]);
+  smoothedPose = points.map((p, i) => {
+    const prev = previous[i];
+    if (!p) return prev ? { ...prev, visibility: 0 } : p;
+    if (!prev) return { ...p };
+    const vis = p.visibility ?? 1;
+    if (vis < 0.42) return { ...prev, visibility: vis };
+    const alpha = torso.has(i) ? 0.42 : upperArms.has(i) ? 0.48 : wristsAndHands.has(i) ? 0.52 : 0.48;
+    const maxStep = torso.has(i) ? 0.055 : upperArms.has(i) ? 0.075 : wristsAndHands.has(i) ? 0.105 : 0.065;
+    const dx = p.x - prev.x, dy = p.y - prev.y;
+    const distance = Math.hypot(dx, dy);
+    const factor = distance > maxStep ? maxStep / distance : 1;
+    const targetX = prev.x + dx * factor, targetY = prev.y + dy * factor;
+    return { ...p, x: prev.x + (targetX - prev.x) * alpha, y: prev.y + (targetY - prev.y) * alpha,
+      z: (prev.z ?? 0) + ((p.z ?? 0) - (prev.z ?? 0)) * alpha };
+  });
+  return smoothedPose;
+}
+
+function estimateFist(lm, side) {
+  const wrist = lm[side === "left" ? 15 : 16];
+  const elbow = lm[side === "left" ? 13 : 14];
+  const visible = (p) => !!p && Number.isFinite(p.x) && Number.isFinite(p.y) && (p.visibility ?? 1) >= 0.42;
+  if (!visible(wrist)) return null;
+  if (!visible(elbow)) return { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
+  const dx = (wrist.x - elbow.x) * vw, dy = (wrist.y - elbow.y) * vh;
+  const length = Math.hypot(dx, dy);
+  if (!Number.isFinite(length) || length < 1) return { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
+  const handReach = Math.min(length * 0.30, Math.min(vw, vh) * 0.075);
+  return { x: wrist.x + (dx / length * handReach) / vw, y: wrist.y + (dy / length * handReach) / vh, z: wrist.z ?? 0 };
+}
+
 function processHand(side, lm, now, canCount) {
   const H = hands[side];
   const iS = side === "left" ? 11 : 12;
   const iW = side === "left" ? 15 : 16;
   const S = lm[iS], W = lm[iW];
   // نقطة القبضة (مفصل السبابة) هي التي تلمس القفاز، لا المعصم الذي يكون خلفها
-  const K = lm[side === "left" ? 19 : 20];
-  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN ? K : W;
+  const fist = estimateFist(lm, side);
   const hitsBefore = stats.targetHits;
 
-  if (!S || !W ||
+  if (!S || !W || !fist ||
       (S.visibility ?? 1) < CFG.VIS_MIN ||
       (W.visibility ?? 1) < CFG.VIS_MIN ||
       poseSW < 2) {
@@ -1467,8 +1517,9 @@ function drawSkeleton(now) {
   const r = Math.max(14, poseSW * scale * 0.13);
   for (const side of ["left", "right"]) {
     const idx = side === "left" ? 15 : 16;
-    if (!good(idx)) continue;
-    const p = toScreen(lm[idx].x, lm[idx].y);
+    const fist = estimateFist(lm, side);
+    if (!good(idx) || !fist) continue;
+    const p = toScreen(fist.x, fist.y);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
     ctx.arc(p.x, p.y, recent ? r * 1.25 : r, 0, Math.PI * 2);
