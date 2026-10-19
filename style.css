@@ -1013,3 +1013,68 @@ html, body {
 :root[data-theme="gold"] .pill.status {
   color: #f4d77a;
 }
+
+
+/* ===== Compact pre-workout setup: horizontal setting bars ===== */
+.nav-themes { --accent1:#d4a017; --accent2:#76520b; }
+.nav-health { --accent1:#14b8a6; --accent2:#0b4f49; }
+#setupScreen.active {
+  width: min(100%, 920px);
+  max-width: 920px;
+  padding: calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 14px);
+}
+#setupScreen .setup-head { margin-bottom: 8px; }
+#setupScreen .setup-name { font-size: 19px; }
+#setupScreen .card {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+}
+#setupScreen .card h2 { margin-bottom: 8px; font-size: 16px; }
+#setupScreen .field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+}
+#setupScreen .field + .field { margin-top: 6px; }
+#setupScreen .field > span { flex: 1 1 48%; font-size: 13px; line-height: 1.35; }
+#setupScreen .field select {
+  flex: 0 1 54%;
+  width: 54%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+#setupScreen #btnStart { margin-top: 2px; }
+#setupScreen #homeMsg { margin-top: 6px; }
+@media (orientation: landscape) and (min-width: 600px) {
+  #setupScreen.active { width: min(100%, 1060px); max-width: 1060px; padding: 8px 18px 10px; }
+  #setupScreen .setup-head { margin-bottom: 6px; }
+  #setupScreen .card {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 8px;
+    padding: 10px;
+  }
+  #setupScreen .card h2 { grid-column: 1 / -1; }
+  #setupScreen .field + .field { margin-top: 0; }
+  #setupScreen .field { min-height: 38px; padding: 5px 8px; }
+  #setupScreen .field > span { font-size: 12px; }
+  #setupScreen .field select { font-size: 12px; min-height: 29px; }
+  #setupScreen #btnStart { max-width: 440px; margin: 6px auto 0; }
+}
+@media (max-width: 420px) and (orientation: portrait) {
+  #setupScreen.active { padding-inline: 10px; }
+  #setupScreen .field { gap: 7px; padding-inline: 8px; }
+  #setupScreen .field > span { font-size: 12px; }
+  #setupScreen .field select { width: 56%; flex-basis: 56%; font-size: 12px; }
+}
