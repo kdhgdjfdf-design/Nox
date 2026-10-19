@@ -1940,18 +1940,46 @@ function coachAddMsg(role, text) {
 
 function normalizeCoachText(value) {
   return String(value || "")
+    .normalize("NFKC")
     .toLowerCase()
-    .replace(/[أإآ]/g, "ا")
+    .replace(/[أإآٱ]/g, "ا")
     .replace(/ى/g, "ي")
     .replace(/ة/g, "ه")
-    .replace(/[ًٌٍَُِّْـ]/g, "")
-    .replace(/[؟?!.,،؛:]/g, " ")
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+    // Treat punctuation as a separator; never match inside unrelated words.
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
+function coachTokenMatches(token, rawWord) {
+  const word = normalizeCoachText(rawWord);
+  if (!word) return false;
+  if (token === word) return true;
+
+  // Limited Arabic clitic handling, not a full Arabic stemmer.
+  // Keep the remaining token at least three characters to avoid short-fragment matches.
+  if (!/[\u0600-\u06FF]/u.test(word) || word.length < 3) return false;
+  const prefixes = ["وال", "بال", "كال", "فال", "لل", "ال", "و", "ب", "ك", "ف", "ل"];
+  return prefixes.some((prefix) =>
+    token.startsWith(prefix) &&
+    token.length - prefix.length >= 3 &&
+    token.slice(prefix.length) === word
+  );
+}
+
 function coachHasAny(text, words) {
-  return words.some((word) => text.includes(word));
+  const tokens = normalizeCoachText(text).split(" ").filter(Boolean);
+  if (!tokens.length) return false;
+
+  return words.some((rawPhrase) => {
+    const phrase = normalizeCoachText(rawPhrase).split(" ").filter(Boolean);
+    if (!phrase.length || phrase.length > tokens.length) return false;
+    for (let start = 0; start <= tokens.length - phrase.length; start += 1) {
+      if (phrase.every((word, offset) => coachTokenMatches(tokens[start + offset], word))) return true;
+    }
+    return false;
+  });
 }
 
 function buildPersonalizedProgressReply(sessions, english) {
@@ -1999,17 +2027,17 @@ function buildLocalCoachReply(question) {
   const latest = sessions[0] || null;
   const has = (words) => coachHasAny(q, words);
 
-  if (has(["الم", "وجع", "اصابه", "injury", "pain", "hurt", "hurt"])) {
+  if (has(["الم", "الالم", "بالم", "بالالم", "وجع", "اصابه في", "عندي اصابه", "تعرضت لاصابه", "اصبت", "injury", "injured", "pain", "hurt", "sore", "dizzy", "dizziness"])) {
     return english
       ? "Safety first: stop the session if you feel pain, dizziness, or unusual discomfort. Do not try to punch through it. Tell a trusted adult and get advice from a qualified health professional before returning."
       : "السلامة أولًا: أوقف التدريب إذا شعرت بألم أو دوخة أو انزعاج غير معتاد. لا تحاول مواصلة اللكم رغم الألم. أخبر شخصًا بالغًا تثق به واستشر مختصًا صحيًا قبل العودة للتدريب.";
   }
 
-  if (has(["جلسه", "ادائي", "تقييمي", "نتائج", "تقدم", "احصائيات", "session", "performance", "progress", "stats", "last workout", "review"])) {
+  if (has(["جلسه", "جلستي", "ادائي", "تقييمي", "نتائج", "تقدم", "احصائيات", "session", "performance", "progress", "stats", "last workout", "review"])) {
     return buildPersonalizedProgressReply(sessions, english);
   }
 
-  if (has(["طور نفسي", "اطور", "تحسين مستواي", "كيف اتحسن", "اتقدم اكثر", "احسن ادائي", "improve myself", "how can i improve", "get better", "improve my progress", "level up", "improve my performance"])) {
+  if (has(["طور نفسي", "تطوير نفسي", "اطور", "تحسين مستواي", "كيف اتحسن", "اتقدم اكثر", "احسن ادائي", "improve myself", "get better", "improve my progress", "level up", "improve my performance", "based on my progress", "develop my skills"])) {
     return buildPersonalizedProgressReply(sessions, english);
   }
 
@@ -2019,7 +2047,7 @@ function buildLocalCoachReply(question) {
       : "كومبو للمبتدئين: ١) جاب، ٢) كروس، ٣) أعد اليدين إلى وضع الحراسة. ابدأ بـ٥–٨ تكرارات بطيئة ونظيفة، وحافظ على توازنك وأخرج النفس بهدوء مع كل لكمة. أضف الهوك فقط عندما تتحكم في اللكمتين الأولى والثانية.";
   }
 
-  if (has(["دقه", "هدف", "اهداف", "اصابه", "اخفاق", "miss", "accuracy", "target", "hit rate"])) {
+  if (has(["دقه", "هدف", "اهداف", "اصابه الهدف", "اصابه اهداف", "اخفاق", "miss", "accuracy", "target", "hit rate"])) {
     return english
       ? "For cleaner target contact: slow down first, keep your eyes on the target, extend without locking your elbow, and bring the hand back to guard after each punch. Train accuracy before speed. The app's hit detection is an estimate, so use the score as a guide—not a perfect measurement."
       : "لتحسين دقة إصابة الأهداف: خفّف السرعة أولًا، وركّز نظرك على الهدف، ومدّ الذراع دون قفل المرفق، ثم أعد اليد إلى الحراسة بعد كل لكمة. درّب الدقة قبل السرعة. احتساب التطبيق تقديري، فاعتبر النتيجة مؤشرًا لا قياسًا مثاليًا.";
@@ -2037,7 +2065,7 @@ function buildLocalCoachReply(question) {
       : "نقاط تقنية: أبقِ اليد غير الضاربة في الحراسة، ودوّر الورك والجذع دون إجبار الكتف، وحافظ على استقامة المعصم مع الساعد، ثم أعد اليد إلى الحراسة. تدرّب بسرعة منخفضة أولًا. أي لكمة تريد التركيز عليها: الجاب أم الكروس أم الهوك؟";
   }
 
-  if (has(["سرعه", "سرعتي", "تحمل", "تعب", "stamina", "speed", "pace", "endurance"])) {
+  if (has(["سرعه", "سرعتي", "تحمل", "تعب", "تعبان", "تعبانه", "تعبت", "متعب", "stamina", "speed", "pace", "endurance"])) {
     return english
       ? "Build pace gradually: use short rounds, keep a rhythm you can control, and rest between rounds. Don't chase a high punch count if your technique becomes messy. Track one thing per session—steady pace, clean form, or recovery."
       : "طوّر الإيقاع تدريجيًا: استخدم جولات قصيرة، وحافظ على سرعة تستطيع التحكم بها، واسترح بين الجولات. لا تطارد عدد لكمات كبيرًا إذا بدأت التقنية تتدهور. تابع شيئًا واحدًا في كل جلسة: ثبات الإيقاع أو نظافة الحركة أو التعافي.";
