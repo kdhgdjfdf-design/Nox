@@ -938,6 +938,11 @@ body.hide-stats .grid { display: none; }
   --theme-glow: #24083b; --theme-soft: rgba(168, 85, 247, .16);
   --theme-shadow: rgba(168, 85, 247, .34);
 }
+:root[data-theme="gold"] {
+  --red: #d4a017; --red-dark: #76520b; --line: #4a3b1d;
+  --theme-glow: #2b2108; --theme-soft: rgba(212, 160, 23, .17);
+  --theme-shadow: rgba(212, 160, 23, .34);
+}
 :root { --theme-glow: #2a0408; --theme-soft: rgba(225, 29, 46, .16); --theme-shadow: rgba(225, 29, 46, .34); }
 
 html, body {
