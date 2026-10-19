@@ -1817,7 +1817,7 @@ el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
 el.btnHealth.addEventListener("click", () => {
-  window.location.href = "health-nutrition.html?v=20261020-bodytool1";
+  window.location.href = "health-nutrition.html?v=20261020-detailviews1";
 });
 el.btnLearn.addEventListener("click", () => {
   window.location.href = "learning-hub.html?v=20261018c";
