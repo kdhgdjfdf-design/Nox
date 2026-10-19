@@ -167,7 +167,7 @@ const T = {
   btn_start_round: ["ابدأ الجولة", "Start round"],
   rest_title: ["راحة", "Rest"],
   rest_next: ["الجولة {n} ستبدأ بعد الراحة", "Round {n} starts after the rest"],
-  btn_skip_rest: ["ابدأ الجولة الآن", "Start round now"],
+  btn_skip_rest: ["إنهاء الراحة", "End rest"],
   pause_title: ["متوقف مؤقتًا", "Paused"],
   pause_hint: ["لن تُحتسب اللكمات أثناء الإيقاف.", "Punches are not counted while paused."],
   btn_resume: ["متابعة", "Resume"],
