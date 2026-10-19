@@ -88,6 +88,7 @@ const T = {
   field_speed: ["سرعة الأهداف", "Target speed"],
   field_stance: ["وضعية الوقوف", "Stance"],
   field_camera: ["الكاميرا", "Camera"],
+  dur_1: ["دقيقة واحدة", "1 minute"],
   dur_3: ["3 دقائق", "3 minutes"],
   dur_5: ["5 دقائق", "5 minutes"],
   dur_7: ["7 دقائق", "7 minutes"],
@@ -99,7 +100,9 @@ const T = {
   rounds_1: ["جولة واحدة", "1 round"],
   rounds_2: ["جولتان", "2 rounds"],
   rounds_3: ["3 جولات", "3 rounds"],
-  rounds_4: ["4 جولات", "4 rounds"],
+  rounds_5: ["5 جولات", "5 rounds"],
+  rounds_7: ["7 جولات", "7 rounds"],
+  rounds_10: ["10 جولات", "10 rounds"],
   rounds_6: ["6 جولات", "6 rounds"],
   lbl_show: ["إظهار التوضيح", "Show hints"],
   lbl_hide: ["إخفاء التوضيح", "Hide hints"],
@@ -111,6 +114,7 @@ const T = {
   count_targets: ["على الأهداف فقط", "Only on targets"],
   count_all: ["كل لكمة في الهواء أيضًا", "Every punch, including air"],
   rounds_12: ["12 جولة", "12 rounds"],
+  rest_fixed_hint: ["الراحة دقيقة دائمًا، ويمكنك إضافة 20 ثانية أو إنهاؤها أثناء الراحة.", "Rest is always 1 minute. Add 20 seconds or end the rest early during the break."],
   rest_0: ["بدون راحة", "No rest"],
   rest_30: ["30 ثانية", "30 seconds"],
   rest_60: ["دقيقة", "1 minute"],
@@ -1919,9 +1923,9 @@ document.querySelectorAll(".mode-card").forEach((card) => {
 el.btnSetupBack.addEventListener("click", () => showScreen("trainMenu"));
 
 const SETUP_PRESETS = {
-  focus:     { roundSec: "180", roundCount: "2", restSec: "30", levelSel: "beginner", speedSel: "slow", sensSel: "high", countSel: "targets" },
-  balanced:  { roundSec: "180", roundCount: "3", restSec: "30", levelSel: "intermediate", speedSel: "mid", sensSel: "mid", countSel: "targets" },
-  challenge: { roundSec: "180", roundCount: "4", restSec: "30", levelSel: "advanced", speedSel: "fast", sensSel: "mid", countSel: "targets" },
+  focus:     { roundSec: "180", roundCount: "3", restSec: "60", levelSel: "beginner", speedSel: "slow", sensSel: "high", countSel: "targets" },
+  balanced:  { roundSec: "180", roundCount: "3", restSec: "60", levelSel: "intermediate", speedSel: "mid", sensSel: "mid", countSel: "targets" },
+  challenge: { roundSec: "180", roundCount: "5", restSec: "60", levelSel: "advanced", speedSel: "fast", sensSel: "mid", countSel: "targets" },
 };
 document.querySelectorAll("[data-setup-preset]").forEach((button) => {
   button.addEventListener("click", () => {
