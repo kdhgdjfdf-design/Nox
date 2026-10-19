@@ -316,7 +316,7 @@ const IDS = [
   "helpModal", "btnCloseHelp", "seqPrompt", "btnStats", "btnLabels", "sensSel", "countSel", "splash",
   "settingsModal", "langSel", "themeSel", "btnCloseSettings", "btnResetHistory",
   "btnCoach", "coachModal", "coachBody", "btnCloseCoach",
-  "btnTraining", "btnLearn", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack", "progressHint",
+  "btnTraining", "btnLearn", "btnThemes", "btnHealth", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack", "progressHint",
 ];
 const el = {};
 for (const id of IDS) el[id] = $(id);
@@ -1816,6 +1816,13 @@ el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
+el.btnThemes.addEventListener("click", () => {
+  savePrefs();
+  window.location.href = "themes.html?v=20261019a";
+});
+el.btnHealth.addEventListener("click", () => {
+  window.location.href = "health-nutrition.html?v=20261019a";
+});
 el.btnLearn.addEventListener("click", () => {
   window.location.href = "learning-hub.html?v=20261018c";
 });
