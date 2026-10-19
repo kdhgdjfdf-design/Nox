@@ -934,7 +934,9 @@ function updateState(dt) {
 
 // ---------- الكشف عن الجسم وتحليل اللكمات ----------
 function smoothPose(points) {
-  // تنعيم خفيف: يهدئ اهتزاز الجذع دون أن يجعل الهيكل يتأخر عن الحركة.
+  // Confidence-aware smoothing: when a hand is occluded by the torso, MediaPipe
+  // can jump between estimates. Keep the last reliable coordinates instead of
+  // drawing those low-confidence jumps into the skeleton.
   if (!smoothedPose || smoothedPose.length !== points.length) {
     smoothedPose = points.map((p) => p ? { ...p } : p);
     return smoothedPose;
@@ -950,19 +952,20 @@ function smoothPose(points) {
     if (!prev) return { ...p };
 
     const vis = p.visibility ?? 1;
-    if (vis < 0.25) return { ...prev, visibility: vis };
+    // A low-confidence point is often an occlusion jump, not real motion.
+    if (vis < 0.42) return { ...prev, visibility: vis };
 
-    // Alpha أعلى = استجابة أسرع. الأيدي أسرع من الجذع حتى لا تتأخر اللكمات.
-    const alpha = torso.has(i) ? 0.46
-      : upperArms.has(i) ? 0.68
-      : wristsAndHands.has(i) ? 0.88
-      : 0.52;
+    const alpha = torso.has(i) ? 0.42
+      : upperArms.has(i) ? 0.48
+      : wristsAndHands.has(i) ? 0.52
+      : 0.48;
 
-    // نسمح بحركة أكبر لكل إطار، خصوصًا المعصمين، مع إبقاء حدّ بسيط للقفزات الشاذة.
-    const maxStep = torso.has(i) ? 0.060
-      : upperArms.has(i) ? 0.105
-      : wristsAndHands.has(i) ? 0.240
-      : 0.075;
+    // Reject isolated tracking spikes, with a gentler limit for hands so
+    // fast punches remain responsive without making the skeleton flicker.
+    const maxStep = torso.has(i) ? 0.055
+      : upperArms.has(i) ? 0.075
+      : wristsAndHands.has(i) ? 0.105
+      : 0.065;
     const dx = p.x - prev.x;
     const dy = p.y - prev.y;
     const distance = Math.hypot(dx, dy);
@@ -1040,48 +1043,35 @@ function detect(now) {
 */
 // تقدير موحّد وآمن لمركز القبضة: يستخدم نقاط الأصابع عند وضوحها، وإلا يقدّرها من الساعد.
 function estimateFist(lm, side) {
-  // MediaPipe Pose: wrist=15/16, index finger=19/20, thumb=21/22, elbow=13/14.
+  // Pose hand landmarks are coarse and can collapse toward the elbow when
+  // the hand is closed or overlaps the torso. Anchor the glove to the wrist,
+  // then move a short distance along the forearm direction toward the knuckles.
   const wrist = lm[side === "left" ? 15 : 16];
-  const index = lm[side === "left" ? 19 : 20];
-  const thumb = lm[side === "left" ? 21 : 22];
   const elbow = lm[side === "left" ? 13 : 14];
   const visible = (p) => !!p && Number.isFinite(p.x) && Number.isFinite(p.y) &&
-    (p.visibility ?? 1) >= CFG.VIS_MIN;
-  const wristGood = visible(wrist);
-  const indexGood = visible(index);
-  const thumbGood = visible(thumb);
-  const elbowGood = visible(elbow);
+    (p.visibility ?? 1) >= 0.42;
+  if (!visible(wrist)) return null;
 
-  // Prefer the hand landmarks themselves. Do not blend the wrist into the fist
-  // center: that pulls the visible marker back toward the wrist.
-  if (indexGood && thumbGood) {
-    return {
-      x: index.x * 0.62 + thumb.x * 0.38,
-      y: index.y * 0.62 + thumb.y * 0.38,
-      z: (index.z ?? 0) * 0.62 + (thumb.z ?? 0) * 0.38,
-    };
-  }
-  if (indexGood) return { x: index.x, y: index.y, z: index.z ?? 0 };
-  if (thumbGood && wristGood) {
-    // If only the thumb is reliable, bias slightly forward from the wrist.
-    return {
-      x: thumb.x * 0.75 + (wrist.x + (wrist.x - (elbowGood ? elbow.x : wrist.x))) * 0.25,
-      y: thumb.y * 0.75 + (wrist.y + (wrist.y - (elbowGood ? elbow.y : wrist.y))) * 0.25,
-      z: (thumb.z ?? 0) * 0.75 + ((wrist.z ?? 0) + ((wrist.z ?? 0) - (elbowGood ? (elbow.z ?? 0) : (wrist.z ?? 0)))) * 0.25,
-    };
+  // Without a reliable elbow, the wrist is the safest available point.
+  if (!visible(elbow)) {
+    return { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
   }
 
-  // Fallback when the hand landmarks are occluded: extrapolate along the
-  // forearm so the marker stays in front of the wrist rather than on it.
-  if (wristGood && elbowGood) {
-    return {
-      x: wrist.x + (wrist.x - elbow.x) * 0.78,
-      y: wrist.y + (wrist.y - elbow.y) * 0.78,
-      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.78,
-    };
+  // Work in video pixels so the direction remains correct on portrait video.
+  const dx = (wrist.x - elbow.x) * vw;
+  const dy = (wrist.y - elbow.y) * vh;
+  const length = Math.hypot(dx, dy);
+  if (!Number.isFinite(length) || length < 1) {
+    return { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
   }
-  // Never silently draw the marker at the wrist when the fist cannot be estimated.
-  return null;
+
+  // Estimate the fist just beyond the wrist, not halfway down the forearm.
+  const handReach = Math.min(length * 0.30, Math.min(vw, vh) * 0.075);
+  return {
+    x: wrist.x + (dx / length * handReach) / vw,
+    y: wrist.y + (dy / length * handReach) / vh,
+    z: wrist.z ?? 0,
+  };
 }
 function processHand(side, lm, now, canCount) {
   const H = hands[side];
