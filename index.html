@@ -238,6 +238,16 @@
       <p id="progressHint" class="notice small" hidden data-i18n="progress_hint">المستوى يتغيّر تلقائيًا في وضع التقدّم فقط؛ في الوضع الحر يبقى المستوى الذي اخترته ثابتًا طوال الجلسة.</p>
     </section>
 
+    <section class="setup-presets" aria-labelledby="setupPresetsTitle">
+      <h3 id="setupPresetsTitle" data-i18n="setup_quick_title">اختصارات الإعداد السريع</h3>
+      <div class="setup-presets-grid">
+        <button type="button" class="setup-preset" data-setup-preset="focus" data-i18n="setup_preset_focus">تركيز ودقة</button>
+        <button type="button" class="setup-preset" data-setup-preset="balanced" data-i18n="setup_preset_balanced">متوازن</button>
+        <button type="button" class="setup-preset" data-setup-preset="challenge" data-i18n="setup_preset_challenge">تحدّي</button>
+      </div>
+      <p class="setup-preset-hint" data-i18n="setup_preset_hint">اختر إعدادًا جاهزًا، ويمكنك تعديل أي خيار بعد ذلك.</p>
+    </section>
+
     <button id="btnStart" class="btn primary big" data-i18n="btn_start">ابدأ التدريب</button>
     <p id="homeMsg" class="msg" role="alert"></p>
   </main>
@@ -431,6 +441,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261019-hitpoint1" type="module"></script>
+  <script src="script.js?v=20261019-fist-presets1" type="module"></script>
 </body>
 </html>
