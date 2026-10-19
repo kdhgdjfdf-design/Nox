@@ -81,6 +81,53 @@ export function extract(data) {
   return { reply: text.trim().slice(0, MAX_REPLY_CHARS), sources: sources.slice(0, MAX_SOURCES) };
 }
 
+
+// مدرّب مجاني محدود: قواعد محلية ثابتة، لا يستدعي أي API ولا يكلّف مالًا.
+export function freeCoachReply(question) {
+  const q = question.toLowerCase();
+  const arabic = /[\u0600-\u06FF]/.test(question);
+  const includesAny = (...terms) => terms.some((term) => q.includes(term));
+
+  if (includesAny("ألم", "يوجع", "دوخة", "دوار", "ضيق تنفس", "إصابة", "pain", "dizzy", "dizziness", "breathing difficulty", "injury")) {
+    return arabic
+      ? "سلامتك أولًا. أوقف التدريب الآن وأخبر ولي أمرك أو شخصًا بالغًا تثق به. إذا كان الألم شديدًا أو استمرّ، اطلب تقييمًا من مختص صحي. لا أستطيع تشخيص الإصابات."
+      : "Safety first: stop training and tell a trusted adult. If pain is severe or persists, seek advice from a qualified health professional. I can’t diagnose injuries.";
+  }
+  if (includesAny("كيف ألكم", "كيف اضرب", "علمني اللكم", "كومبو", "تركيبة لكمات", "أضرب شخص", "كيف أفوز في شجار", "how to punch", "punch combination", "combo", "fight someone", "knock out")) {
+    return arabic
+      ? "أقدر أشرح أسماء اللكمات وقواعد الملاكمة، لكن لا أقدّم خطوات لتنفيذ اللكمات أو تعليمات لإيذاء شخص. تعلّم التقنية عمليًا مع مدرب مؤهل وفي بيئة آمنة. هل تريد شرح قواعد اللعبة أو تدريب لياقة دون احتكاك؟"
+      : "I can explain boxing terminology and rules, but I can’t give step-by-step striking or instructions to hurt someone. Learn technique in person with a qualified coach in a safe setting. Would you like rules or non-contact fitness guidance?";
+  }
+  if (includesAny("إحماء", "الاحماء", "تسخين", "warm up", "warm-up", "warmup")) {
+    return arabic
+      ? "لإحماء خفيف: امشِ في المكان قليلًا، حرّك الكتفين والذراعين بلطف، ثم حرّك الكاحلين والوركين ضمن مدى مريح. ابدأ تدريجيًا وتوقف إذا شعرت بألم أو دوخة."
+      : "For a gentle warm-up, walk in place, move your shoulders and arms comfortably, then gently mobilize your ankles and hips. Start gradually and stop if you feel pain or dizziness.";
+  }
+  if (includesAny("قواعد", "قانون", "الحكام", "نقاط", "rules", "scoring", "referee", "history", "تاريخ الملاكمة")) {
+    return arabic
+      ? "تُدار الملاكمة الرياضية وفق قواعد تحددها الجهة المنظمة والفئة العمرية، ويقيّم الحكام الأداء وفق نظام المسابقة. قد تختلف التفاصيل بين الاتحادات؛ أخبرني باسم القاعدة أو البطولة التي تريد فهمها."
+      : "Sport boxing follows rules set by its governing body and age category, and officials score the bout under that competition’s system. Details vary by federation; tell me which rule or event you want explained.";
+  }
+  if (includesAny("الكاميرا", "الكاميرا لا", "ما تحسب", "تحسب مرتين", "الهدف", "camera", "not detecting", "counts twice", "missed target", "bug")) {
+    return arabic
+      ? "لتشخيص مشكلة الكاميرا: جرّب إضاءة أمامية جيدة، أبقِ جسمك كاملًا داخل الإطار، وثبّت الهاتف. سجّل هل المشكلة هي عدم اكتشاف الهدف أم احتساب ضربة مرتين، وجرّب كل حالة منفردة. لا أستطيع رؤية الكاميرا من هنا."
+      : "To troubleshoot camera tracking, use even front lighting, keep your full body in frame, and stabilize the phone. Test one issue at a time: missed targets versus double counts. I can’t see your camera from here.";
+  }
+  if (includesAny("خطة", "جدول", "تمرين", "لياقة", "fitness", "workout", "training plan", "exercise")) {
+    return arabic
+      ? "ابدأ بجلسة قصيرة ومريحة: حركة عامة خفيفة، تمارين توازن وحركة، ثم راحة. اجعل التدريب دون احتكاك، وزد الصعوبة تدريجيًا فقط إذا كنت مرتاحًا. أستطيع مساعدتك بخطة عامة مناسبة للمبتدئين، لا ببرنامج مكثف."
+      : "Start with a short, comfortable session: gentle movement, balance and mobility, then rest. Keep it non-contact and increase difficulty gradually only while comfortable. I can help with a beginner-friendly general plan, not an intense program.";
+  }
+  if (includesAny("معدات", "قفازات", "خوذة", "معدات", "gear", "gloves", "headguard", "equipment")) {
+    return arabic
+      ? "اختر معدات مناسبة لمقاسك ونوع التدريب، وتأكد من سلامتها ومن إرشادات مدرب مؤهل. المعدات الواقية لا تلغي مخاطر الاحتكاك؛ الأفضل أن يكون التدريب بإشراف مناسب."
+      : "Choose equipment that fits correctly and suits the training, and check it with a qualified coach. Protective gear does not remove the risks of contact; train with appropriate supervision.";
+  }
+  return arabic
+    ? "أنا مدرّب ShadowBox المجاني المحدود، وأعمل بردود جاهزة دون خدمة مدفوعة. أستطيع المساعدة في قواعد الملاكمة، الإحماء الخفيف، اللياقة دون احتكاك، المعدات، وسجلات التطبيق. اكتب سؤالًا محددًا لأعطيك أفضل رد متاح."
+    : "I’m the limited free ShadowBox coach and use built-in replies, not a paid AI service. I can help with boxing rules, gentle warm-ups, non-contact fitness, equipment, and app troubleshooting. Ask a specific question for the best available reply.";
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin");
@@ -91,8 +138,6 @@ export default {
     if (url.pathname !== "/api/chat") return json({ error: "not_found", message: bad("not_found") }, 404, cors);
     if (request.method !== "POST") return json({ error: "method_not_allowed", message: bad("bad_request") }, 405, cors);
     if (!cors["Access-Control-Allow-Origin"]) return json({ error: "origin_not_allowed", message: MESSAGES.origin_not_allowed }, 403, cors);
-    if (!env.OPENAI_API_KEY) return json({ error: "not_configured", message: MESSAGES.not_configured }, 503, cors);
-
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
     if (rateLimited(ip, Number(env.RATE_LIMIT_PER_MIN || 10))) {
       return json({ error: "rate_limited", message: MESSAGES.rate_limited }, 429, cors);
@@ -108,6 +153,10 @@ export default {
     const maxChars = Number(env.MAX_QUESTION_CHARS || 500);
     if (!question) return json({ error: "empty", message: MESSAGES.empty }, 400, cors);
     if (question.length > maxChars) return json({ error: "too_long", message: MESSAGES.too_long }, 413, cors);
+
+    if (!env.OPENAI_API_KEY) {
+      return json({ reply: freeCoachReply(question), sources: [], mode: "free_limited" }, 200, cors);
+    }
 
     const payload = {
       model: env.OPENAI_MODEL || "gpt-5.5",
