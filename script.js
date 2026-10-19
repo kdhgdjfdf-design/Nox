@@ -1033,25 +1033,62 @@ function detect(now) {
   3) speed: سرعة المعصم خلال آخر WINDOW_MS (بوحدة عرض كتف/ثانية)
   - الذراع "مسلّحة" بعد أن تعود للاسترخاء، وتُقفل بعد كل لكمة (يمنع العدّ المزدوج)
 */
+// تقدير موحّد وآمن لمركز القبضة: يستخدم نقاط الأصابع عند وضوحها، وإلا يقدّرها من الساعد.
+function estimateFist(lm, side) {
+  const wrist = lm[side === "left" ? 15 : 16];
+  const index = lm[side === "left" ? 19 : 20];
+  const thumb = lm[side === "left" ? 21 : 22];
+  const elbow = lm[side === "left" ? 13 : 14];
+  const visible = (p) => !!p && (p.visibility ?? 1) >= CFG.VIS_MIN;
+  const wristGood = visible(wrist);
+  const indexGood = visible(index);
+  const thumbGood = visible(thumb);
+  const elbowGood = visible(elbow);
+
+  let candidate = null;
+  if (indexGood && thumbGood) {
+    candidate = wristGood
+      ? {
+          x: index.x * 0.55 + thumb.x * 0.15 + wrist.x * 0.30,
+          y: index.y * 0.55 + thumb.y * 0.15 + wrist.y * 0.30,
+          z: (index.z ?? 0) * 0.55 + (thumb.z ?? 0) * 0.15 + (wrist.z ?? 0) * 0.30,
+        }
+      : {
+          x: (index.x + thumb.x) / 2,
+          y: (index.y + thumb.y) / 2,
+          z: ((index.z ?? 0) + (thumb.z ?? 0)) / 2,
+        };
+  } else if (indexGood) {
+    candidate = { x: index.x, y: index.y, z: index.z ?? 0 };
+  }
+
+  if (candidate && wristGood && elbowGood) {
+    const forearm = Math.hypot(wrist.x - elbow.x, wrist.y - elbow.y);
+    const handOffset = Math.hypot(candidate.x - wrist.x, candidate.y - wrist.y);
+    if (forearm > 0 && handOffset <= forearm * 0.18) candidate = null;
+  }
+  if (candidate) return candidate;
+
+  // عند ضعف رؤية الأصابع، قدّر القبضة أمام المعصم بمحاذاة الساعد.
+  if (wristGood && elbowGood) {
+    return {
+      x: wrist.x + (wrist.x - elbow.x) * 0.46,
+      y: wrist.y + (wrist.y - elbow.y) * 0.46,
+      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.46,
+    };
+  }
+  return wristGood ? wrist : null;
+}
+
 function processHand(side, lm, now, canCount) {
   const H = hands[side];
   const iS = side === "left" ? 11 : 12;
   const iW = side === "left" ? 15 : 16;
   const S = lm[iS], W = lm[iW];
-  // نقطة القبضة (مفصل السبابة) هي التي تلمس القفاز، لا المعصم الذي يكون خلفها
-  const K = lm[side === "left" ? 19 : 20];
-  const TH = lm[side === "left" ? 21 : 22];
-  const thumbVisible = TH && (TH.visibility ?? 1) >= CFG.VIS_MIN;
-  // تقدير مركز القبضة من نقاط Pose المتاحة؛ هذا ليس بديلًا عن تتبع مفاصل اليد الكامل.
-  const fist = K && (K.visibility ?? 1) >= CFG.VIS_MIN
-    ? {
-        x: thumbVisible ? K.x * 0.62 + W.x * 0.28 + TH.x * 0.10 : K.x * 0.69 + W.x * 0.31,
-        y: thumbVisible ? K.y * 0.62 + W.y * 0.28 + TH.y * 0.10 : K.y * 0.69 + W.y * 0.31,
-      }
-    : W;
+  const fist = estimateFist(lm, side);
   const hitsBefore = stats.targetHits;
 
-  if (!S || !W ||
+  if (!S || !W || !fist ||
       (S.visibility ?? 1) < CFG.VIS_MIN ||
       (W.visibility ?? 1) < CFG.VIS_MIN ||
       poseSW < 2) {
@@ -1600,20 +1637,12 @@ function drawSkeleton(now) {
     ctx.fill();
   }
 
-  // مؤشر القبضة تقريبي لأن نموذج Pose لا يرى مفاصل اليد الدقيقة.
-  // نمزج السبابة والإبهام مع المعصم بدل وضع المؤشر عند أسفل اليد.
+  // مؤشر القبضة يستخدم نفس نقطة التقدير التي يعتمد عليها احتساب الإصابة.
   const r = Math.max(12, poseSW * scale * 0.105);
   for (const side of ["left", "right"]) {
-    const wristIdx = side === "left" ? 15 : 16;
-    const indexIdx = side === "left" ? 19 : 20;
-    const thumbIdx = side === "left" ? 21 : 22;
-    if (!good(wristIdx)) continue;
-    const wrist = lm[wristIdx];
-    const index = good(indexIdx) ? lm[indexIdx] : wrist;
-    const thumb = good(thumbIdx) ? lm[thumbIdx] : index;
-    const fx = index.x * 0.55 + thumb.x * 0.15 + wrist.x * 0.30;
-    const fy = index.y * 0.55 + thumb.y * 0.15 + wrist.y * 0.30;
-    const p = toScreen(fx, fy);
+    const fist = estimateFist(lm, side);
+    if (!fist) continue;
+    const p = toScreen(fist.x, fist.y);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
     ctx.arc(p.x, p.y, recent ? r * 1.25 : r, 0, Math.PI * 2);
