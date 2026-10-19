@@ -25,67 +25,191 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
 <div class="side-top"><div class="brand"><span class="brand-icon">🧠</span><span>Nox Coach</span></div><button class="icon-btn" id="closeSidebar" aria-label="إغلاق القائمة">×</button></div>
 <button class="new-chat" id="newChat"><span>＋</span><span>محادثة جديدة</span></button>
-<div class="side-bottom">🔒 يعمل محليًا على هذا الجهاز<br>لا يحتاج إلى API أو مفتاح.</div>
+<div class="side-bottom">🔒 إجابات محلية تعمل مباشرة.<br>يمكن تفعيل الذكاء الاصطناعي عند توفر خادم آمن.</div>
 </aside>
 <div class="overlay" id="overlay"></div>
 <main class="main">
-<header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local">● يعمل محليًا</div></header>
+<header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local" id="connectionStatus">● المساعد المحلي</div></header>
 <div class="chat-scroll"><section class="chat" id="chat">
-<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اكتب سؤالك بأي صياغة بسيطة، وسأحاول فهم المقصود من الكلمات والمعنى.</p>
-</div>
+<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p><div class="suggestions" id="suggestions"><button class="suggestion" type="button" data-question="ما أهم قواعد السلامة قبل أي تمرين؟"><strong>🛡️ قواعد السلامة</strong></button><button class="suggestion" type="button" data-question="كيف أبدأ إحماءً خفيفًا وآمنًا؟"><strong>🌡️ إحماء آمن</strong></button><button class="suggestion" type="button" data-question="ما الفرق بين اللياقة والتحمل والتوازن؟"><strong>📈 اللياقة العامة</strong></button><button class="suggestion" type="button" data-question="ما تاريخ الملاكمة باختصار؟"><strong>📚 تاريخ الملاكمة</strong></button></div></div>
 <div class="messages" id="messages" aria-live="polite"></div>
 </section></div>
-<div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note">Nox دليل محلي بإجابات مبرمجة مسبقًا، وليس نموذج ذكاء اصطناعي متصلًا بالإنترنت.</div></div></div>
+<div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note" id="composerNote">الإجابات المحلية تعمل الآن. عند تفعيل الخادم الآمن، يمكن للمدرّب فهم أسئلة أوسع وإرفاق المصادر.</div></div></div>
 </main></div>
 <script>
-const answers={
-boxing_rules:"قواعد الملاكمة الأساسية: توجيه اللكمات بقبضة اليد المغطاة بالقفاز إلى المناطق المسموح بها في مقدمة وجانبي الجذع والرأس وفق قواعد الفئة، وعدم الضرب أسفل الحزام أو خلف الرأس أو بعد أمر الحكم بالتوقف. يُمنع الركل والضرب بالرأس أو استخدام المرفق، كما يُمنع مسك الخصم أو دفعه بصورة غير قانونية. في التدريب الفردي تعلّم التقنية ببطء، واستخدم حماية مناسبة ولا تضرب شخصًا دون إشراف واتفاق واضح.",
-stance:"الوقفة الأساسية: اجعل قدميك متباعدتين بمقدار مريح، وقدّم قدمًا قليلًا عن الأخرى، اثنِ الركبتين قليلًا، ووزّع الوزن بتوازن. ارفع اليدين لحماية الوجه، وأبقِ الذقن منخفضًا بشكل طبيعي والكتفين مرتاحين. تختلف جهة القدم الأمامية حسب كونك أيمن أو أعسر؛ الأهم الثبات والراحة وعدم المبالغة في الانحناء.",
-footwork:"حركة القدمين والتوازن: تحرّك بخطوات صغيرة، وحرّك القدم الأقرب لاتجاه الحركة أولًا ثم اتبعها بالقدم الأخرى، حتى لا تتشابك القدمان. حافظ على مسافة الوقفة ولا تقفز أو تمدّ الخطوة أكثر من اللازم. تدرب ببطء في مساحة خالية قبل زيادة السرعة.",
-defense:"الدفاع والتفادي: أبقِ اليدين قرب الوجه، وراقب الحركة مع الحفاظ على توازنك. يمكن التدرب على خطوة جانبية صغيرة أو حركة خفيفة بالرأس بدل الميل الكبير، ثم العودة إلى الوقفة. ابدأ دون شريك وببطء؛ لا تستخدم تفاديًا حادًا قد يسبب فقدان التوازن، وتعلّم الدفاع مع مدرب مؤهل.",
-combos:"الكومبوهات هي ربط لكمتين أو أكثر في تسلسل، مثل اللكمة المستقيمة الأمامية ثم المستقيمة الخلفية. تعلّم كل لكمة منفردة أولًا، ثم اربطها ببطء مع عودة اليد إلى الحراسة بعد كل ضربة. لا تضحِّ بالتوازن أو التقنية من أجل السرعة، وتدرّب على كيس مناسب أو في الهواء دون توجيه اللكمات إلى شخص.",
-warmup:"ابدأ بتحضير لطيف لبضع دقائق، مثل المشي بهدوء في المكان وتحريك الكتفين والذراعين ضمن مدى مريح. لا تحوّل الإحماء إلى اختبار، وتوقّف إذا شعرت بألم أو دوخة.",
-fitness:"توجد أنواع مختلفة من اللياقة: التحمل القلبي التنفسي، القوة، المرونة، التوازن والتناسق. يمكن تطويرها بأنشطة عامة مناسبة لعمرك ومستواك، مع الراحة والتدرّج وتوقّف النشاط عند الألم أو الدوخة.",
-growth:"الطول يتأثر بالوراثة ومرحلة البلوغ والصحة العامة، والنمو يختلف كثيرًا بين المراهقين. لا يمكن الحكم على النمو من العمر وحده؛ الطبيب يستخدم منحنيات النمو ومتابعة القياسات مع الوقت. إذا كنت قلقًا بشأن طولك، تحدث مع ولي أمرك وطبيبك.",
-weight:"لا يوجد رقم واحد اسمه الوزن المثالي لكل شخص في عمرك. عند المراهقين يُقيّم الوزن مع الطول والعمر والجنس ومرحلة النمو ومنحنيات النمو، وليس بجدول بالغين أو مقارنة بالآخرين. أستطيع شرح العوامل العامة، لكن التقييم الشخصي الأفضل يكون مع طبيب أو ممرض مدرسي.",
-plan:"ابدأ بخطة بسيطة ومتوازنة: حركة ممتعة تناسبك، أنشطة خفيفة لتحسين التحمل، تمارين مرونة لطيفة، وأيام راحة كافية. ارفع النشاط تدريجيًا ولا تتمرن رغم الألم أو الدوخة. أخبرني عن مستوى نشاطك وما الذي تستمتع به لأقترح روتينًا عامًا وآمنًا.",
-recovery:"التعافي جزء مهم من أي نشاط: اشرب الماء بانتظام، وتناول وجبات متوازنة، ونَم بما يكفي. إذا استمر التعب غير المعتاد، خذ راحة وتحدّث مع شخص بالغ تثق به.",
-camera:"ضع الهاتف على سطح ثابت وفي مكان آمن، واجعل الإضاءة أمامك، وتأكد من أذونات الكاميرا. قد تخطئ قراءة الحركة أحيانًا، لذا اعتبر الأرقام تقديرية ولا تعتمد عليها للحكم على صحتك.",
-safety:"اختر مساحة خالية وآمنة، وتأكد أن الهاتف مثبت جيدًا. لا تواصل النشاط عند الألم أو الدوخة أو ضيق النفس غير المعتاد، واستشر شخصًا بالغًا تثق به إذا لم تكن متأكدًا مما ينبغي فعله.",
-progress:"تابع الانتظام والشعور العام والطاقة والتعافي، وليس رقمًا واحدًا فقط. خذ ملاحظات بسيطة أسبوعيًا، ولا تقارن نفسك بالآخرين."
+/*
+ * Nox Coach: local-first answers with an optional secure API.
+ * Keep API credentials on the server; never place API keys in this file.
+ */
+const COACH_API_URL = "";
+const LOCAL_REPLY = {
+  rules: "قواعد الملاكمة تختلف بحسب الاتحاد والفئة، لكن السلامة واحترام أوامر الحكم أساسيان. تُمنع الأفعال غير القانونية مثل الضرب بعد إيقاف النزال أو استخدام الرأس أو الركبة. للمنافسات، ارجع إلى لائحة الاتحاد المنظّم بدل الاعتماد على ملخص عام.",
+  history: "الملاكمة رياضة قديمة لها أشكال تاريخية متعددة، ثم تطورت قواعدها الحديثة خصوصًا في بريطانيا خلال القرنين الثامن عشر والتاسع عشر. أُدخلت إلى الألعاب الأولمبية الحديثة عام 1904 للرجال، وتنافست النساء أولمبيًا لأول مرة عام 2012.",
+  equipment: "تختلف المعدات بحسب نوع النشاط والعمر والإشراف: قفازات مناسبة للمقاس، لفافات يد تُستخدم بطريقة صحيحة، واقٍ للفم عند التدريب التلامسي، وحذاء مناسب للأرضية. اطلب من مدرب مؤهل أو متجر مختص التأكد من المقاس، ولا تستخدم معدات تالفة.",
+  warmup: "ابدأ بإحماء خفيف ومريح لعدة دقائق، مثل المشي في المكان وتحريك الكتفين والكاحلين ضمن مدى طبيعي. ارفع النشاط تدريجيًا ولا تجبر المفاصل على مدى واسع. توقّف إذا ظهر ألم أو دوار أو ضيق نفس غير معتاد.",
+  fitness: "اللياقة العامة تشمل التحمل القلبي التنفسي، والقوة، والمرونة، والتوازن والتناسق. الأفضل اختيار نشاط مناسب لمستواك، وزيادته تدريجيًا، وأخذ أيام راحة. لا تحتاج إلى تدريب قاسٍ كي تبدأ؛ الاستمرارية والراحة مهمتان.",
+  safety: "قبل النشاط، تأكد من خلو المكان من العوائق وثبات الهاتف، وابتعد عن الأثاث والأشخاص. لا تستخدم التطبيق لتوجيه الضربات إلى شخص، ولا تتدرّب عبر الألم أو الدوار. إذا كان النشاط تلامسيًا، فيجب أن يكون تحت إشراف مدرب مؤهل وبمعدات مناسبة.",
+  recovery: "التعافي جزء من التقدم: نم جيدًا، واشرب الماء بانتظام، وتناول وجبات متوازنة، وخذ الراحة عند التعب. لا تحاول تعويض يوم فائت بتمرين قاسٍ. التعب الشديد أو الألم المستمر يستحق التوقف والتحدث إلى شخص بالغ موثوق أو مختص صحي.",
+  camera: "لتحسين قراءة التطبيق، ثبّت الهاتف جيدًا، وتأكد من الإضاءة والمساحة حولك، وامنح المتصفح إذن الكاميرا عند الحاجة. النتائج تقديرية وقد تخطئ؛ لا تعتبر العدّاد قياسًا طبيًا أو تقييمًا دقيقًا لمهارتك.",
+  progress: "تابع التقدم بعلامات بسيطة مثل الانتظام، والطاقة، والشعور بعد النشاط، وجودة الراحة. لا تحكم على نفسك من رقم واحد ولا تقارن نتائجك بالآخرين. غيّر الخطة تدريجيًا بناءً على الراحة والقدرة على الاستمرار.",
+  plan: "ابدأ بروتين عام متوازن: إحماء لطيف، نشاط غير تلامسي تستمتع به، بعض الحركة لتحسين التوازن والمرونة ضمن مدى مريح، ثم تهدئة وراحة. اجعل المدة مناسبة لمستواك، ولا ترفع الشدة والمدة معًا دفعة واحدة.",
+  terminology: "أستطيع شرح المصطلحات والقواعد وتاريخ الرياضة والمعدات والسلامة واللياقة العامة. أما تعليم حركات هجومية تفصيلية أو إعداد تسلسلات للقتال فليس ما أقدمه هنا؛ الأفضل تعلّم الجانب الفني مباشرة من مدرب مؤهل ضمن بيئة آمنة.",
+  growth: "الطول والنمو يختلفان كثيرًا بين المراهقين ويتأثران بالوراثة ومرحلة البلوغ والصحة العامة. لا توجد طريقة مضمونة لزيادة الطول بتمارين خاصة. إذا كان لديك قلق حول النمو، تحدث مع ولي أمرك وطبيب يستطيع متابعة منحنى النمو.",
+  weight: "في سن المراهقة لا يُقيّم الوزن برقم واحد أو بمقارنة نفسك بالآخرين؛ بل يؤخذ العمر والطول ومرحلة النمو والصحة العامة في الحسبان. الأفضل تجنب الحميات القاسية أو المكملات غير الموثوقة، وطلب تقييم مختص إذا كان لديك قلق.",
+  fallback: "أقدر أساعدك في قواعد الملاكمة وتاريخها والمصطلحات والمعدات والسلامة والإحماء واللياقة العامة والتعافي وفهم نتائج التطبيق. جرّب توضيح الموضوع بكلمات أخرى، أو اختر أحد الاقتراحات أعلى المحادثة."
 };
-const messages=document.getElementById("messages"),welcome=document.getElementById("welcome"),question=document.getElementById("question");
-function addMessage(value,role){welcome.classList.add("empty-hide");const row=document.createElement("div");row.className="msg-row "+(role==="user"?"user-row":"bot-row");const avatar=document.createElement("div");avatar.className="avatar "+(role==="bot"?"bot-avatar":"");avatar.textContent=role==="bot"?"✦":"أنت";const msg=document.createElement("div");msg.className="msg";msg.textContent=value;if(role==="user"){row.append(avatar,msg)}else{row.append(avatar,msg)}messages.appendChild(row);row.scrollIntoView({behavior:"smooth",block:"end"});}
-function normalizeQuestion(value){
- return value.toLowerCase()
-  .normalize("NFD").replace(/[ًٌٍَُِّْٰـ]/g,"")
-  .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه")
-  .replace(/[؟?!.,،؛:]/g," ")
-  .replace(/\s+/g," ").trim();
+const messages = document.getElementById("messages");
+const welcome = document.getElementById("welcome");
+const question = document.getElementById("question");
+const form = document.getElementById("form");
+const sendButton = form.querySelector('button[type="submit"]');
+const statusLabel = document.getElementById("connectionStatus");
+const composerNote = document.getElementById("composerNote");
+function normalizeQuestion(value) {
+  return String(value || "").toLowerCase()
+    .normalize("NFD").replace(/[ًٌٍَُِّْٰـ]/g, "")
+    .replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+    .replace(/[؟?!.,،؛:()]/g, " ").replace(/\s+/g, " ").trim();
 }
-function answer(q){
- const s=normalizeQuestion(q);
- const has=(re)=>re.test(s);
- // نبدأ بالمواضيع الأكثر تحديدًا حتى لا تُلتقط الكلمة ضمن موضوع آخر.
- if(has(/(قواعد|قانون|قوانين|نظام|شروط|ممنوع|مسموح|خطا|اخطاء|مخالفات).*(ملاكم|بوكس|لكم|حلبه)|(ملاكمه|بوكسينغ|boxing).*(قواعد|قانون|شروط|ممنوع|مسموح)|(ما|ايش|شو|شنو|كيف).*(مسموح|ممنوع).*(ملاكم|لكم)/))return answers.boxing_rules;
- if(has(/(وقفة|وقفه|وضعية|وضعيه|وضع|حراسة|حراسه|احمي وجهي|ارفع يدي|اليدين).*(ملاكم|بوكس|صحيح|صح|سليم|كيف)?|كيف.*(اقف|وقفتي|احط يدي|امسك الحراسه)|stance|guard/))return answers.stance;
- if(has(/(قدم|القدمين|رجلي|رجلي|خطوات|اتحرك|الحركة|الحركه|توازن|اتوازن|تنقل).*(ملاكم|بوكس|صحيح|كيف)?|كيف.*(اتحرك|احرك رجلي|امشي في الملاكمه)|footwork|balance/))return answers.footwork;
- if(has(/(دفاع|ادافع|احمي نفسي|تفادي|اتجنب|مراوغه|مراوغة|انحني|تفلت|اتجنب الضربات|صد الضربات|صد).*(ملاكم|لكم|ضرب|كيف)?|كيف.*(اتجنب|اتفادي|ادافع|احمي نفسي)|defen[cs]e|dodge/))return answers.defense;
- if(has(/(كومبو|كومبوهات|تركيبه|تركيبة|تسلسل|مجموعة لكمات|ربط اللكمات|لكمات متتاليه|لكمات متتالية|جاب|كروس|jab|cross|combo)/))return answers.combos;
- if(has(/(احماء|تسخين|تهيئه|تهيئة|قبل التمرين|قبل الملاكمه|warm.?up)/))return answers.warmup;
- if(has(/(طول|اطول|النمو|انمو|البلوغ|مرحلة البلوغ|growth|height)/))return answers.growth;
- if(has(/(وزن|الوزن|نحافه|نحافة|سمنه|سمنة|كتله الجسم|كتلة الجسم|weight|bmi)/))return answers.weight;
- if(has(/(خطة|خطه|جدول|روتين|برنامج|انظم تمريني|تنظيم التمرين|plan|routine)/))return answers.plan;
- if(has(/(لياقه|لياقة|التحمل|القوة|قوة الجسم|مرونه|مرونة|تمارين|تمرين|نشاط بدني|fitness|exercise)/))return answers.fitness;
- if(has(/(راحه|راحة|تعافي|استشفاء|استرجاع|نوم|ماء|اشرب|recovery|rest)/))return answers.recovery;
- if(has(/(كاميرا|الكاميرا|الهاتف|التصوير|اضاءة|إضاءة|تتبع الحركة|تتبّع الحركة|camera)/))return answers.camera;
- if(has(/(سلامه|سلامة|امن|أمان|اصابه|إصابة|الم|ألم|وجع|دوخه|دوخة|ضيق النفس|safety|pain)/))return answers.safety;
- if(has(/(تقدم|تقدّم|نتيجه|نتيجة|احصاء|إحصاء|ارقام|أرقام|احسن|تحسن|progress|stats)/))return answers.progress;
- return "أقدر أساعدك في أساسيات الملاكمة والوقفة والحراسة وحركة القدمين والدفاع والكومبوهات، وكذلك الإحماء واللياقة والتعافي والسلامة. جرّب إعادة السؤال بكلمات أبسط أو اذكر الموضوع الذي تقصده. أنا أعمل بإجابات محلية مبرمجة مسبقًا، لذلك قد لا أفهم كل صياغة أو سؤال خارج المعلومات الموجودة.";
+function localAnswer(q) {
+  const s = normalizeQuestion(q);
+  const has = (re) => re.test(s);
+  if (has(/(قواعد|قانون|قوانين|ممنوع|مسموح|حكم|حكام|مخالفات|نظام).*(ملاكم|بوكس|نزال)?|ملاكمه.*(قواعد|قانون|ممنوع)/)) return LOCAL_REPLY.rules;
+  if (has(/(تاريخ|نشأت|نشاه|اصل|اولمبي|اولمبياد|متى بدات|boxing history)/)) return LOCAL_REPLY.history;
+  if (has(/(معدات|قفاز|قفازات|لفافات|واقي|حذاء|مستلزمات|معدات الحمايه)/)) return LOCAL_REPLY.equipment;
+  if (has(/(احماء|تسخين|قبل التمرين|تهيئه|warm.?up)/)) return LOCAL_REPLY.warmup;
+  if (has(/(لياقه|تحمل|توازن|مرونه|مرونة|تمارين عامه|نشاط بدني|fitness|exercise)/)) return LOCAL_REPLY.fitness;
+  if (has(/(سلامه|سلامة|امن|امان|اصابه|اصابة|الم|وجع|دوخه|دوخة|خطر|آمن|امنه|safety|pain)/)) return LOCAL_REPLY.safety;
+  if (has(/(تعافي|استشفاء|راحه|راحة|نوم|ماء|اشرب|تعب|recovery|rest)/)) return LOCAL_REPLY.recovery;
+  if (has(/(كاميرا|الهاتف|التصوير|اضاءه|إضاءة|تتبع|العدّاد|العداد|camera)/)) return LOCAL_REPLY.camera;
+  if (has(/(تقدم|تقدّم|نتيجه|نتيجة|احصاء|احصائيات|ارقام|تحسن|سجل|progress|stats)/)) return LOCAL_REPLY.progress;
+  if (has(/(خطة|خطه|جدول|روتين|برنامج|انظم نشاطي|plan|routine)/)) return LOCAL_REPLY.plan;
+  if (has(/(طول|النمو|انمو|البلوغ|height|growth)/)) return LOCAL_REPLY.growth;
+  if (has(/(وزن|الوزن|نحافه|سمنه|كتله الجسم|weight|bmi)/)) return LOCAL_REPLY.weight;
+  if (has(/(لكمه|لكمات|كومبو|كومبوهات|هجوم|اضرب|ضربات|مراوغه|دفاع|وقفة|وقفه|stance|combo|punch|attack)/)) return LOCAL_REPLY.terminology;
+  return LOCAL_REPLY.fallback;
 }
-function ask(q,label){const clean=q.trim();if(!clean)return;addMessage(label||clean,"user");addMessage(answer(clean),"bot");question.value="";closeMenu();question.focus();}
-document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const q=question.value.trim();if(!q)return;ask(q);});
-const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay");function openMenu(){sidebar.classList.add("open");overlay.classList.add("show")}function closeMenu(){sidebar.classList.remove("open");overlay.classList.remove("show")}document.getElementById("openSidebar").addEventListener("click",openMenu);document.getElementById("closeSidebar").addEventListener("click",closeMenu);overlay.addEventListener("click",closeMenu);document.getElementById("newChat").addEventListener("click",()=>{messages.replaceChildren();welcome.classList.remove("empty-hide");closeMenu();question.value="";});
+function addMessage(value, role, sources) {
+  welcome.classList.add("empty-hide");
+  const row = document.createElement("div");
+  row.className = "msg-row " + (role === "user" ? "user-row" : "bot-row");
+  const avatar = document.createElement("div");
+  avatar.className = "avatar " + (role === "bot" ? "bot-avatar" : "");
+  avatar.textContent = role === "bot" ? "✦" : "أنت";
+  const msg = document.createElement("div");
+  msg.className = "msg";
+  msg.textContent = value;
+  row.append(avatar, msg);
+  if (role === "bot" && Array.isArray(sources) && sources.length) {
+    const list = document.createElement("div");
+    list.style.cssText = "display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:12px";
+    sources.slice(0, 6).forEach((source) => {
+      if (!source || typeof source.url !== "string" || !/^https:\/\//i.test(source.url)) return;
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "↗ " + String(source.title || source.url).slice(0, 120);
+      link.style.color = "#b8c7ff";
+      list.appendChild(link);
+    });
+    if (list.childElementCount) msg.appendChild(list);
+  }
+  messages.appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "end" });
+}
+function setBusy(busy) {
+  sendButton.disabled = busy;
+  question.disabled = busy;
+  sendButton.textContent = busy ? "…" : "↑";
+}
+async function requestCoach(q) {
+  if (!COACH_API_URL) return { reply: localAnswer(q), local: true, sources: [] };
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 28000);
+  try {
+    const response = await fetch(COACH_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q }),
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || typeof data.reply !== "string" || !data.reply.trim()) {
+      throw new Error(data.message || "تعذّر الاتصال بالخادم");
+    }
+    return { reply: data.reply.trim(), local: false, sources: Array.isArray(data.sources) ? data.sources : [] };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+async function ask(rawQuestion) {
+  const q = rawQuestion.trim();
+  if (!q) return;
+  addMessage(q, "user");
+  question.value = "";
+  setBusy(true);
+  addMessage("لحظة، أجهّز الإجابة…", "bot");
+  const pending = messages.lastElementChild;
+  try {
+    const result = await requestCoach(q);
+    pending.querySelector(".msg").textContent = result.reply;
+    if (result.sources && result.sources.length) {
+      const list = document.createElement("div");
+      list.style.cssText = "display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:12px";
+      result.sources.slice(0, 6).forEach((source) => {
+        if (!source || typeof source.url !== "string" || !/^https:\/\//i.test(source.url)) return;
+        const link = document.createElement("a");
+        link.href = source.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "↗ " + String(source.title || source.url).slice(0, 120);
+        link.style.color = "#b8c7ff";
+        list.appendChild(link);
+      });
+      if (list.childElementCount) pending.querySelector(".msg").appendChild(list);
+    }
+    if (result.local) {
+      statusLabel.textContent = "● المساعد المحلي";
+      composerNote.textContent = "إجابات محلية تعمل مباشرة؛ الاتصال بنموذج خارجي غير مفعّل حاليًا.";
+    } else {
+      statusLabel.textContent = "● متصل بالذكاء الاصطناعي";
+      composerNote.textContent = "قد يستخدم المدرّب البحث على الويب؛ راجع المصادر المرفقة عند ظهورها.";
+    }
+  } catch (error) {
+    pending.querySelector(".msg").textContent = localAnswer(q) + "\n\n(تعذّر الاتصال بالخادم الآن، لذا عرضت إجابة محلية مؤقتة.)";
+    statusLabel.textContent = "● إجابة محلية";
+    composerNote.textContent = "تعذّر الاتصال بالخادم؛ يعمل المساعد المحلي بدلًا منه.";
+  } finally {
+    setBusy(false);
+    question.focus();
+  }
+}
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  ask(question.value);
+});
+document.querySelectorAll("[data-question]").forEach((button) => {
+  button.addEventListener("click", () => ask(button.dataset.question || ""));
+});
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+function openMenu() { sidebar.classList.add("open"); overlay.classList.add("show"); }
+function closeMenu() { sidebar.classList.remove("open"); overlay.classList.remove("show"); }
+document.getElementById("openSidebar").addEventListener("click", openMenu);
+document.getElementById("closeSidebar").addEventListener("click", closeMenu);
+overlay.addEventListener("click", closeMenu);
+document.getElementById("newChat").addEventListener("click", () => {
+  messages.replaceChildren();
+  welcome.classList.remove("empty-hide");
+  question.value = "";
+  closeMenu();
+  question.focus();
+});
+if (!COACH_API_URL) {
+  statusLabel.textContent = "● المساعد المحلي";
+  composerNote.textContent = "الإجابات المحلية تعمل الآن. الاتصال بنموذج ذكاء اصطناعي خارجي غير مفعّل.";
+}
 </script>
 </body>
 </html>
