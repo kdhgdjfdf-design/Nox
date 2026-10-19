@@ -975,3 +975,41 @@ html, body {
   box-shadow: 0 0 12px var(--theme-shadow);
 }
 .mode-card[data-mode="progress"] { --accent1:#64748b; --accent2:#263449; }
+
+/* ===== Gold theme visibility fix (v2) ===== */
+:root[data-theme="gold"] .nav-train,
+:root[data-theme="gold"] .mode-card[data-mode="free"],
+:root[data-theme="gold"] #setupScreen[data-mode="free"] {
+  --accent1: #d4a017;
+  --accent2: #76520b;
+}
+:root[data-theme="gold"] .nav-learn,
+:root[data-theme="gold"] .mode-card[data-mode="sequence"],
+:root[data-theme="gold"] .mode-card[data-mode="dodge"],
+:root[data-theme="gold"] .nav-coach,
+:root[data-theme="gold"] .nav-activity {
+  --accent1: #b88913;
+  --accent2: #4d3708;
+}
+:root[data-theme="gold"] .nav-bar,
+:root[data-theme="gold"] .mode-card,
+:root[data-theme="gold"] .coach-card {
+  border-color: rgba(212, 160, 23, .55);
+}
+:root[data-theme="gold"] .mode-card[data-mode="sequence"],
+:root[data-theme="gold"] .mode-card[data-mode="dodge"] {
+  background: linear-gradient(135deg, #b88913, #4d3708);
+}
+:root[data-theme="gold"] .nav-learn,
+:root[data-theme="gold"] .nav-coach,
+:root[data-theme="gold"] .nav-activity {
+  background: linear-gradient(135deg, #b88913, #4d3708);
+}
+:root[data-theme="gold"] .chip,
+:root[data-theme="gold"] .stats-toggle,
+:root[data-theme="gold"] .ctrl {
+  border-color: rgba(212, 160, 23, .55);
+}
+:root[data-theme="gold"] .pill.status {
+  color: #f4d77a;
+}
