@@ -70,6 +70,11 @@ const T = {
   notice_privacy: ["🔒 <b>الخصوصية:</b> معالجة الفيديو تتم داخل متصفحك فقط. لا يتم رفع أي صورة من الكاميرا إلى أي خادم. السجل يُحفظ محليًا على جهازك.", "🔒 <b>Privacy:</b> video is processed only inside your browser. No camera image is uploaded to any server. History is saved locally on your device."],
   notice_accuracy: ["ℹ️ كشف اللكمات تقديري من كاميرا واحدة، وقد يخطئ مع الحركات السريعة جدًا أو الإضاءة الضعيفة. راجع «نصائح الإعداد» للحصول على أفضل دقة.", "ℹ️ Punch detection is an estimate from one camera and may miss very fast moves or poor lighting. See “Setup tips” for best accuracy."],
   setup_title: ["إعدادات الجلسة", "Session settings"],
+  setup_quick_title: ["اختصارات الإعداد السريع", "Quick setup presets"],
+  setup_preset_focus: ["تركيز ودقة", "Focus & accuracy"],
+  setup_preset_balanced: ["متوازن", "Balanced"],
+  setup_preset_challenge: ["تحدّي", "Challenge"],
+  setup_preset_hint: ["اختر إعدادًا جاهزًا، ويمكنك تعديل أي خيار بعد ذلك.", "Choose a preset, then adjust any setting as needed."],
   setup_group_time: ["الوقت والجولات", "Time and rounds"],
   setup_group_control: ["الصعوبة وحساسية اللكمات", "Difficulty and punch detection"],
   rest_add20: ["+20 ثانية", "+20 seconds"],
@@ -1035,51 +1040,49 @@ function detect(now) {
 */
 // تقدير موحّد وآمن لمركز القبضة: يستخدم نقاط الأصابع عند وضوحها، وإلا يقدّرها من الساعد.
 function estimateFist(lm, side) {
+  // MediaPipe Pose: wrist=15/16, index finger=19/20, thumb=21/22, elbow=13/14.
   const wrist = lm[side === "left" ? 15 : 16];
   const index = lm[side === "left" ? 19 : 20];
   const thumb = lm[side === "left" ? 21 : 22];
   const elbow = lm[side === "left" ? 13 : 14];
-  const visible = (p) => !!p && (p.visibility ?? 1) >= CFG.VIS_MIN;
+  const visible = (p) => !!p && Number.isFinite(p.x) && Number.isFinite(p.y) &&
+    (p.visibility ?? 1) >= CFG.VIS_MIN;
   const wristGood = visible(wrist);
   const indexGood = visible(index);
   const thumbGood = visible(thumb);
   const elbowGood = visible(elbow);
 
-  let candidate = null;
+  // Prefer the hand landmarks themselves. Do not blend the wrist into the fist
+  // center: that pulls the visible marker back toward the wrist.
   if (indexGood && thumbGood) {
-    candidate = wristGood
-      ? {
-          x: index.x * 0.55 + thumb.x * 0.15 + wrist.x * 0.30,
-          y: index.y * 0.55 + thumb.y * 0.15 + wrist.y * 0.30,
-          z: (index.z ?? 0) * 0.55 + (thumb.z ?? 0) * 0.15 + (wrist.z ?? 0) * 0.30,
-        }
-      : {
-          x: (index.x + thumb.x) / 2,
-          y: (index.y + thumb.y) / 2,
-          z: ((index.z ?? 0) + (thumb.z ?? 0)) / 2,
-        };
-  } else if (indexGood) {
-    candidate = { x: index.x, y: index.y, z: index.z ?? 0 };
-  }
-
-  if (candidate && wristGood && elbowGood) {
-    const forearm = Math.hypot(wrist.x - elbow.x, wrist.y - elbow.y);
-    const handOffset = Math.hypot(candidate.x - wrist.x, candidate.y - wrist.y);
-    if (forearm > 0 && handOffset <= forearm * 0.18) candidate = null;
-  }
-  if (candidate) return candidate;
-
-  // عند ضعف رؤية الأصابع، قدّر القبضة أمام المعصم بمحاذاة الساعد.
-  if (wristGood && elbowGood) {
     return {
-      x: wrist.x + (wrist.x - elbow.x) * 0.46,
-      y: wrist.y + (wrist.y - elbow.y) * 0.46,
-      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.46,
+      x: index.x * 0.62 + thumb.x * 0.38,
+      y: index.y * 0.62 + thumb.y * 0.38,
+      z: (index.z ?? 0) * 0.62 + (thumb.z ?? 0) * 0.38,
     };
   }
-  return wristGood ? wrist : null;
-}
+  if (indexGood) return { x: index.x, y: index.y, z: index.z ?? 0 };
+  if (thumbGood && wristGood) {
+    // If only the thumb is reliable, bias slightly forward from the wrist.
+    return {
+      x: thumb.x * 0.75 + (wrist.x + (wrist.x - (elbowGood ? elbow.x : wrist.x))) * 0.25,
+      y: thumb.y * 0.75 + (wrist.y + (wrist.y - (elbowGood ? elbow.y : wrist.y))) * 0.25,
+      z: (thumb.z ?? 0) * 0.75 + ((wrist.z ?? 0) + ((wrist.z ?? 0) - (elbowGood ? (elbow.z ?? 0) : (wrist.z ?? 0)))) * 0.25,
+    };
+  }
 
+  // Fallback when the hand landmarks are occluded: extrapolate along the
+  // forearm so the marker stays in front of the wrist rather than on it.
+  if (wristGood && elbowGood) {
+    return {
+      x: wrist.x + (wrist.x - elbow.x) * 0.78,
+      y: wrist.y + (wrist.y - elbow.y) * 0.78,
+      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.78,
+    };
+  }
+  // Never silently draw the marker at the wrist when the fist cannot be estimated.
+  return null;
+}
 function processHand(side, lm, now, canCount) {
   const H = hands[side];
   const iS = side === "left" ? 11 : 12;
@@ -1924,6 +1927,27 @@ document.querySelectorAll(".mode-card").forEach((card) => {
   card.addEventListener("click", () => openSetup(card.dataset.mode));
 });
 el.btnSetupBack.addEventListener("click", () => showScreen("trainMenu"));
+
+const SETUP_PRESETS = {
+  focus:     { roundSec: "120", roundCount: "2", restSec: "30", levelSel: "beginner", speedSel: "slow", sensSel: "high", countSel: "targets" },
+  balanced:  { roundSec: "180", roundCount: "3", restSec: "30", levelSel: "intermediate", speedSel: "mid", sensSel: "mid", countSel: "targets" },
+  challenge: { roundSec: "180", roundCount: "4", restSec: "30", levelSel: "advanced", speedSel: "fast", sensSel: "mid", countSel: "targets" },
+};
+document.querySelectorAll("[data-setup-preset]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const preset = SETUP_PRESETS[button.dataset.setupPreset];
+    if (!preset) return;
+    for (const [id, value] of Object.entries(preset)) {
+      const field = document.getElementById(id);
+      if (field) field.value = value;
+    }
+    document.querySelectorAll("[data-setup-preset]").forEach((item) => {
+      const selected = item === button;
+      item.classList.toggle("selected", selected);
+      item.setAttribute("aria-pressed", String(selected));
+    });
+  });
+});
 el.btnStart.addEventListener("click", startSession);
 
 el.btnSettings.addEventListener("click", () => (el.settingsModal.hidden = false));
