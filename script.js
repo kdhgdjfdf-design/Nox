@@ -1929,7 +1929,7 @@ document.querySelectorAll(".mode-card").forEach((card) => {
 el.btnSetupBack.addEventListener("click", () => showScreen("trainMenu"));
 
 const SETUP_PRESETS = {
-  focus:     { roundSec: "120", roundCount: "2", restSec: "30", levelSel: "beginner", speedSel: "slow", sensSel: "high", countSel: "targets" },
+  focus:     { roundSec: "180", roundCount: "2", restSec: "30", levelSel: "beginner", speedSel: "slow", sensSel: "high", countSel: "targets" },
   balanced:  { roundSec: "180", roundCount: "3", restSec: "30", levelSel: "intermediate", speedSel: "mid", sensSel: "mid", countSel: "targets" },
   challenge: { roundSec: "180", roundCount: "4", restSec: "30", levelSel: "advanced", speedSel: "fast", sensSel: "mid", countSel: "targets" },
 };
