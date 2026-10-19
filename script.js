@@ -900,6 +900,7 @@ function detect(now) {
   const rawLm = res?.landmarks?.[0];
   const lm = rawLm ? smoothPose(rawLm) : null;
   if (!lm || lm.length < 17) {
+    smoothedPose = null;
     lastPose = null;
     poseSW = 0;
     dropHandTracking();
