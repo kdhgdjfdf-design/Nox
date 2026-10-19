@@ -1826,6 +1826,11 @@ el.calibBtn.addEventListener("click", () => {
   if (calibReady) startRound();
 });
 el.calibCancel.addEventListener("click", exitTraining);
+el.restAdd20.addEventListener("click", () => {
+  if (state !== "rest") return;
+  restMs += 20000;
+  updateHud();
+});
 el.restSkip.addEventListener("click", () => startRound());
 el.btnPause.addEventListener("click", togglePause);
 el.btnResume.addEventListener("click", togglePause);
