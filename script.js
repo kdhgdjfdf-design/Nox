@@ -119,6 +119,7 @@ const T = {
   theme_blue: ["أزرق", "Blue"],
   theme_green: ["أخضر", "Green"],
   theme_purple: ["بنفسجي", "Purple"],
+  theme_gold: ["ذهبي", "Gold"],
   toggle_sound: ["تفعيل الأصوات والتأثيرات الصوتية", "Sound effects"],
   btn_reset_history: ["حذف السجل المحفوظ", "Clear saved history"],
   btn_close: ["إغلاق", "Close"],
@@ -518,7 +519,7 @@ function setLang(v) {
   applyLang();
 }
 function applyTheme(v) {
-  const allowed = ["red", "blue", "green", "purple"];
+  const allowed = ["red", "blue", "green", "purple", "gold"];
   document.documentElement.dataset.theme = allowed.includes(v) ? v : "red";
 }
 function setTheme(v) {
