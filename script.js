@@ -943,11 +943,15 @@ function processHand(side, lm, now, canCount) {
   // تقدير مركز القبضة من السبابة والإبهام، مع الرجوع إلى السبابة ثم المعصم عند ضعف الرؤية.
   const K = lm[side === "left" ? 19 : 20];
   const TH = lm[side === "left" ? 21 : 22];
+  const E = lm[side === "left" ? 13 : 14];
   const kGood = K && (K.visibility ?? 1) >= CFG.VIS_MIN;
   const thGood = TH && (TH.visibility ?? 1) >= CFG.VIS_MIN;
+  const forearmFist = E && W && (E.visibility ?? 1) >= 0.3 && (W.visibility ?? 1) >= CFG.VIS_MIN
+    ? { x: W.x + (W.x - E.x) * 0.18, y: W.y + (W.y - E.y) * 0.18, z: W.z + (W.z - E.z) * 0.18, visibility: W.visibility ?? 1 }
+    : W;
   const fist = kGood && thGood
     ? { x: (K.x + TH.x) / 2, y: (K.y + TH.y) / 2, z: (K.z + TH.z) / 2, visibility: Math.min(K.visibility ?? 1, TH.visibility ?? 1) }
-    : kGood ? K : W;
+    : kGood ? K : forearmFist;
   const hitsBefore = stats.targetHits;
 
   if (!S || !W ||
@@ -1500,10 +1504,13 @@ function drawSkeleton(now) {
     const index = good(indexTip) ? lm[indexTip] : null;
     const thumb = good(thumbTip) ? lm[thumbTip] : null;
     const wrist = good(idx) ? lm[idx] : null;
+    const elbow = good(side === "left" ? 13 : 14) ? lm[side === "left" ? 13 : 14] : null;
     if (!index && !wrist) continue;
     const handPoint = index && thumb
       ? { x: (index.x + thumb.x) / 2, y: (index.y + thumb.y) / 2 }
-      : index || wrist;
+      : index || (wrist && elbow
+        ? { x: wrist.x + (wrist.x - elbow.x) * 0.18, y: wrist.y + (wrist.y - elbow.y) * 0.18 }
+        : wrist);
     const p = toScreen(handPoint.x, handPoint.y);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
