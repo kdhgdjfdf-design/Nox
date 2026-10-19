@@ -943,11 +943,12 @@ function processHand(side, lm, now, canCount) {
   // تقدير مركز القبضة من السبابة والإبهام، مع الرجوع إلى السبابة ثم المعصم عند ضعف الرؤية.
   const K = lm[side === "left" ? 19 : 20];
   const TH = lm[side === "left" ? 21 : 22];
-  const E = lm[side === "left" ? 13 : 14];
+  const elbowLm = lm[side === "left" ? 13 : 14];
   const kGood = K && (K.visibility ?? 1) >= CFG.VIS_MIN;
   const thGood = TH && (TH.visibility ?? 1) >= CFG.VIS_MIN;
-  const forearmFist = E && W && (E.visibility ?? 1) >= 0.3 && (W.visibility ?? 1) >= CFG.VIS_MIN
-    ? { x: W.x + (W.x - E.x) * 0.18, y: W.y + (W.y - E.y) * 0.18, z: W.z + (W.z - E.z) * 0.18, visibility: W.visibility ?? 1 }
+  // عند غياب نقاط الأصابع، قدّر مركز القبضة أمام المعصم بنحو نصف طول الساعد.
+  const forearmFist = elbowLm && W && (elbowLm.visibility ?? 1) >= 0.3 && (W.visibility ?? 1) >= CFG.VIS_MIN
+    ? { x: W.x + (W.x - elbowLm.x) * 0.46, y: W.y + (W.y - elbowLm.y) * 0.46, z: W.z + (W.z - elbowLm.z) * 0.46, visibility: W.visibility ?? 1 }
     : W;
   const fist = kGood && thGood
     ? { x: (K.x + TH.x) / 2, y: (K.y + TH.y) / 2, z: (K.z + TH.z) / 2, visibility: Math.min(K.visibility ?? 1, TH.visibility ?? 1) }
@@ -1506,11 +1507,18 @@ function drawSkeleton(now) {
     const wrist = good(idx) ? lm[idx] : null;
     const elbow = good(side === "left" ? 13 : 14) ? lm[side === "left" ? 13 : 14] : null;
     if (!index && !wrist) continue;
-    const handPoint = index && thumb
+    const candidate = index && thumb
       ? { x: (index.x + thumb.x) / 2, y: (index.y + thumb.y) / 2 }
-      : index || (wrist && elbow
-        ? { x: wrist.x + (wrist.x - elbow.x) * 0.18, y: wrist.y + (wrist.y - elbow.y) * 0.18 }
-        : wrist);
+      : index;
+    const forearmLength = wrist && elbow ? Math.hypot(wrist.x - elbow.x, wrist.y - elbow.y) : 0;
+    const candidateDistance = candidate && wrist ? Math.hypot(candidate.x - wrist.x, candidate.y - wrist.y) : 0;
+    // إذا أعطت نقاط الأصابع موضعًا قريبًا جدًا من المعصم، لا نثق بها ونقدّر اليد خارج المعصم.
+    const candidateReliable = candidate && wrist && forearmLength > 0 && candidateDistance > forearmLength * 0.18;
+    const handPoint = candidateReliable
+      ? candidate
+      : wrist && elbow
+        ? { x: wrist.x + (wrist.x - elbow.x) * 0.46, y: wrist.y + (wrist.y - elbow.y) * 0.46 }
+        : candidate || wrist;
     const p = toScreen(handPoint.x, handPoint.y);
     const recent = now - hands[side].lastPunch < 260;
     ctx.beginPath();
