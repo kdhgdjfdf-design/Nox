@@ -340,7 +340,7 @@ const IDS = [
   "helpModal", "btnCloseHelp", "seqPrompt", "btnStats", "btnLabels", "sensSel", "countSel", "splash",
   "settingsModal", "langSel", "themeSel", "btnCloseSettings", "btnResetHistory",
   "btnCoach", "coachModal", "coachBody", "btnCloseCoach",
-  "btnTraining", "btnLearn", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack",
+  "btnTraining", "btnLearn", "btnHealth", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack",
   "coachChatForm", "coachChatInput", "coachChatSend", "coachChatLog", "coachChatStatus", "coachRetry",
 ];
 const el = {};
@@ -2172,6 +2172,9 @@ el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
 // الأقسام الأربعة في الرئيسية
 el.btnTraining.addEventListener("click", () => showScreen("trainMenu"));
+el.btnHealth.addEventListener("click", () => {
+  window.location.href = "health-nutrition.html?v=20261019-healthfix1";
+});
 el.btnLearn.addEventListener("click", () => {
   window.location.href = "learning-hub.html?v=20261018b";
 });
