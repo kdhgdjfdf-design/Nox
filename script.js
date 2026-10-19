@@ -1757,7 +1757,7 @@ el.btnClearHistory.addEventListener("click", clearHistory);
 el.btnHelp.addEventListener("click", () => (el.helpModal.hidden = false));
 el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
-  window.location.href = "coach-preview.html?v=20261018c";
+  window.location.href = "coach-preview.html?v=20261019a";
 });
 el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
