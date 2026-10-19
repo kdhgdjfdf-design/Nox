@@ -142,7 +142,6 @@
           <option value="intermediate" selected data-i18n="level_intermediate">متوسط</option>
           <option value="advanced" data-i18n="level_advanced">متقدم</option>
         </select>
-        <small class="field-hint" data-i18n="difficulty_speed_hint">سرعة الأهداف تتغير تلقائيًا حسب مستوى الصعوبة.</small>
       </label>
 
       <label class="field" hidden>
@@ -154,7 +153,6 @@
           <option value="90" data-i18n="rest_90">دقيقة ونصف</option>
         </select>
       </label>
-      <p class="field-hint" data-i18n="rest_fixed_hint">الراحة دقيقة دائمًا، ويمكنك إضافة 20 ثانية أو إنهاؤها مبكرًا.</p>
 
       <label class="field" hidden>
         <span data-i18n="field_speed">سرعة الأهداف</span>
@@ -182,7 +180,7 @@
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" hidden>
         <span data-i18n="field_stance">وضعية الوقوف</span>
         <select id="stanceSel">
           <option value="orthodox" selected data-i18n="stance_orth">اليد اليسرى أمامية (عادية)</option>
@@ -244,7 +242,7 @@
 
       <div class="controls">
         <button id="btnPause" class="ctrl" aria-label="Pause">⏸</button>
-        <button id="btnStance" class="ctrl" data-i18n="ctrl_left">يسار أمامي</button>
+        <button id="btnStance" class="ctrl" hidden data-i18n="ctrl_left">يسار أمامي</button>
         <button id="btnRotate" class="ctrl" data-i18n="btn_rotate">⟳ تدوير</button>
         <button id="btnCam" class="ctrl" data-i18n="btn_cam">🔄 كاميرا</button>
         <button id="btnStop" class="ctrl danger" data-i18n="btn_end">إنهاء</button>
@@ -371,6 +369,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261019-round-rest-stability4" type="module"></script>
+  <script src="script.js?v=20261019-clean-setup1" type="module"></script>
 </body>
 </html>
