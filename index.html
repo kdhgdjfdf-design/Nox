@@ -149,6 +149,7 @@
           <label class="field" id="fieldRoundLen">
             <span data-i18n="field_round_len">مدة الجولة</span>
             <select id="roundSec">
+              <option value="60" data-i18n="dur_1">دقيقة واحدة</option>
               <option value="180" selected data-i18n="dur_3">3 دقائق</option>
               <option value="300" data-i18n="dur_5">5 دقائق</option>
               <option value="420" data-i18n="dur_7">7 دقائق</option>
@@ -159,11 +160,10 @@
             <span data-i18n="field_rounds">عدد الجولات</span>
             <select id="roundCount">
               <option value="1" data-i18n="rounds_1">جولة واحدة</option>
-              <option value="2" data-i18n="rounds_2">جولتان</option>
               <option value="3" selected data-i18n="rounds_3">3 جولات</option>
-              <option value="4" data-i18n="rounds_4">4 جولات</option>
-              <option value="6" data-i18n="rounds_6">6 جولات</option>
-              <option value="12" data-i18n="rounds_12">12 جولة</option>
+              <option value="5" data-i18n="rounds_5">5 جولات</option>
+              <option value="7" data-i18n="rounds_7">7 جولات</option>
+              <option value="10" data-i18n="rounds_10">10 جولات</option>
             </select>
           </label>
           <label class="field" id="fieldRest">
@@ -176,6 +176,7 @@
             </select>
           </label>
         </div>
+        <p class="field-hint setup-rest-note" data-i18n="rest_fixed_hint">الراحة دقيقة دائمًا، ويمكنك إضافة 20 ثانية أو إنهاؤها أثناء الراحة.</p>
       </div>
 
       <div class="setup-group" id="setupControlGroup">
@@ -441,6 +442,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261019-hand-stability2" type="module"></script>
+  <script src="script.js?v=20261019-round-rest-difficulty3" type="module"></script>
 </body>
 </html>
