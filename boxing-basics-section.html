@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0a0a0c">
+<title>ShadowBox Nox — أساسيات الملاكمة</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0c;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#271116 0,var(--bg) 54%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+main{width:min(100%,680px);margin:auto;padding:calc(env(safe-area-inset-top) + 16px) 15px calc(env(safe-area-inset-bottom) + 28px)}
+header{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;color:white;background:#17191c;text-decoration:none;font-size:22px;flex:none}
+.logo{width:46px;height:46px;display:grid;place-items:center;background:#32161b;border:1px solid #653039;border-radius:15px;font-size:24px;flex:none}
+h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.intro{font-size:14px;line-height:1.8;color:#b8bdc4;margin:0 0 20px}
+.section-head{display:flex;align-items:center;gap:9px;margin:22px 2px 11px}.mark{width:4px;height:22px;border-radius:5px;background:#e83b4b}
+h2{font-size:17px;margin:0}.note{font-size:12px;color:var(--muted);margin:4px 2px 12px}
+.feature{width:100%;display:flex;align-items:center;gap:13px;text-align:right;padding:15px;border-radius:19px;border:1px solid #653039;background:linear-gradient(125deg,#32171c,#171619 72%);color:white;font:inherit;cursor:pointer}
+.ico{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:#4a1d24;font-size:27px;flex:none}
+.feature strong{font-size:16px;display:block}.feature small{display:block;color:#c5aeb1;font-size:12px;line-height:1.6;margin-top:5px}.feature .arrow{margin-right:auto;font-size:22px;color:#e88b94}
+</style></head>
+<body><main>
+<header><a class="back" href="learning-hub.html?v=20261020-boxing-fix1" aria-label="العودة إلى التعلّم">‹</a><div class="logo">🥊</div><div><h1>أساسيات الملاكمة</h1><div class="sub">قسم الدروس الأساسية</div></div></header>
+<p class="intro">أنت الآن داخل قسم أساسيات الملاكمة. اضغط على البطاقة التالية للدخول إلى الدروس والفيديوهات.</p>
+<div class="section-head"><span class="mark"></span><h2>أساسيات الملاكمة</h2></div>
+<p class="note">اضغط على البطاقة لفتح صفحة الدروس.</p>
+<button class="feature" id="openVideos" type="button"><span class="ico">🥊</span><span><strong>فيديو أساسيات الملاكمة</strong><small>افتح الدروس والفيديوهات الأساسية كما كانت، دون تغيير محتواها.</small></span><span class="arrow">←</span></button>
+</main>
+<script>document.getElementById("openVideos").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261020-boxing-section1";});</script>
+</body></html>
