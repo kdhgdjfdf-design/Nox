@@ -53,14 +53,14 @@
 <p>أدخل بياناتك بنفسك، ثم اضغط «احسب المؤشر». لن تظهر نتيجة قبل الحساب.</p>
 <form id="bodyInfoForm">
 <div class="body-fields">
-<label class="body-field">العمر (بالسنوات)<input id="bodyAge" type="number" min="5" max="19" step="1" placeholder="xx" required></label>
-<label class="body-field">الطول (سم)<input id="bodyHeight" type="number" min="50" max="230" step="0.1" placeholder="xx" required></label>
-<label class="body-field">الوزن (كغ)<input id="bodyWeight" type="number" min="10" max="300" step="0.1" placeholder="xx" required></label>
+<label class="body-field">العمر (بالسنوات)<input id="bodyAge" type="number" min="5" max="120" step="1" placeholder="xx" required></label>
+<label class="body-field">الطول (سم)<input id="bodyHeight" type="number" min="50" max="250" step="0.1" placeholder="xx" required></label>
+<label class="body-field">الوزن (كغ)<input id="bodyWeight" type="number" min="10" max="500" step="0.1" placeholder="xx" required></label>
 </div>
 <div class="body-actions"><button class="btn primary" type="submit">احسب المؤشر</button><button class="btn ghost" id="bodyClear" type="button">مسح الخانات</button></div>
 </form>
 <div class="body-result" id="bodyResult" role="status" aria-live="polite" hidden></div>
-<div class="health-callout">مهم لمن هم دون 18 سنة: مؤشر كتلة الجسم رقم حسابي فقط، ولا يُفسَّر بحدود البالغين. يحتاج التقييم الصحيح إلى مخططات نمو مناسبة للعمر والجنس، ويشرحه مختص صحي. هذه الأداة لا تشخّص الحالة الصحية ولا تصنّف الجسم.</div>
+<div class="health-callout">لمن هم دون 18 سنة: لا تُفسَّر النتيجة بحدود البالغين، ويحتاج تقييمها إلى مخططات نمو مناسبة للعمر والجنس يفسّرها مختص صحي. للبالغين، تحسب الأداة المؤشر أيضًا، لكنه رقم إرشادي وليس تشخيصًا طبيًا.</div>
 </article>
 </section>
 <h2 style="margin:22px 0 12px">🌿 تعلّم العادات الصحية</h2>
@@ -174,9 +174,9 @@
     if (!form.reportValidity()) return;
     const a = Number(age.value), h = Number(height.value), w = Number(weight.value);
     if (!Number.isFinite(a) || !Number.isFinite(h) || !Number.isFinite(w) ||
-        a < 5 || a > 19 || h < 50 || h > 230 || w < 10 || w > 300) {
+        a < 5 || a > 120 || h < 50 || h > 250 || w < 10 || w > 500) {
       result.hidden = false;
-      result.textContent = "تحقق من القيم: العمر من 5 إلى 19 سنة، والطول من 50 إلى 230 سم، والوزن من 10 إلى 300 كغ.";
+      result.textContent = "تحقق من القيم: العمر من 5 إلى 120 سنة، والطول من 50 إلى 250 سم، والوزن من 10 إلى 500 كغ.";
       return;
     }
     const bmi = w / ((h / 100) ** 2);
@@ -187,7 +187,9 @@
     const value = document.createElement("strong");
     value.textContent = bmi.toFixed(1);
     const note = document.createElement("span");
-    note.textContent = "هذا رقم حسابي فقط، وليس تشخيصًا أو تصنيفًا لصحتك. للمراهقين، يجب تفسيره على مخططات النمو المناسبة بواسطة مختص صحي.";
+    note.textContent = a < 18
+      ? "هذا رقم حسابي فقط، وليس تشخيصًا. لمن هم دون 18 سنة، يجب تفسيره على مخططات النمو المناسبة للعمر والجنس بواسطة مختص صحي."
+      : "هذا رقم حسابي عام للبالغين وليس تشخيصًا طبيًا. لا يكفي المؤشر وحده للحكم على صحة الشخص.";
     result.append(label, value, note);
   });
   document.getElementById("bodyClear").addEventListener("click", () => {
