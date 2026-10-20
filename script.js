@@ -1828,7 +1828,7 @@ el.btnHealth.addEventListener("click", () => {
   window.location.href = "health-nutrition.html?v=20261020-healthbody2";
 });
 el.btnLearn.addEventListener("click", () => {
-  window.location.href = "learning-hub.html?v=20261018c";
+  window.location.href = "learning-hub.html?v=20261020-boxing-fix1";
 });
 el.btnTrainBack.addEventListener("click", () => showScreen("home"));
 el.btnLearnBack.addEventListener("click", () => showScreen("home"));
