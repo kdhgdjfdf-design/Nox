@@ -26,6 +26,11 @@ h2{font-size:17px;margin:0}.note{font-size:12px;color:var(--muted);margin:4px 2p
 <p class="note">اضغط على البطاقة لفتح صفحة الدروس.</p>
 <button class="feature" id="openVideos" type="button"><span class="ico">🥊</span><span><strong>فيديو أساسيات الملاكمة</strong><small>افتح الدروس والفيديوهات الأساسية كما كانت، دون تغيير محتواها.</small></span><span class="arrow">←</span></button>
 <button class="feature" id="openWarmups" type="button" style="margin-top:12px"><span class="ico">🔥</span><span><strong>التسخينات الأساسية</strong><small>افتح فيديو التسخينات قبل بدء التدريب.</small></span><span class="arrow">←</span></button>
+<section id="warmupsVideo" hidden style="margin-top:14px;border:1px solid #653039;border-radius:18px;overflow:hidden;background:#141518">
+<div style="padding:13px 15px;font-weight:700">🔥 فيديو التسخينات الأساسية</div>
+<div style="position:relative;width:100%;aspect-ratio:16/9;background:#000"><iframe src="https://www.youtube-nocookie.com/embed/TXhCQ-oVFUs?rel=0" title="فيديو التسخينات الأساسية" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe></div>
+<p style="padding:0 14px 14px;margin:0;color:#c7cbd1;font-size:13px;line-height:1.8">ابدأ تدريجيًا، وتوقف إذا شعرت بألم أو دوخة.</p>
+</section>
 </main>
-<script>document.getElementById("openVideos").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261020-boxing-section1";});document.getElementById("openWarmups").addEventListener("click",function(){window.location.href="boxing-warmups.html?v=20261020-warmups1";});</script>
+<script>document.getElementById("openVideos").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261020-boxing-section1";});document.getElementById("openWarmups").addEventListener("click",function(){const section=document.getElementById("warmupsVideo");section.hidden=!section.hidden;if(!section.hidden){section.scrollIntoView({behavior:"smooth",block:"start"});}});</script>
 </body></html>
