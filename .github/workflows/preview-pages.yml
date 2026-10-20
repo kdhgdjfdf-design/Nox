@@ -1,0 +1,73 @@
+name: Experimental preview (stable root + preview subpath)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feature/local-smart-coach
+    paths:
+      - 'index.html'
+      - 'script.js'
+      - 'style.css'
+      - 'package.json'
+      - '.stackblitzrc'
+      - 'README.md'
+      - 'manifest.json'
+      - 'icon-192.png'
+      - 'icon-512.png'
+      - 'character-preview.html'
+      - 'coach-preview.html'
+      - 'shadowbox-learning-preview.html'
+      - 'learning-preview.html'
+      - 'learning-hub.html'
+      - 'shadowbox-training-layout-preview.html'
+      - '.github/workflows/preview-pages.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-preview
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stable main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: stable
+
+      - name: Checkout experimental branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/local-smart-coach
+          path: experimental
+
+      - name: Assemble isolated site
+        run: |
+          mkdir -p _site/preview
+          cp -R stable/. _site/
+          cp -R experimental/. _site/preview/
+          rm -rf _site/.git _site/.github _site/preview/.git _site/preview/.github
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
