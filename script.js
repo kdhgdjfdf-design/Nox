@@ -939,10 +939,18 @@ function smoothPose(points) {
     if (!prev) return { ...p };
     const vis = p.visibility ?? 1;
     if (vis < 0.42) return { ...prev, visibility: vis };
-    const alpha = torso.has(i) ? 0.42 : upperArms.has(i) ? 0.48 : wristsAndHands.has(i) ? 0.52 : 0.48;
-    const maxStep = torso.has(i) ? 0.055 : upperArms.has(i) ? 0.075 : wristsAndHands.has(i) ? 0.105 : 0.065;
     const dx = p.x - prev.x, dy = p.y - prev.y;
     const distance = Math.hypot(dx, dy);
+    // Adaptive tracking: reduce hand lag during fast straight punches while keeping the torso stable.
+    const fastHandMotion = wristsAndHands.has(i) && distance > 0.025;
+    const alpha = torso.has(i) ? 0.46
+      : upperArms.has(i) ? 0.72
+      : wristsAndHands.has(i) ? (fastHandMotion ? 0.98 : 0.90)
+      : 0.52;
+    const maxStep = torso.has(i) ? 0.060
+      : upperArms.has(i) ? 0.12
+      : wristsAndHands.has(i) ? 0.42
+      : 0.075;
     const factor = distance > maxStep ? maxStep / distance : 1;
     const targetX = prev.x + dx * factor, targetY = prev.y + dy * factor;
     return { ...p, x: prev.x + (targetX - prev.x) * alpha, y: prev.y + (targetY - prev.y) * alpha,
@@ -960,8 +968,22 @@ function estimateFist(lm, side) {
   const dx = (wrist.x - elbow.x) * vw, dy = (wrist.y - elbow.y) * vh;
   const length = Math.hypot(dx, dy);
   if (!Number.isFinite(length) || length < 1) return { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
-  const handReach = Math.min(length * 0.30, Math.min(vw, vh) * 0.075);
-  return { x: wrist.x + (dx / length * handReach) / vw, y: wrist.y + (dy / length * handReach) / vh, z: wrist.z ?? 0 };
+  const handReach = Math.min(length * 0.18, Math.min(vw, vh) * 0.045);
+  // Keep the estimated fist close to the detected wrist so it cannot drift far away on a jab.
+  const point = {
+    x: wrist.x + (dx / length * handReach) / vw,
+    y: wrist.y + (dy / length * handReach) / vh,
+    z: wrist.z ?? 0
+  };
+  const ox = point.x - wrist.x, oy = point.y - wrist.y;
+  const offset = Math.hypot(ox, oy);
+  const maxOffset = 0.045;
+  if (offset > maxOffset) {
+    const ratio = maxOffset / offset;
+    point.x = wrist.x + ox * ratio;
+    point.y = wrist.y + oy * ratio;
+  }
+  return point;
 }
 
 function processHand(side, lm, now, canCount) {
