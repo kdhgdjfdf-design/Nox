@@ -40,12 +40,6 @@ h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margi
 <p class="intro">ابدأ من قسم أساسيات الملاكمة، ثم اختر نوع الدرس الذي تريد متابعته.</p>
 <section id="boxingBasicsSection">
 <div class="section-head"><span class="mark"></span><h2>أساسيات الملاكمة</h2></div>
-<button class="feature" id="openBoxingBasics" type="button" aria-expanded="false" aria-controls="boxingBasicsMenu">
-<span class="ico">🥊</span><span><strong>أساسيات الملاكمة</strong><small>دروس الفيديو والمهارات الأساسية في مكان واحد.</small></span><span class="arrow">←</span>
-</button>
-</section>
-<section id="boxingBasicsMenu" hidden>
-<div class="section-head"><span class="mark"></span><h2>أساسيات الملاكمة</h2></div>
 <p class="section-note">اختر أحد القسمين للانتقال إلى الدروس.</p>
 <button class="feature" id="openLessons" type="button">
 <span class="ico">🥊</span><span><strong>فيديو أساسيات الملاكمة</strong><small>افتح صفحة الدروس والفيديوهات الأساسية وتابع التعلّم من هناك.</small></span><span class="arrow">←</span>
@@ -53,7 +47,6 @@ h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margi
 <button class="feature feature-alt" id="openPunchLessons" type="button" style="margin-top:12px">
 <span class="ico">⚡</span><span><strong>مهارات الملاكمة</strong><small class="small-label">فيديو اللكمات الأساسية والمتقدمة، مقسّم إلى درسين مع مؤقّت تلقائي.</small></span><span class="arrow">←</span>
 </button>
-<button class="back-menu" id="backToLearning" type="button">‹ العودة إلى التعلّم</button>
 </section>
 <section>
 <div class="section-head"><span class="mark"></span><h2>أركان المهارات الأخرى</h2></div>
@@ -71,21 +64,6 @@ h2{font-size:17px;margin:0}.section-note{font-size:12px;color:var(--muted);margi
 <div class="note">تريد معرفة قواعد الملاكمة أو طريقة الوقفة والدفاع؟ افتح <a href="coach-preview.html?v=20261019a" style="color:#f08b95">المدرّب الذكي</a> واسأله مباشرة.</div>
 </main>
 <script>
-const basicsSection=document.getElementById("boxingBasicsSection");
-const basicsMenu=document.getElementById("boxingBasicsMenu");
-const openBasics=document.getElementById("openBoxingBasics");
-openBasics.addEventListener("click",function(){
-  basicsSection.hidden=true;
-  basicsMenu.hidden=false;
-  openBasics.setAttribute("aria-expanded","true");
-  window.scrollTo({top:0,behavior:"smooth"});
-});
-document.getElementById("backToLearning").addEventListener("click",function(){
-  basicsMenu.hidden=true;
-  basicsSection.hidden=false;
-  openBasics.setAttribute("aria-expanded","false");
-  window.scrollTo({top:0,behavior:"smooth"});
-});
 document.getElementById("openLessons").addEventListener("click",function(){window.location.href="learning-preview.html?v=20261018c";});
 document.getElementById("openPunchLessons").addEventListener("click",function(){window.location.href="shadowbox-learning-preview.html?v=20261018d";});
 </script>
