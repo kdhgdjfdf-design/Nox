@@ -1708,17 +1708,25 @@ function renderHistory() {
   if (!arr.length) {
     html += `<p class="notice">${t("hist_empty")}</p>`;
   } else {
-    html += arr.slice(0, 30).map((s) => `
-      <div class="hist-item">
-        <div>
-          <b>${fmtDate(s.date)}</b>
-          <small>${t("hist_line", { r: s.roundsDone, t: fmtTime((s.durationSec || 0) * 1000), s: s.stance === "orthodox" ? t("ctrl_left") : t("ctrl_right") })}</small>
-        </div>
-        <div class="hist-num">
-          <b>${s.total}</b> ${t("unit_punch")}<br>
-          <small>${t("hist_summary", { p: s.ppm, g: s.targetHits || 0, d: s.dodges || 0 })}${typeof s.accuracy === "number" ? " · " + t("hist_acc", { a: s.accuracy }) : ""}</small>
-        </div>
-      </div>`).join("");
+    const recentSessions = arr.slice(0, 30);
+    html += `
+      <details class="hist-group">
+        <summary class="hist-group-toggle">
+          <span>${t("hist_sessions")}</span>
+          <span class="hist-group-count">${recentSessions.length}</span>
+        </summary>
+        <div class="hist-group-list">${recentSessions.map((s) => `
+          <div class="hist-item">
+            <div>
+              <b>${fmtDate(s.date)}</b>
+              <small>${t("hist_line", { r: s.roundsDone, t: fmtTime((s.durationSec || 0) * 1000), s: s.stance === "orthodox" ? t("ctrl_left") : t("ctrl_right") })}</small>
+            </div>
+            <div class="hist-num">
+              <b>${s.total}</b> ${t("unit_punch")}<br>
+              <small>${t("hist_summary", { p: s.ppm, g: s.targetHits || 0, d: s.dodges || 0 })}${typeof s.accuracy === "number" ? " · " + t("hist_acc", { a: s.accuracy }) : ""}</small>
+            </div>
+          </div>`).join("")}</div>
+      </details>`;
   }
   el.historyBody.innerHTML = html;
 }
