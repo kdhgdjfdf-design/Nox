@@ -21,6 +21,10 @@ on:
       - 'shadowbox-learning-preview.html'
       - 'learning-preview.html'
       - 'learning-hub.html'
+      - 'boxing-basics-section.html'
+      - 'boxing-warmups.html'
+      - 'boxing-skills-section.html'
+      - 'health-nutrition.html'
       - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
 
