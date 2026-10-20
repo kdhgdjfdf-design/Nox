@@ -42,6 +42,19 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
  * Keep API credentials on the server; never place API keys in this file.
  */
 const COACH_API_URL = "";
+
+// اربط عناصر الواجهة صراحةً بدل الاعتماد على تحويل id إلى متغير عالمي؛
+ // هذا الاعتماد لا يعمل بثبات في جميع متصفحات الهاتف وطرق فتح الصفحة.
+const form = document.getElementById("form");
+const question = document.getElementById("question");
+const sendButton = form ? form.querySelector('button[type="submit"]') : null;
+const messages = document.getElementById("messages");
+const welcome = document.getElementById("welcome");
+const statusLabel = document.getElementById("connectionStatus");
+const composerNote = document.getElementById("composerNote");
+if (!form || !question || !sendButton || !messages || !welcome || !statusLabel || !composerNote) {
+  console.error("Nox Coach: missing required interface element.");
+}
 const LOCAL_REPLY = {
   rules: "قواعد الملاكمة تختلف حسب الجهة المنظمة ونوع المنافسة والفئة العمرية. القواعد العامة تشمل اتباع تعليمات الحكم، احترام التوقف، وعدم استخدام الضربات أو التصرفات المخالفة. لا تعتمد على ملخص عام لتحديد حكم رسمي؛ ارجع إلى لائحة البطولة المعنية.",
   scoring: "تختلف تفاصيل التسجيل بين الملاكمة الأولمبية/الهواة والملاكمة الاحترافية والجهة المنظمة. عمومًا، يقيّم الحكام الجولات وفق معايير اللائحة المعتمدة، وليس عدد اللكمات وحده دائمًا. إذا ذكرت نوع المنافسة أو الاتحاد أستطيع شرح النظام المناسب دون افتراض أن كل الأنظمة متطابقة.",
