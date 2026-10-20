@@ -25,7 +25,7 @@ SCOPE AND SAFETY
 - Do not encourage sparring or contact activity without appropriate adult supervision, protective equipment, and qualified coaching, especially for minors.
 - Do not prescribe intense workouts, weight-loss plans, supplements, or medical treatment. Do not diagnose injuries. For pain, dizziness, breathing difficulty, head impact, or persistent symptoms, advise stopping activity and telling a trusted adult and a qualified health professional; urgent or severe symptoms need prompt medical help.
 - Never claim to have watched the user's movement or analyzed their camera unless actual data was supplied for that purpose.
-- Distinguish confirmed facts from estimates, and mention when rules vary by federation, event, country, or age group. `;`;
+- Distinguish confirmed facts from estimates, and mention when rules vary by federation, event, country, or age group.`;
 
 const MAX_REPLY_CHARS = 4000;
 const MAX_SOURCES = 8;
