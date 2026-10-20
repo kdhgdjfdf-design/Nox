@@ -952,20 +952,24 @@ function smoothPose(points) {
     const vis = p.visibility ?? 1;
     if (vis < 0.25) return { ...prev, visibility: vis };
 
-    // Alpha أعلى = استجابة أسرع. الأيدي أسرع من الجذع حتى لا تتأخر اللكمات.
-    const alpha = torso.has(i) ? 0.46
-      : upperArms.has(i) ? 0.68
-      : wristsAndHands.has(i) ? 0.88
-      : 0.52;
-
-    // نسمح بحركة أكبر لكل إطار، خصوصًا المعصمين، مع إبقاء حدّ بسيط للقفزات الشاذة.
-    const maxStep = torso.has(i) ? 0.060
-      : upperArms.has(i) ? 0.105
-      : wristsAndHands.has(i) ? 0.240
-      : 0.075;
     const dx = p.x - prev.x;
     const dy = p.y - prev.y;
     const distance = Math.hypot(dx, dy);
+
+    // تتبّع تكيفي: عند حركة اللكمة السريعة نقلّل التنعيم حتى لا يتخلّف الهيكل
+    // عن المعصم، ونُبقي تنعيمًا أقوى للجذع لتجنّب الاهتزاز.
+    const fastHandMotion = wristsAndHands.has(i) && distance > 0.025;
+    const alpha = torso.has(i) ? 0.46
+      : upperArms.has(i) ? 0.72
+      : wristsAndHands.has(i) ? (fastHandMotion ? 0.98 : 0.90)
+      : 0.52;
+
+    // لا نقصّ حركة اليد السريعة بحد صغير؛ القصّ السابق كان يسبب تأخر التتبع
+    // أثناء الجاب/الضربة المستقيمة. يبقى حدّ أمان للقفزات غير المعقولة.
+    const maxStep = torso.has(i) ? 0.060
+      : upperArms.has(i) ? 0.12
+      : wristsAndHands.has(i) ? 0.42
+      : 0.075;
     const factor = distance > maxStep ? maxStep / distance : 1;
     const targetX = prev.x + dx * factor;
     const targetY = prev.y + dy * factor;
@@ -1052,33 +1056,49 @@ function estimateFist(lm, side) {
   const thumbGood = visible(thumb);
   const elbowGood = visible(elbow);
 
-  // Prefer the hand landmarks themselves. Do not blend the wrist into the fist
-  // center: that pulls the visible marker back toward the wrist.
-  if (indexGood && thumbGood) {
+  // MediaPipe Pose landmarks for fingers can drift during a straight punch.
+  // Keep the estimated fist near the detected wrist so the marker cannot jump
+  // away from the real hand when finger visibility is noisy.
+  const keepNearWrist = (point) => {
+    if (!point || !wristGood) return point;
+    const dx = point.x - wrist.x;
+    const dy = point.y - wrist.y;
+    const distance = Math.hypot(dx, dy);
+    const maxOffset = 0.045; // normalized video coordinates
+    if (distance <= maxOffset || distance < 1e-6) return point;
+    const ratio = maxOffset / distance;
     return {
+      ...point,
+      x: wrist.x + dx * ratio,
+      y: wrist.y + dy * ratio,
+      z: point.z ?? wrist.z ?? 0,
+    };
+  };
+
+  if (indexGood && thumbGood) {
+    return keepNearWrist({
       x: index.x * 0.62 + thumb.x * 0.38,
       y: index.y * 0.62 + thumb.y * 0.38,
       z: (index.z ?? 0) * 0.62 + (thumb.z ?? 0) * 0.38,
-    };
+    });
   }
-  if (indexGood) return { x: index.x, y: index.y, z: index.z ?? 0 };
+  if (indexGood) return keepNearWrist({ x: index.x, y: index.y, z: index.z ?? 0 });
   if (thumbGood && wristGood) {
-    // If only the thumb is reliable, bias slightly forward from the wrist.
-    return {
-      x: thumb.x * 0.75 + (wrist.x + (wrist.x - (elbowGood ? elbow.x : wrist.x))) * 0.25,
-      y: thumb.y * 0.75 + (wrist.y + (wrist.y - (elbowGood ? elbow.y : wrist.y))) * 0.25,
-      z: (thumb.z ?? 0) * 0.75 + ((wrist.z ?? 0) + ((wrist.z ?? 0) - (elbowGood ? (elbow.z ?? 0) : (wrist.z ?? 0)))) * 0.25,
-    };
+    return keepNearWrist({
+      x: thumb.x * 0.75 + wrist.x * 0.25,
+      y: thumb.y * 0.75 + wrist.y * 0.25,
+      z: (thumb.z ?? 0) * 0.75 + (wrist.z ?? 0) * 0.25,
+    });
   }
 
-  // Fallback when the hand landmarks are occluded: extrapolate along the
-  // forearm so the marker stays in front of the wrist rather than on it.
+  // When fingers are occluded, use only a short forearm extrapolation.
+  // The previous 0.78 multiplier could place the fist marker far beyond the hand.
   if (wristGood && elbowGood) {
-    return {
-      x: wrist.x + (wrist.x - elbow.x) * 0.78,
-      y: wrist.y + (wrist.y - elbow.y) * 0.78,
-      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.78,
-    };
+    return keepNearWrist({
+      x: wrist.x + (wrist.x - elbow.x) * 0.18,
+      y: wrist.y + (wrist.y - elbow.y) * 0.18,
+      z: (wrist.z ?? 0) + ((wrist.z ?? 0) - (elbow.z ?? 0)) * 0.18,
+    });
   }
   // Never silently draw the marker at the wrist when the fist cannot be estimated.
   return null;
