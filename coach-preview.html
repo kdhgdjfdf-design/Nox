@@ -93,9 +93,9 @@ function normalizeQuestion(value) {
 function analyzeQuestion(value) {
   const s = normalizeQuestion(value);
   const match = (pattern) => pattern.test(s);
-  const hasHowTo = match(/(كيف (اضرب|الكم|القي|انفذ|اسوي|اسويها)|علمني (اللكم|الضرب)|خطوات (اللكم|الضرب)|تركيبه لكمات|كومبو|كومبوهات|اسقط شخص|اضرب شخص|افوز في شجار|how to (punch|fight)|punch combination|knock ?out|hurt someone)/);
+  const hasHowTo = match(/(كيف.{0,12}(لكم|اضرب|الكم|الضرب|انفذ)|علمني.{0,10}(اللكم|الضرب)|خطوات.{0,10}(اللكم|الضرب)|تركيبه لكمات|كومبو|كومبوهات|اسقط شخص|اضرب شخص|افوز في شجار|how to (punch|fight)|punch combination|knock ?out|hurt someone)/);
   if (match(/(ضربه على الراس|ضربه راس|ارتجاج|فقدان الوعي|قيء متكرر|صداع شديد|concussion|head injury)/)) return { topic: "concussion", confidence: 0.96, safetyPriority: true };
-  if (match(/(الم|يوجع|وجع|اصابه|اصابة|دوخه|دوار|ضيق نفس|صعوبه تنفس|تنميل|نزيف|pain|injury|dizzy|breathing difficulty)/)) return { topic: "injury", confidence: 0.95, safetyPriority: true };
+  if (match(/(بالم|(^|\\s)الم(\\s|$)|يوجع|وجع|اصابه|دوخه|دوار|ضيق نفس|صعوبه تنفس|تنميل|نزيف|pain|injury|dizzy|breathing difficulty)/)) return { topic: "injury", confidence: 0.95, safetyPriority: true };
   if (hasHowTo) return { topic: "terminology", confidence: 0.94, safetyPriority: true, redirect: true };
   if (match(/(فرق|مقارنه|قارن|difference|compare)/)) {
     if (match(/(جاب|jab)/) && match(/(كروس|cross)/)) return { topic: "compare_jab_cross", confidence: 0.96 };
@@ -103,8 +103,8 @@ function analyzeQuestion(value) {
     return { topic: "comparison", confidence: 0.65, needsClarification: true };
   }
   if (match(/(ما هي الملاكمه|ماهي الملاكمه|ما المقصود بالملاكمه|تعريف الملاكمه|what is boxing)/)) return { topic: "boxing", confidence: 0.93 };
-  if (match(/(قواعد|قانون|قوانين|ممنوع|مسموح|حكم|حكام|مخالفات|نظام|قواعد اللعب|rules|foul)/)) return { topic: match(/(مخالفات|ممنوع|مسموح|foul)/) ? "fouls" : "rules", confidence: 0.88 };
   if (match(/(نقاط|تسجيل|كيف يفوز|احتساب|score|scoring|10 ?point|النقاط)/)) return { topic: "scoring", confidence: 0.88 };
+  if (match(/(قواعد|قانون|قوانين|ممنوع|مسموح|حكم|حكام|مخالفات|نظام|قواعد اللعب|rules|foul)/)) return { topic: match(/(مخالفات|ممنوع|مسموح|foul)/) ? "fouls" : "rules", confidence: 0.88 };
   if (match(/(تاريخ|نشات|نشاه|اصل الملاكمه|اولمبي|اولمبياد|متى بدات|boxing history)/)) return { topic: "history", confidence: 0.93 };
   if (match(/(جاب|jab)/)) return { topic: "jab", confidence: 0.9 };
   if (match(/(كروس|cross)/)) return { topic: "cross", confidence: 0.9 };
