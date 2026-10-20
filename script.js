@@ -1840,7 +1840,7 @@ el.btnClearHistory.addEventListener("click", clearHistory);
 el.btnHelp.addEventListener("click", () => (el.helpModal.hidden = false));
 el.btnCloseHelp.addEventListener("click", () => (el.helpModal.hidden = true));
 el.btnCoach.addEventListener("click", () => {
-  window.location.href = "coach-preview.html?v=20261019a";
+  window.location.href = "coach-preview.html?v=20261020-coach-intel2";
 });
 el.btnCloseCoach.addEventListener("click", () => (el.coachModal.hidden = true));
 
