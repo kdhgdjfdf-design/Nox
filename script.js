@@ -1406,14 +1406,14 @@ function drawPillars() {
     const h = ch * (0.12 + 0.3 * p.k);
     const cy = p.high ? ch * 0.22 : ch * 0.55;   // مستوى الرأس أو الجسم
     const a = Math.min(1, 0.3 + p.k);
-    const edge = p.high ? "225,29,46" : "255,190,60"; // أحمر للرأس، ذهبي للجسم
+    const edge = "255,45,58"; // أحمر واضح لجميع حواجز التفادي
     ctx.save();
     ctx.translate(x, cy);
     ctx.rotate(-p.lane * 0.35);          // ميلان يتجه نحو منتصف الشاشة (الرأس)
     const grad = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
-    grad.addColorStop(0, `rgba(40,40,48,${a})`);
-    grad.addColorStop(0.5, `rgba(125,130,142,${a})`);
-    grad.addColorStop(1, `rgba(40,40,48,${a})`);
+    grad.addColorStop(0, `rgba(110,8,18,${a})`);
+    grad.addColorStop(0.5, `rgba(255,45,58,${a})`);
+    grad.addColorStop(1, `rgba(110,8,18,${a})`);
     ctx.fillStyle = grad;
     ctx.fillRect(-w / 2, -h / 2, w, h);
     ctx.strokeStyle = `rgba(${edge},${a})`;
