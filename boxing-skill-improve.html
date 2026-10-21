@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a0c">
+<title>ShadowBox Nox — كيف تطوّر من طريقة ملاكمتك</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0c;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3;--red:#e83b4b;--soft:#32161b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#271116 0,var(--bg) 50%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;min-height:100vh}
+main{width:min(100%,650px);margin:auto;padding:calc(env(safe-area-inset-top) + 16px) 15px calc(env(safe-area-inset-bottom) + 28px)}
+header{display:flex;align-items:center;gap:11px;margin-bottom:20px}.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;color:white;background:#17191c;text-decoration:none;font-size:22px}.logo{width:45px;height:45px;display:grid;place-items:center;background:var(--soft);border:1px solid #5c242b;border-radius:15px;font-size:23px}
+h1{font-size:21px;margin:0}h1 span{color:var(--red)}.eyebrow{font-size:12px;color:var(--muted);margin-top:3px}.intro{font-size:14px;line-height:1.8;color:#b8bdc4;margin:0 0 17px}
+.card{border:1px solid var(--line);background:linear-gradient(155deg,#171a1e,#111315);border-radius:21px;padding:14px;box-shadow:0 18px 40px #0003}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:2px 2px 12px}h2{font-size:19px;margin:0}.tag{font-size:11px;border:1px solid #343941;border-radius:20px;padding:5px 8px;color:#c3c7cc;white-space:nowrap}.desc{font-size:13px;color:var(--muted);line-height:1.7;margin:6px 0 0}
+.video{width:100%;aspect-ratio:16/9;border:1px solid #333840;border-radius:14px;overflow:hidden;background:#050607}.video iframe{width:100%;height:100%;border:0;display:block}.controls{display:flex;gap:9px;margin-top:10px}.btn{flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid #363b42;border-radius:13px;background:#202328;color:white;text-decoration:none;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.btn.primary{background:var(--red);border-color:var(--red)}
+.timer{margin-top:12px;padding:12px;border:1px solid #343941;background:#101215;border-radius:14px}.timer-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.timer-label{font-size:12px;color:var(--muted)}.time{font-size:16px;font-weight:750;font-variant-numeric:tabular-nums;direction:ltr}.track{height:6px;border-radius:8px;background:#292d32;overflow:hidden;margin-top:10px}.fill{height:100%;width:0;background:var(--red)}.status{font-size:12px;line-height:1.7;color:#c8cdd3;margin-top:8px}.note{margin:15px 3px 0;color:#858c95;font-size:11px;line-height:1.8}
+</style></head>
+<body><main>
+<header><a class="back" href="boxing-skills-section.html?v=20261021" aria-label="العودة إلى المهارات">‹</a><div class="logo">🥊</div><div><h1>ShadowBox <span>Nox</span></h1><div class="eyebrow">مسار التعلّم · مهارات الملاكمة</div></div></header>
+<p class="intro">شاهد الدرس هنا داخل التطبيق. استخدم أزرار التشغيل والتحريك، وسيتبع المؤقّت وقت الفيديو.</p>
+<section class="card"><div class="head"><div><h2>كيف تطوّر من طريقة ملاكمتك</h2><p class="desc">فيديو تعليمي لتطوير التدريب الرياضي.</p></div><span class="tag">مهارات</span></div>
+<div class="video"><div id="player"></div></div>
+<div class="controls"><button class="btn" id="back">↶ 10 ثوانٍ</button><button class="btn primary" id="toggle">▶ تشغيل الفيديو</button><button class="btn" id="forward">10 ثوانٍ ↷</button></div>
+<div class="timer"><div class="timer-top"><span class="timer-label">وقت الفيديو الحالي / المدة</span><span class="time" id="time">00:00 / --:--</span></div><div class="track"><div class="fill" id="fill"></div></div><div class="status" id="status">اضغط تشغيل لبدء الفيديو والمؤقّت.</div></div>
+</section><p class="note">يُعرض الفيديو من خلال مشغّل YouTube المضمّن داخل التطبيق؛ قد تبقى بعض عناصر YouTube ظاهرة حسب الجهاز وإعدادات الفيديو.</p>
+</main>
+<script>
+const VIDEO_ID='5KuTmeIo22k';let player=null;
+const $=id=>document.getElementById(id);
+function fmt(s){s=Math.max(0,Math.floor(Number(s)||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function update(){if(!player||typeof player.getCurrentTime!=='function')return;const t=player.getCurrentTime()||0,d=player.getDuration()||0;$('time').textContent=fmt(t)+' / '+(d?fmt(d):'--:--');$('fill').style.width=(d?Math.min(100,t/d*100):0)+'%';if(player.getPlayerState()===YT.PlayerState.PLAYING)$('status').textContent='الفيديو يعمل؛ المؤقّت يتبع وقت التشغيل.';else $('status').textContent='اضغط تشغيل لمتابعة الفيديو.'}
+function onYouTubeIframeAPIReady(){player=new YT.Player('player',{width:'100%',height:'100%',videoId:VIDEO_ID,playerVars:{playsinline:1,controls:1,rel:0},events:{onReady:update,onStateChange:update,onError:()=>{$('status').textContent='تعذّر تحميل الفيديو؛ تحقق من الاتصال بالإنترنت.'}}});setInterval(update,500)}
+$('toggle').addEventListener('click',()=>{if(!player)return;if(player.getPlayerState()===YT.PlayerState.PLAYING)player.pauseVideo();else player.playVideo()});
+$('back').addEventListener('click',()=>{if(player)player.seekTo(Math.max(0,(player.getCurrentTime()||0)-10),true)});
+$('forward').addEventListener('click',()=>{if(player)player.seekTo(Math.min(player.getDuration()||0,(player.getCurrentTime()||0)+10),true)});
+window.onYouTubeIframeAPIReady=onYouTubeIframeAPIReady;const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);
+</script></body></html>
