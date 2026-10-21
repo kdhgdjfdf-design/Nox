@@ -12,7 +12,7 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 .app{display:flex;min-height:100dvh}.sidebar{width:220px;background:var(--side);padding:10px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}.side-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.brand{font-size:17px;font-weight:650;display:flex;align-items:center;gap:9px}.brand-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#343434}.icon-btn{width:38px;height:38px;border:1px solid transparent;background:transparent;border-radius:10px;font-size:19px;display:grid;place-items:center}.icon-btn:hover,.side-link:hover{background:#292929}.new-chat{border:1px solid #414141;border-radius:10px;padding:9px 10px;background:transparent;text-align:right;display:flex;gap:10px;align-items:center}.side-caption{font-size:12px;color:#888;padding:0 9px}.side-link{border:0;background:transparent;text-align:right;border-radius:8px;padding:8px;font-size:12px;color:#d4d4d4}.side-bottom{margin-top:auto;border-top:1px solid #303030;padding-top:12px;color:#999;font-size:12px;line-height:1.7}
 .main{min-width:0;flex:1;display:flex;flex-direction:column;min-height:100dvh;position:relative}.topbar{height:50px;display:flex;align-items:center;gap:10px;padding:0 18px;position:sticky;top:0;background:rgba(33,33,33,.94);backdrop-filter:blur(10px);z-index:3}.top-title{font-size:15px;font-weight:600}.local{font-size:11px;color:#b8d8bd;border:1px solid #36523c;background:#203126;padding:4px 8px;border-radius:20px;margin-right:auto;white-space:nowrap}.mobile-menu{display:none}
 .chat-scroll{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:8px 18px 6px}.chat{width:min(100%,800px);display:flex;flex-direction:column;gap:8px;flex:1;min-height:0}.welcome{margin:auto auto 8px;text-align:center;width:100%;padding:8px 0 4px}.welcome-icon{width:38px;height:38px;border-radius:13px;background:#303030;display:grid;place-items:center;font-size:20px;margin:0 auto 9px;border:1px solid #414141}.welcome h1{font-size:21px;font-weight:600;letter-spacing:-.4px;margin:0 0 10px}.welcome p{color:#aaa;font-size:12px;line-height:1.6;margin:0 auto;max-width:490px}
-.recommendations{width:min(100%,720px);margin:13px auto 0;text-align:right}.recommendations summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #414141;border-radius:10px;padding:10px 13px;color:#ddd;font-size:12px;background:#262626;user-select:none}.recommendations summary::-webkit-details-marker{display:none}.recommendations summary::after{content:"⌄";font-size:17px;color:#aaa;transition:transform .18s}.recommendations[open] summary::after{transform:rotate(180deg)}.recommendations summary:hover{background:#2b2b2b;border-color:#666}.session-plan{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.session-tip{border:1px solid #414141;background:#242424;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}.session-tip strong{font-size:12px;font-weight:600;color:#f2f2f2}.session-tip span{font-size:11px;line-height:1.65;color:#bbb}.recommendations .suggestions{width:100%;margin:9px auto 0}.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;width:min(100%,720px);margin:13px auto 0}.suggestion{border:1px solid #444;background:transparent;border-radius:999px;padding:8px 12px;text-align:right;min-height:0;transition:background .15s,border-color .15s}.suggestion:hover{background:#2b2b2b;border-color:#666}.suggestion strong{font-size:12px;font-weight:500;display:block;margin:0}.suggestion span{display:none}
+.recommendations{width:min(100%,720px);margin:13px auto 0;text-align:right}.recommendations summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #414141;border-radius:10px;padding:10px 13px;color:#ddd;font-size:12px;background:#262626;user-select:none}.recommendations summary::-webkit-details-marker{display:none}.recommendations summary::after{content:"⌄";font-size:17px;color:#aaa;transition:transform .18s}.recommendations[open] summary::after{transform:rotate(180deg)}.recommendations summary:hover{background:#2b2b2b;border-color:#666}.session-plan{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.session-tip{border:1px solid #414141;background:#242424;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}.session-tip strong{font-size:12px;font-weight:600;color:#f2f2f2}.session-tip span{font-size:11px;line-height:1.65;color:#bbb}.session-plan .session-tip{font-size:12px;line-height:1.7;color:#ddd}.session-privacy,.session-local{font-size:10px;line-height:1.6;color:#999;margin:8px 2px 0}.session-local{margin-top:2px}.recommendations .suggestions{width:100%;margin:9px auto 0}.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;width:min(100%,720px);margin:13px auto 0}.suggestion{border:1px solid #444;background:transparent;border-radius:999px;padding:8px 12px;text-align:right;min-height:0;transition:background .15s,border-color .15s}.suggestion:hover{background:#2b2b2b;border-color:#666}.suggestion strong{font-size:12px;font-weight:500;display:block;margin:0}.suggestion span{display:none}
 .messages{display:flex;flex-direction:column;gap:18px;padding:8px 0 16px}.msg-row{display:flex;gap:11px;align-items:flex-start;max-width:100%}.msg-row.user-row{justify-content:flex-start}.avatar{width:29px;height:29px;border-radius:50%;flex:0 0 29px;display:grid;place-items:center;font-size:14px;background:#383838}.avatar.bot-avatar{background:#d9d9d9;color:#202020}.msg{font-size:14px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;padding-top:1px}.user-row .msg{background:#303030;border:1px solid #3b3b3b;border-radius:18px;padding:9px 14px;max-width:min(85%,600px)}.bot-row .msg{max-width:100%;flex:1}
 .composer-area{width:100%;padding:5px 18px max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--bg) 80%,transparent)}.composer-wrap{width:min(100%,760px);margin:0 auto}.composer{display:flex;align-items:flex-end;gap:8px;padding:6px 8px;background:#2f2f2f;border:1px solid #4b4b4b;border-radius:25px;box-shadow:0 6px 25px #0002}.composer input{flex:1;min-width:0;border:0;outline:0!important;background:transparent;color:var(--text);padding:8px 7px;font-size:14px}.composer input::placeholder{color:#999}.send{width:34px;height:34px;border:0;border-radius:50%;background:#f4f4f4;color:#202020;display:grid;place-items:center;font-size:20px;flex:0 0 39px}.send:hover{background:#ddd}.composer-note{text-align:center;color:#858585;font-size:11px;line-height:1.7;padding-top:9px}.empty-hide{display:none!important}.overlay{display:none}
 @media(min-width:850px){.sidebar{position:sticky;top:0;height:100dvh}}
@@ -33,14 +33,9 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <div class="chat-scroll"><section class="chat" id="chat">
 <div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p><details class="recommendations" id="recommendations">
 <summary>✦ توصيات الجلسة القادمة</summary>
-<div class="session-plan" id="sessionPlan">
-<div class="session-tip"><strong>🎯 ركّز على الدقّة</strong><span>نفّذ الحركات الأساسية ببطء وتحكّم قبل التفكير في زيادة السرعة.</span></div>
-<div class="session-tip"><strong>🧍 حافظ على التوازن</strong><span>راقب ثبات وقفتك وتحكّمك في الحركة، وتوقّف إذا فقدت توازنك.</span></div>
-<div class="session-tip"><strong>🛡️ انتبه للحراسة</strong><span>تدرّب دون شريك وبشدة خفيفة على العودة إلى وضعية الحراسة بعد الحركة.</span></div>
-<div class="session-tip"><strong>🌬️ نظّم تنفّسك</strong><span>تنفّس بشكل طبيعي ومنتظم، ولا تحبس أنفاسك أثناء التمرين.</span></div>
-<div class="session-tip"><strong>📈 تقدّم خطوة واحدة</strong><span>اختر مهارة واحدة لتحسينها في الجلسة، بدل محاولة تحسين كل شيء معًا.</span></div>
-<div class="session-tip"><strong>💧 اختم بالتعافي</strong><span>خفّف الوتيرة في النهاية، واشرب الماء وخذ راحة مناسبة. أوقف التمرين عند الألم أو الدوار.</span></div>
-</div></details></div>
+<div class="session-plan" id="sessionPlan" aria-live="polite"><p class="session-tip">جارٍ تحليل أرقام جلساتك المحفوظة محليًا…</p></div>
+<p class="session-privacy">تُستخدم أرقام الجلسات لتوليد توصيات، ولا تُرفع صور الكاميرا.</p>
+<p class="session-local">دليل محلي · الإجابات تبقى على جهازك</p></details></div>
 <div class="messages" id="messages" aria-live="polite"></div>
 </section></div>
 <div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note" id="composerNote">الإجابات المحلية تعمل الآن. عند تفعيل الخادم الآمن، يمكن للمدرّب فهم أسئلة أوسع وإرفاق المصادر.</div></div></div>
@@ -300,6 +295,59 @@ async function ask(rawQuestion) {
     question.focus();
   }
 }
+
+function renderSessionRecommendations() {
+  const container = document.getElementById("sessionPlan");
+  if (!container) return;
+  let sessions = [];
+  try {
+    const raw = localStorage.getItem("shadowbox_sessions_v1");
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(parsed)) sessions = parsed.filter((s) => s && typeof s === "object").slice(0, 5);
+  } catch {}
+  const makeTip = (text) => {
+    const item = document.createElement("div");
+    item.className = "session-tip";
+    item.textContent = text;
+    return item;
+  };
+  container.replaceChildren();
+  if (!sessions.length) {
+    container.appendChild(makeTip("أكمل جلسة تدريب واحدة على الأقل، ثم ارجع إلى هنا لتحصل على توصية مبنية على أرقام أدائك."));
+    return;
+  }
+  const sum = (key) => sessions.reduce((total, s) => total + (Number(s[key]) || 0), 0);
+  const targetHits = sum("targetHits"), targetMiss = sum("targetMiss");
+  const targetTotal = targetHits + targetMiss;
+  const punchHits = sum("punchHit"), punchMiss = sum("punchMiss");
+  const punchTotal = punchHits + punchMiss;
+  const dodges = sum("dodges"), pillarHits = sum("pillarHits");
+  const wrongHand = sum("wrongHand");
+  const tips = [];
+  if (targetTotal >= 5 && targetHits / targetTotal < 0.6) {
+    tips.push("دقتك في لمس الأهداف منخفضة. ركّز على لمس القفاز بقبضتك قبل زيادة السرعة.");
+  } else if (punchTotal >= 8 && punchHits / punchTotal < 0.5) {
+    tips.push("دقة اللكمات المسجلة منخفضة. خفّف السرعة وركّز على التحكم في الحركة، ولا تعتمد على العداد وحده لأنه تقديري.");
+  }
+  if (dodges + pillarHits >= 5 && dodges / (dodges + pillarHits) < 0.5) {
+    tips.push("نتائج التفادي تشير إلى أنك تحتاج إلى تحسين توقيت الحركة. خفّف الوتيرة وركّز على التوازن والسلامة.");
+  }
+  if (wrongHand >= 3) {
+    tips.push("تكررت أخطاء اليد المطلوبة في التسلسل. راجع التعليمات بهدوء وركّز على فهم المطلوب قبل بدء الجولة.");
+  }
+  const latest = sessions[0], previous = sessions[1];
+  if (previous && Number.isFinite(Number(latest.ppm)) && Number.isFinite(Number(previous.ppm)) && Number(previous.ppm) > 0 && Number(latest.ppm) < Number(previous.ppm) * 0.8) {
+    tips.push("انخفض معدل اللكمات في آخر جلسة. لا تتسرّع لرفع السرعة؛ راجع الراحة والإعدادات وجودة الحركة أولًا.");
+  }
+  if (!tips.length) {
+    tips.push(sessions.length < 2
+      ? "هذه بداية جيدة. اجمع جلسة أخرى لتظهر مقارنة أوضح، وركّز الآن على الدقة والتحكم بدل السرعة."
+      : "لا يظهر من الأرقام المتاحة ضعف واضح في المؤشرات الأساسية. اختر مهارة واحدة وواصل التدريب بهدوء، مع إعطاء الأولوية للسلامة.");
+  }
+  tips.slice(0, 3).forEach((tip) => container.appendChild(makeTip(tip)));
+}
+renderSessionRecommendations();
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   ask(question.value);
