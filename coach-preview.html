@@ -31,11 +31,22 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <main class="main">
 <header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local" id="connectionStatus">● المساعد المحلي</div></header>
 <div class="chat-scroll"><section class="chat" id="chat">
-<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p><details class="recommendations" id="recommendations">
+<div class="welcome" id="welcome"><details class="recommendations" id="recommendations">
 <summary>✦ توصيات الجلسة القادمة</summary>
 <div class="session-plan" id="sessionPlan" aria-live="polite"><p class="session-tip">جارٍ تحليل أرقام جلساتك المحفوظة محليًا…</p></div>
 <p class="session-privacy">تُستخدم أرقام الجلسات لتوليد توصيات، ولا تُرفع صور الكاميرا.</p>
-<p class="session-local">دليل محلي · الإجابات تبقى على جهازك</p></details></div>
+<p class="session-local">دليل محلي · الإجابات تبقى على جهازك</p></details><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p>
+<div class="suggestions" id="suggestions">
+<button class="suggestion" type="button" data-question="ما أهم قواعد السلامة قبل أي تمرين؟"><strong>🛡️ قواعد السلامة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أبدأ إحماءً خفيفًا وآمنًا؟"><strong>🌡️ إحماء آمن</strong></button>
+<button class="suggestion" type="button" data-question="ما الفرق بين اللياقة والتحمل والتوازن؟"><strong>📈 اللياقة العامة</strong></button>
+<button class="suggestion" type="button" data-question="ما تاريخ الملاكمة باختصار؟"><strong>📚 تاريخ الملاكمة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أفهم الطول والنمو في سن المراهقة؟"><strong>📏 الطول والنمو</strong></button>
+<button class="suggestion" type="button" data-question="ما المعلومات العامة عن الوزن الصحي للمراهقين؟"><strong>⚖️ الوزن والصحة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أرتاح وأتعافى بعد النشاط؟"><strong>💧 الراحة والتعافي</strong></button>
+<button class="suggestion" type="button" data-question="كيف أجهز الكاميرا لتتبع الحركة؟"><strong>▣ إعداد الكاميرا</strong></button>
+<button class="suggestion" type="button" data-question="كيف أتابع تقدمي بأمان؟"><strong>▤ متابعة التقدم</strong></button>
+</div></div>
 <div class="messages" id="messages" aria-live="polite"></div>
 </section></div>
 <div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note" id="composerNote">الإجابات المحلية تعمل الآن. عند تفعيل الخادم الآمن، يمكن للمدرّب فهم أسئلة أوسع وإرفاق المصادر.</div></div></div>
