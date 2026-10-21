@@ -16,7 +16,7 @@ h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px
 .card{border:1px solid var(--line);background:linear-gradient(155deg,#171a1e,#111315);border-radius:21px;padding:14px}
 .video{width:100%;aspect-ratio:16/9;border:1px solid #333840;border-radius:14px;overflow:hidden;background:#050607}
 iframe{width:100%;height:100%;border:0;display:block}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:45px;margin-top:12px;padding:10px;border:1px solid #653039;border-radius:13px;background:#32171c;color:white;text-decoration:none;font-size:14px;font-weight:700}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:45px;margin-top:12px;padding:10px;border:1px solid #653039;border-radius:13px;background:#32171c;color:white;text-decoration:none;font-size:14px;font-weight:700}.play-main{background:#e83b4b;border-color:#e83b4b;min-height:54px;font-size:17px;cursor:pointer}.timer-status{font-size:12px;color:#a5abb3;line-height:1.7;margin-top:10px}
 .note{margin:14px 3px 0;color:#a5abb3;font-size:12px;line-height:1.8}
 
 .controls{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;margin-top:12px}
@@ -48,11 +48,11 @@ iframe{width:100%;height:100%;border:0;display:block}
 </div>
 </section>
 <section class="card"><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/WwBVYUwyuFY?enablejsapi=1&rel=0" title="أساسيات القتال" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-<a class="btn" href="https://youtu.be/WwBVYUwyuFY" target="_blank" rel="noopener noreferrer">فتح الفيديو على YouTube ↗</a></section>
+<button class="btn play-main" id="playPause" type="button">▶️ تشغيل الفيديو</button><a class="btn" href="https://youtu.be/WwBVYUwyuFY" target="_blank" rel="noopener noreferrer">↗️ فتح الفيديو على YouTube</a></section>
 <section class="card" style="margin-top:12px">
 <div style="display:flex;align-items:center;gap:9px;font-weight:700"><span class="ico">⏱️</span><span>المؤقّت والتنقّل</span></div>
 <div class="clock"><span id="currentTime">00:00</span><span id="duration">05:32</span></div>
-<div class="track"><span id="progress"></span></div>
+<div class="track"><span id="progress"></span></div><p class="timer-status" id="timerStatus">اضغط تشغيل الفيديو لمتابعة الدرس؛ المؤقّت يتبع وقت الفيديو.</p>
 <div class="controls">
 <button class="ctrl" id="back10" type="button">↶ تأخير 10 ثوانٍ</button>
 <button class="ctrl" id="forward10" type="button">تقديم 10 ثوانٍ ↷</button>
@@ -68,6 +68,7 @@ iframe{width:100%;height:100%;border:0;display:block}
  const $=id=>document.getElementById(id);
  function fmt(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
  function seek(delta){if(ready&&player){player.seekTo(Math.max(0,player.getCurrentTime()+delta),true)}}
+ $('playPause').addEventListener('click',()=>{if(!ready||!player){$('timerStatus').textContent='جارٍ تجهيز الفيديو، انتظر لحظة ثم أعد المحاولة.';return}if(player.getPlayerState()===YT.PlayerState.PLAYING){player.pauseVideo();$('playPause').textContent='▶️ متابعة الفيديو';$('timerStatus').textContent='الفيديو متوقف مؤقتًا.'}else{if(player.getPlayerState()===YT.PlayerState.ENDED)player.seekTo(0,true);player.playVideo();$('playPause').textContent='⏸ إيقاف مؤقت';$('timerStatus').textContent='الفيديو يعمل الآن.'}});
  $('back10').addEventListener('click',()=>seek(-10));
  $('forward10').addEventListener('click',()=>seek(10));
  $('restart').addEventListener('click',()=>{if(ready)player.seekTo(0,true)});
