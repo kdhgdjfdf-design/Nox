@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a0c">
-<title>ShadowBox Nox — فيديو أساسيات الملاكمة</title>
+<title>ShadowBox Nox — أساسيات القتال</title>
 <style>
 :root{color-scheme:dark;--bg:#090a0c;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -18,11 +18,57 @@ h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px
 iframe{width:100%;height:100%;border:0;display:block}
 .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:45px;margin-top:12px;padding:10px;border:1px solid #653039;border-radius:13px;background:#32171c;color:white;text-decoration:none;font-size:14px;font-weight:700}
 .note{margin:14px 3px 0;color:#a5abb3;font-size:12px;line-height:1.8}
+
+.controls{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;margin-top:12px}
+.ctrl{min-height:43px;border:1px solid #653039;border-radius:12px;background:#211519;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.clock{margin-top:10px;display:flex;justify-content:space-between;gap:10px;color:#d6d8dc;font-size:12px;font-variant-numeric:tabular-nums}
+.track{height:5px;border-radius:8px;background:#34383e;overflow:hidden;margin-top:7px}.track span{display:block;height:100%;width:0;background:#e83b4b}
+.chapters{display:grid;gap:8px;margin-top:12px}
+.chapter{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:right;padding:11px 12px;border:1px solid #30343a;border-radius:12px;background:#15171a;color:white;font:inherit;cursor:pointer}
+.chapter small{display:block;color:#a5abb3;font-size:11px;margin-top:3px}.chapter b{font-size:13px}
+@media(max-width:380px){.controls{grid-template-columns:1fr 1fr}.controls .ctrl:last-child{grid-column:1/-1}}
 </style></head>
 <body><main>
-<header><a class="back" href="boxing-basics-section.html?v=20261021-basics-video" aria-label="العودة إلى أساسيات الملاكمة">‹</a><div class="logo">🥊</div><div><h1>فيديو أساسيات الملاكمة</h1><div class="sub">ShadowBox Nox · قسم الأساسيات</div></div></header>
-<p class="intro">الفيديو الذي أُضيف إلى دروس أساسيات الملاكمة. اضغط تشغيل للمشاهدة.</p>
-<section class="card"><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/WwBVYUwyuFY?rel=0" title="فيديو أساسيات الملاكمة الإضافي" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+<header><a class="back" href="boxing-basics-section.html?v=20261021-fight-basics-controls" aria-label="العودة إلى أساسيات الملاكمة">‹</a><div class="logo">🥊</div><div><h1>أساسيات القتال</h1><div class="sub">ShadowBox Nox · قسم الأساسيات</div></div></header>
+<p class="intro">شاهد الفيديو، استخدم أزرار التقديم والتأخير، وانتقل مباشرةً إلى أي مرحلة من التقسيم الزمني.</p>
+<section class="card"><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/WwBVYUwyuFY?enablejsapi=1&rel=0" title="أساسيات القتال" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
 <a class="btn" href="https://youtu.be/WwBVYUwyuFY" target="_blank" rel="noopener noreferrer">فتح الفيديو على YouTube ↗</a></section>
-<p class="note">تدرّب في مساحة آمنة، وابدأ بهدوء. إذا لم يعمل الفيديو داخل الصفحة، افتحه على YouTube.</p>
+<section class="card" style="margin-top:12px">
+<div style="font-weight:700">⏱️ المؤقّت والتنقّل</div>
+<div class="clock"><span id="currentTime">00:00</span><span id="duration">05:32</span></div>
+<div class="track"><span id="progress"></span></div>
+<div class="controls">
+<button class="ctrl" id="back10" type="button">↶ تأخير 10 ثوانٍ</button>
+<button class="ctrl" id="forward10" type="button">تقديم 10 ثوانٍ ↷</button>
+<button class="ctrl" id="restart" type="button">إعادة من البداية</button>
+</div>
+<div class="section-head" style="display:flex;align-items:center;gap:9px;margin:18px 0 10px"><span style="width:4px;height:20px;border-radius:5px;background:#e83b4b"></span><b>تقسيم الفيديو</b></div>
+<div class="chapters">
+<button class="chapter" data-time="0"><span><b>المقدمة</b><small>بداية الفيديو</small></span><b>0:00</b></button>
+<button class="chapter" data-time="44"><span><b>المرحلة الأولى</b><small>من 0:44 إلى 0:45</small></span><b>0:44</b></button>
+<button class="chapter" data-time="45"><span><b>المرحلة الثانية</b><small>من 0:45 إلى 1:28</small></span><b>0:45–1:28</b></button>
+<button class="chapter" data-time="89"><span><b>المرحلة الثالثة</b><small>من 1:29 إلى 2:06</small></span><b>1:29–2:06</b></button>
+<button class="chapter" data-time="127"><span><b>المرحلة الرابعة</b><small>من 2:07 إلى 2:40</small></span><b>2:07–2:40</b></button>
+<button class="chapter" data-time="161"><span><b>المرحلة الخامسة</b><small>من 2:41 إلى 3:46</small></span><b>2:41–3:46</b></button>
+<button class="chapter" data-time="227"><span><b>المرحلة السادسة</b><small>من 3:47 إلى 5:32</small></span><b>3:47–5:32</b></button>
+</div>
+</section>
+<script>
+(function(){
+ const frame=document.querySelector('iframe');
+ let player=null,ready=false,lastTime=0;
+ const $=id=>document.getElementById(id);
+ function fmt(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+ function seek(delta){if(ready&&player){player.seekTo(Math.max(0,player.getCurrentTime()+delta),true)}}
+ $('back10').addEventListener('click',()=>seek(-10));
+ $('forward10').addEventListener('click',()=>seek(10));
+ $('restart').addEventListener('click',()=>{if(ready)player.seekTo(0,true)});
+ document.querySelectorAll('[data-time]').forEach(btn=>btn.addEventListener('click',()=>{if(ready)player.seekTo(Number(btn.dataset.time),true)}));
+ function loadApi(){if(window.YT&&window.YT.Player){makePlayer();return}if(!document.getElementById('yt-api')){const s=document.createElement('script');s.id='yt-api';s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s)}}
+ window.onYouTubeIframeAPIReady=function(){makePlayer()};
+ function makePlayer(){if(player)return;player=new YT.Player(frame,{events:{onReady:function(){ready=true;const d=player.getDuration();if(d)$('duration').textContent=fmt(d);setInterval(()=>{if(!ready)return;const t=player.getCurrentTime()||0,du=player.getDuration()||332;$('currentTime').textContent=fmt(t);$('duration').textContent=fmt(du);$('progress').style.width=Math.min(100,t/du*100)+'%';},500)},onStateChange:function(){}}})}
+ loadApi();
+})();
+</script>
+<p class="note">تدرّب في مساحة آمنة، وابدأ بهدوء. إذا لم يعمل الفيديو داخل الصفحة، افتحه على YouTube.</p>تدرّب في مساحة آمنة، وابدأ بهدوء. إذا لم يعمل الفيديو داخل الصفحة، افتحه على YouTube.</p>
 </main></body></html>
