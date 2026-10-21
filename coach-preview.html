@@ -31,7 +31,17 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 <main class="main">
 <header class="topbar"><a class="icon-btn" href="index.html" aria-label="العودة إلى ShadowBox" title="العودة إلى ShadowBox" style="text-decoration:none">‹</a><button class="icon-btn mobile-menu" id="openSidebar" aria-label="فتح القائمة">☰</button><div class="top-title">Nox <span style="color:#999;font-weight:400">/ المدرّب</span></div><div class="local" id="connectionStatus">● المساعد المحلي</div></header>
 <div class="chat-scroll"><section class="chat" id="chat">
-<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p><div class="suggestions" id="suggestions"><button class="suggestion" type="button" data-question="ما أهم قواعد السلامة قبل أي تمرين؟"><strong>🛡️ قواعد السلامة</strong></button><button class="suggestion" type="button" data-question="كيف أبدأ إحماءً خفيفًا وآمنًا؟"><strong>🌡️ إحماء آمن</strong></button><button class="suggestion" type="button" data-question="ما الفرق بين اللياقة والتحمل والتوازن؟"><strong>📈 اللياقة العامة</strong></button><button class="suggestion" type="button" data-question="ما تاريخ الملاكمة باختصار؟"><strong>📚 تاريخ الملاكمة</strong></button></div></div>
+<div class="welcome" id="welcome"><div class="welcome-icon">✦</div><h1>كيف أقدر أساعدك؟</h1><p>اسأل عن قواعد الملاكمة وتاريخها، السلامة، المعدات، الإحماء، اللياقة العامة أو متابعة تقدّمك.</p><div class="suggestions" id="suggestions">
+<button class="suggestion" type="button" data-question="ما أهم قواعد السلامة قبل أي تمرين؟"><strong>🛡️ قواعد السلامة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أبدأ إحماءً خفيفًا وآمنًا؟"><strong>🌡️ إحماء آمن</strong></button>
+<button class="suggestion" type="button" data-question="ما الفرق بين اللياقة والتحمل والتوازن؟"><strong>📈 اللياقة العامة</strong></button>
+<button class="suggestion" type="button" data-question="ما تاريخ الملاكمة باختصار؟"><strong>📚 تاريخ الملاكمة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أفهم الطول والنمو في سن المراهقة؟"><strong>📏 الطول والنمو</strong></button>
+<button class="suggestion" type="button" data-question="ما المعلومات العامة عن الوزن الصحي للمراهقين؟"><strong>⚖️ الوزن والصحة</strong></button>
+<button class="suggestion" type="button" data-question="كيف أرتاح وأتعافى بعد النشاط؟"><strong>💧 الراحة والتعافي</strong></button>
+<button class="suggestion" type="button" data-question="كيف أجهز الكاميرا لتتبع الحركة؟"><strong>▣ إعداد الكاميرا</strong></button>
+<button class="suggestion" type="button" data-question="كيف أتابع تقدمي بأمان؟"><strong>▤ متابعة التقدم</strong></button>
+</div></div>
 <div class="messages" id="messages" aria-live="polite"></div>
 </section></div>
 <div class="composer-area"><div class="composer-wrap"><form class="composer" id="form"><input id="question" maxlength="300" placeholder="اسأل Nox أي شيء..." autocomplete="off" required aria-label="اكتب سؤالك"><button class="send" type="submit" aria-label="إرسال الرسالة">↑</button></form><div class="composer-note" id="composerNote">الإجابات المحلية تعمل الآن. عند تفعيل الخادم الآمن، يمكن للمدرّب فهم أسئلة أوسع وإرفاق المصادر.</div></div></div>
@@ -188,8 +198,38 @@ function setBusy(busy) {
   question.disabled = busy;
   sendButton.textContent = busy ? "…" : "↑";
 }
+function localSources(q) {
+  const topic = analyzeQuestion(q).topic;
+  const groups = {
+    history: [
+      { title: "Encyclopaedia Britannica — Boxing", url: "https://www.britannica.com/sports/boxing" },
+      { title: "Olympics — Boxing", url: "https://olympics.com/en/sports/boxing/" }
+    ],
+    rules: [{ title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" }],
+    fouls: [{ title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" }],
+    competition: [
+      { title: "Olympics — Boxing", url: "https://olympics.com/en/sports/boxing/" },
+      { title: "International Boxing Association", url: "https://www.iba.sport/" }
+    ],
+    warmup: [{ title: "American Heart Association — Warm-up and Cool-down", url: "https://www.heart.org/en/healthy-living/fitness/fitness-basics/warm-up-cool-down" }],
+    fitness: [{ title: "CDC — Physical Activity for Children", url: "https://www.cdc.gov/physical-activity-basics/guidelines/children.html" }],
+    cardio: [{ title: "CDC — Physical Activity for Children", url: "https://www.cdc.gov/physical-activity-basics/guidelines/children.html" }],
+    recovery: [{ title: "NHS — Exercise and physical activity", url: "https://www.nhs.uk/live-well/exercise/" }],
+    safety: [
+      { title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" },
+      { title: "KidsHealth — Sports Safety", url: "https://kidshealth.org/" }
+    ],
+    injury: [{ title: "MedlinePlus — Sports Injuries", url: "https://medlineplus.gov/sportsinjuries.html" }],
+    concussion: [{ title: "MedlinePlus — Sports Injuries", url: "https://medlineplus.gov/sportsinjuries.html" }],
+    equipment: [{ title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" }],
+    gloves: [{ title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" }],
+    wraps: [{ title: "USA Boxing — الموقع الرسمي", url: "https://www.usaboxing.org/" }]
+  };
+  return groups[topic] || [];
+}
+
 async function requestCoach(q) {
-  if (!COACH_API_URL) return { reply: localAnswer(q), local: true, sources: [] };
+  if (!COACH_API_URL) return { reply: localAnswer(q), local: true, sources: localSources(q) };
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 28000);
   try {
@@ -243,6 +283,17 @@ async function ask(rawQuestion) {
     }
   } catch (error) {
     pending.querySelector(".msg").textContent = localAnswer(q) + "\n\n(تعذّر الاتصال بالخادم الآن، لذا عرضت إجابة محلية مؤقتة.)";
+    const fallbackSources = localSources(q);
+    const fallbackList = pending.querySelector(".msg");
+    fallbackSources.forEach((source) => {
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "\n↗ " + source.title;
+      link.style.color = "#b8c7ff";
+      fallbackList.appendChild(link);
+    });
     statusLabel.textContent = "● إجابة محلية";
     composerNote.textContent = "تعذّر الاتصال بالخادم؛ يعمل المساعد المحلي بدلًا منه.";
   } finally {
