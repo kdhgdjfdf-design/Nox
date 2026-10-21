@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a0c">
+<title>ShadowBox Nox — الفيديو الإضافي</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0c;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3;--red:#e83b4b;--green:#63d49b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#271116 0,var(--bg) 54%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+main{width:min(100%,680px);margin:auto;padding:calc(env(safe-area-inset-top) + 16px) 15px calc(env(safe-area-inset-bottom) + 28px)}
+header{display:flex;align-items:center;gap:11px;margin-bottom:20px}
+.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;color:white;background:#17191c;text-decoration:none;font-size:22px;flex:none}
+.logo{width:46px;height:46px;display:grid;place-items:center;background:#32161b;border:1px solid #653039;border-radius:15px;font-size:24px;flex:none}
+h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.intro{font-size:14px;line-height:1.8;color:#b8bdc4;margin:0 0 17px}
+.card{border:1px solid var(--line);background:linear-gradient(155deg,#171a1e,#111315);border-radius:21px;padding:14px;box-shadow:0 18px 40px #0003}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:2px 2px 12px}
+h2{font-size:18px;margin:0}.desc{font-size:13px;color:var(--muted);line-height:1.7;margin:6px 0 0}
+.video{width:100%;aspect-ratio:16/9;border:1px solid #333840;border-radius:14px;overflow:hidden;background:#050607}
+#player{width:100%;height:100%}#player iframe{width:100%;height:100%;border:0;display:block}
+.video-controls{display:flex;gap:8px;margin-top:10px}.btn{flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid #363b42;border-radius:13px;background:#202328;color:white;text-decoration:none;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--red);border-color:var(--red)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.timer{margin-top:12px;padding:12px;border:1px solid #343941;background:#101215;border-radius:14px}
+.timer-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.timer-label{font-size:12px;color:var(--muted)}
+.time{font-size:16px;font-weight:750;font-variant-numeric:tabular-nums;direction:ltr}
+.timer-track{height:6px;border-radius:8px;background:#292d32;overflow:hidden;margin-top:10px}.timer-fill{height:100%;width:0;background:var(--green);transition:width .15s linear}
+.status{font-size:12px;line-height:1.7;color:#c8cdd3;margin-top:8px}.status.done{color:var(--green)}
+.tip{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#141518;color:#c7cbd1;font-size:13px;line-height:1.8}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.note{margin:13px 3px 0;color:#858c95;font-size:11px;line-height:1.8}
+@media(max-width:380px){.btn{font-size:12px;padding:8px}.video-controls{gap:6px}}
+</style></head>
+<body><main>
+<header><a class="back" href="boxing-basics-section.html?v=20261020-warmups2" aria-label="العودة إلى أساسيات الملاكمة">‹</a><div class="logo">🎯</div><div><h1>الفيديو الإضافي</h1><div class="sub">أساسيات الملاكمة · مشغّل الدروس</div></div></header>
+<p class="intro">شاهد الفيديو الإضافي وتحكّم في التشغيل مثل بقية دروس التعلّم. يمكنك الإيقاف المؤقت والرجوع أو التقديم 10 ثوانٍ ومتابعة الوقت الحالي.</p>
+<section class="card">
+<div class="head"><div><h2>🎯 فيديو الفيديو الإضافي</h2><p class="desc">شاهد الدرس وتابع تقدّم الفيديو باستخدام أزرار التشغيل.</p></div></div>
+<div class="video"><div id="player"></div></div>
+<div class="video-controls">
+<button class="btn" id="back10" type="button">↶ 10 ثوانٍ</button>
+<button class="btn primary" id="playPause" type="button">▶ تشغيل الفيديو</button>
+<button class="btn" id="forward10" type="button">10 ثوانٍ ↷</button>
+</div>
+<div class="timer" aria-live="polite">
+<div class="timer-top"><span class="timer-label">الوقت الحالي / مدة الفيديو</span><span class="time" id="time">00:00 / --:--</span></div>
+<div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+<div class="status" id="timerStatus">جارٍ تجهيز مشغّل الفيديو…</div>
+</div>
+<div class="actions"><button class="btn" id="replay" type="button">↻ إعادة الفيديو</button><button class="btn" id="mute" type="button">🔊 كتم الصوت</button></div>
+</section>
+<div class="tip">نصيحة: تدرّب بهدوء وعلى وتيرتك، وتوقف إذا شعرت بألم أو دوخة.</div>
+<p class="note">إذا لم يظهر الفيديو، تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة. قد لا تسمح بعض إعدادات المتصفح بتشغيل فيديو YouTube المضمّن.</p>
+</main>
+<script>
+const VIDEO_ID='a4vXgvSRQcQ';
+const $=id=>document.getElementById(id);
+let player=null,ready=false,timerId=null;
+function fmt(value){const s=Math.max(0,Math.floor(Number(value)||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function updateTimer(){
+ if(!ready||!player)return;
+ const now=player.getCurrentTime()||0,duration=player.getDuration()||0;
+ $('time').textContent=fmt(now)+' / '+(duration?fmt(duration):'--:--');
+ $('timerFill').style.width=duration?Math.min(100,now/duration*100)+'%':'0%';
+ const state=player.getPlayerState();
+ if(state===YT.PlayerState.PLAYING){$('playPause').textContent='Ⅱ إيقاف مؤقت';$('timerStatus').textContent='الفيديو يعمل. استخدم أزرار الثواني للتقديم أو الرجوع.';$('timerStatus').classList.remove('done')}
+ else if(state===YT.PlayerState.ENDED){$('playPause').textContent='↻ إعادة التشغيل';$('timerStatus').textContent='انتهى الفيديو. يمكنك إعادته من البداية.';$('timerStatus').classList.add('done');$('timerFill').style.width='100%'}
+ else if(state===YT.PlayerState.PAUSED){$('playPause').textContent='▶ متابعة الفيديو';$('timerStatus').textContent='الفيديو متوقف مؤقتًا عند '+fmt(now)+'.';$('timerStatus').classList.remove('done')}
+ else if(state===YT.PlayerState.CUED||state===YT.PlayerState.UNSTARTED){$('playPause').textContent='▶ تشغيل الفيديو';$('timerStatus').textContent='اضغط تشغيل لبدء الفيديو والمؤقّت.'}
+}
+function onYouTubeIframeAPIReady(){
+ player=new YT.Player('player',{width:'100%',height:'100%',videoId:VIDEO_ID,playerVars:{playsinline:1,controls:0,fs:0,disablekb:1,iv_load_policy:3,rel:0,origin:location.origin},events:{
+ onReady:()=>{ready=true;updateTimer();if(timerId)clearInterval(timerId);timerId=setInterval(updateTimer,250)},
+ onStateChange:()=>updateTimer(),
+ onError:()=>{$('timerStatus').textContent='تعذّر تشغيل الفيديو. جرّب فتح الصفحة في Chrome أو إعادة تحميلها.';$('timerStatus').classList.remove('done')}
+ }});
+}
+function seekBy(seconds){
+ if(!ready||!player)return;
+ const duration=player.getDuration()||0,current=player.getCurrentTime()||0;
+ let target=Math.max(0,current+seconds);if(duration)target=Math.min(duration,target);
+ player.seekTo(target,true);updateTimer();
+}
+$('back10').addEventListener('click',()=>seekBy(-10));
+$('forward10').addEventListener('click',()=>seekBy(10));
+$('playPause').addEventListener('click',()=>{
+ if(!ready||!player)return;
+ const state=player.getPlayerState();
+ if(state===YT.PlayerState.PLAYING)player.pauseVideo();
+ else if(state===YT.PlayerState.ENDED){player.seekTo(0,true);player.playVideo()}
+ else player.playVideo();
+});
+$('replay').addEventListener('click',()=>{if(ready&&player){player.seekTo(0,true);player.playVideo()}});
+$('mute').addEventListener('click',()=>{
+ if(!ready||!player)return;
+ if(player.isMuted()){player.unMute();$('mute').textContent='🔊 كتم الصوت'}
+ else{player.mute();$('mute').textContent='🔇 تشغيل الصوت'}
+});
+window.onYouTubeIframeAPIReady=onYouTubeIframeAPIReady;
+const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);
+</script></body></html>
