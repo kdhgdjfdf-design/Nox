@@ -1890,14 +1890,20 @@ el.btnAgain.addEventListener("click", async () => {
 });
 el.btnHome.addEventListener("click", () => exitTraining("home"));
 
-// تُعرض المقدمة السينمائية عند كل تحميل جديد للتطبيق؛ لا تُتجاوز بسبب جلسة سابقة.
-el.splash.hidden = false;
-el.splash.classList.remove("hide", "intro-finished");
-
-// المقدمة السينمائية تعمل أولًا، ثم تظهر شاشة الدخول المعتادة مع «اضغط للدخول».
-if (!el.splash.hidden && !el.splash.classList.contains("hide")) {
+// أظهر شاشة البداية مرة واحدة فقط في جلسة التصفح.
+// الرجوع من التعلّم أو الصحة أو المدرّب لا ينبغي أن يعيد المستخدم إلى «اضغط للدخول».
+let hasEnteredApp = false;
+try { hasEnteredApp = sessionStorage.getItem("shadowbox_entered_v1") === "1"; } catch {}
+if (hasEnteredApp) {
+  el.splash.classList.add("hide");
+  el.splash.hidden = true;
+} else {
+  el.splash.hidden = false;
+  el.splash.classList.remove("hide", "intro-finished");
   window.setTimeout(() => {
-    if (!el.splash.classList.contains("hide")) el.splash.classList.add("intro-finished");
+    if (!el.splash.hidden && !el.splash.classList.contains("hide")) {
+      el.splash.classList.add("intro-finished");
+    }
   }, 4700);
 }
 
