@@ -1898,6 +1898,13 @@ try {
   }
 } catch {}
 
+// المقدمة السينمائية تعمل أولًا، ثم تظهر شاشة الدخول المعتادة مع «اضغط للدخول».
+if (!el.splash.hidden && !el.splash.classList.contains("hide")) {
+  window.setTimeout(() => {
+    if (!el.splash.classList.contains("hide")) el.splash.classList.add("intro-finished");
+  }, 4700);
+}
+
 // شاشة الدخول: الضغط عليها يفعّل الصوت ويشغّل نغمة الدخول
 el.splash.addEventListener("click", () => {
   try { sessionStorage.setItem("shadowbox_entered_v1", "1"); } catch {}
