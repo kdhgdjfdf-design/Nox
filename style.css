@@ -694,7 +694,7 @@ select:focus {
       transparent 17px 27px);
   transform: scale(1.65) translateX(-2%);
   filter: blur(1.5px);
-  animation: nox-red-lines 3.5s .55s ease-out forwards;
+  animation: nox-red-lines 3.7s .8s ease-out forwards;
 }
 .splash::after {
   content: "";
@@ -710,7 +710,7 @@ select:focus {
   filter: blur(1px);
   box-shadow: 0 0 26px #e11d2e, 0 0 72px rgba(225,29,46,.85);
   transform: skewX(-17deg);
-  animation: nox-red-beam 1.45s 1.15s cubic-bezier(.45,.05,.25,1) forwards;
+  animation: nox-red-beam 1.35s 2.25s cubic-bezier(.45,.05,.25,1) forwards;
 }
 .splash.hide { opacity: 0; pointer-events: none; visibility: hidden; }
 .splash-emblem { display: none; }
@@ -727,7 +727,7 @@ select:focus {
   opacity: 0;
   text-shadow: 0 0 2px #fff, 0 0 22px rgba(225,29,46,.7);
   clip-path: inset(0 100% 0 0);
-  animation: nox-wordmark-build 1.25s 2.15s cubic-bezier(.16,1,.3,1) forwards;
+  animation: nox-wordmark-build 1.35s 2.25s cubic-bezier(.16,1,.3,1) forwards;
 }
 .splash-caption {
   position: relative;
@@ -739,7 +739,7 @@ select:focus {
   letter-spacing: .42em;
   padding-left: .42em;
   opacity: 0;
-  animation: nox-caption-in .7s 3.05s ease forwards;
+  animation: nox-caption-in .55s 3.55s ease forwards;
 }
 .splash-hint {
   position: relative;
@@ -749,7 +749,7 @@ select:focus {
   margin: 68px 0 0;
   letter-spacing: .05em;
   opacity: 0;
-  animation: nox-caption-in .7s 3.55s ease forwards, nox-hint-pulse 2.2s 4s ease-in-out infinite;
+  animation: nox-caption-in .55s 4s ease forwards, nox-hint-pulse 2.2s 4.55s ease-in-out infinite;
 }
 @keyframes nox-red-lines {
   0% { opacity: 0; transform: scale(1.75) translateX(-3%); filter: blur(8px); background-position: 0 0; }
@@ -776,6 +776,24 @@ select:focus {
 @media (prefers-reduced-motion: reduce) {
   .splash::before, .splash::after, .splash-nox, .splash-caption, .splash-hint { animation: none; }
   .splash-nox, .splash-caption, .splash-hint { opacity: 1; clip-path: none; }
+}
+.splash.intro-finished::before,
+.splash.intro-finished::after {
+  opacity: 0 !important;
+  animation: none !important;
+  transition: opacity .35s ease;
+}
+.splash.intro-finished .splash-nox {
+  opacity: 1;
+  clip-path: inset(0);
+  filter: drop-shadow(0 0 16px rgba(225,29,46,.42));
+  transform: none;
+  animation: none;
+}
+.splash.intro-finished .splash-caption,
+.splash.intro-finished .splash-hint {
+  opacity: 1;
+  animation: none;
 }
 /* زر النتائج في وسط الشاشة */
 .stats-toggle {
