@@ -5,7 +5,7 @@
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
     <application
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
-        android:label="Nox"
+        android:label="SHADOWBOXNOX"
         android:icon="@drawable/ic_nox"
         android:roundIcon="@drawable/ic_nox"
         android:usesCleartextTraffic="false"
