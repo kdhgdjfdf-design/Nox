@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111722"/><stop offset=".55" stop-color="#080b12"/><stop offset="1" stop-color="#18263c"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4f8ff"/><stop offset=".45" stop-color="#8ba9d9"/><stop offset="1" stop-color="#3d5277"/></linearGradient>
+ <linearGradient id="glove" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#26364f"/><stop offset=".5" stop-color="#0c1422"/><stop offset="1" stop-color="#344b70"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<circle cx="256" cy="246" r="190" fill="none" stroke="#243652" stroke-width="3"/>
+<circle cx="256" cy="246" r="174" fill="none" stroke="#536f9d" stroke-opacity=".22" stroke-width="2"/>
+<path d="M90 290V200M422 290V200M90 218H422" fill="none" stroke="#30415b" stroke-width="5" opacity=".5"/>
+<!-- cat ears/head -->
+<path d="M131 217L145 93L231 148Q256 139 281 148L367 93L381 217Q402 269 369 314Q337 360 256 370Q175 360 143 314Q110 269 131 217Z" fill="#05080d" stroke="url(#steel)" stroke-width="8" stroke-linejoin="round"/>
+<path d="M160 133L222 176L170 227Z" fill="#24344c" stroke="#7f9bc7" stroke-width="3"/>
+<path d="M352 133L290 176L342 227Z" fill="#24344c" stroke="#7f9bc7" stroke-width="3"/>
+<path d="M164 248L228 265L195 284Z" fill="#dceaff" filter="url(#glow)"/>
+<path d="M348 248L284 265L317 284Z" fill="#dceaff" filter="url(#glow)"/>
+<path d="M242 301L256 310L270 301L256 323Z" fill="#a9c9f5"/>
+<path d="M256 323Q235 341 214 326M256 323Q277 341 298 326" fill="none" stroke="#a9c9f5" stroke-width="4" stroke-linecap="round"/>
+<!-- boxing gloves foreground -->
+<g transform="rotate(-24 164 366)">
+ <path d="M85 343Q82 319 102 302Q124 284 155 299L182 312Q205 324 201 351L194 386Q190 412 166 424L128 435Q101 432 96 409L83 376Q78 359 85 343Z" fill="url(#glove)" stroke="url(#steel)" stroke-width="6"/>
+ <path d="M91 382Q132 399 193 370L187 403Q153 433 118 421Z" fill="#1b2a42" stroke="#708dbb" stroke-width="4"/>
+ <path d="M105 337Q137 313 169 338" fill="none" stroke="#809bc4" stroke-opacity=".65" stroke-width="4"/>
+</g>
+<g transform="rotate(20 345 365)">
+ <path d="M304 326Q304 302 330 291Q360 279 383 302Q406 321 400 348L393 383Q389 410 365 421L337 432Q309 429 303 404L294 368Q290 346 304 326Z" fill="url(#glove)" stroke="url(#steel)" stroke-width="6"/>
+ <path d="M300 376Q341 394 395 364L387 399Q362 425 331 420Z" fill="#1b2a42" stroke="#708dbb" stroke-width="4"/>
+</g>
+<path d="M150 455Q256 479 362 455" fill="none" stroke="#627da8" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+</svg>
