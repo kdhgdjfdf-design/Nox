@@ -1,4 +1,4 @@
-name: Build Nox Android APK
+name: Build SHADOWBOXNOX Android APK
 
 on:
   workflow_dispatch:
@@ -35,10 +35,10 @@ jobs:
       - name: Build debug APK
         working-directory: android-wrapper
         run: gradle assembleDebug
-      - name: Upload APK
+      - name: Upload SHADOWBOXNOX APK
         uses: actions/upload-artifact@v4
         with:
-          name: Nox-Android-debug-APK
+          name: SHADOWBOXNOX-Android-APK
           path: android-wrapper/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
