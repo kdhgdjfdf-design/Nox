@@ -660,7 +660,9 @@ select:focus {
 }
 
 /* شاشة الدخول */
+/* ===== NOX cinematic tap-to-enter intro ===== */
 .splash {
+  --splash-accent: var(--accent, #238bff);
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -668,56 +670,94 @@ select:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 0;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 42%, #172943 0%, #0b111d 38%, #05070b 78%);
+  isolation: isolate;
+  background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--splash-accent) 18%, #080b12) 0%, #03050a 48%, #000 100%);
   cursor: pointer;
-  transition: opacity 0.65s ease, visibility 0.65s ease;
+  transition: opacity .7s ease, visibility .7s ease;
 }
 .splash::before {
   content: "";
   position: absolute;
-  width: min(78vw, 370px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(151, 190, 245, .14);
-  border-radius: 50%;
-  box-shadow: 0 0 70px rgba(82, 137, 214, .09), inset 0 0 60px rgba(82, 137, 214, .06);
+  inset: -30%;
+  z-index: -1;
+  background: conic-gradient(from 0deg, transparent 0 32%, color-mix(in srgb, var(--splash-accent) 24%, transparent) 38%, transparent 44% 72%, color-mix(in srgb, var(--splash-accent) 16%, transparent) 79%, transparent 86%);
+  filter: blur(42px);
+  opacity: .48;
+  animation: nox-ambient 9s linear infinite;
+}
+.splash::after {
+  content: "";
+  position: absolute;
+  left: -30%;
+  top: 50%;
+  width: 160%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--splash-accent) 70%, white), white, color-mix(in srgb, var(--splash-accent) 70%, white), transparent);
+  box-shadow: 0 0 14px var(--splash-accent), 0 0 44px var(--splash-accent);
+  opacity: 0;
+  transform: rotate(-8deg) translateX(-100%);
+  animation: nox-light-sweep 2.2s .55s ease-out forwards;
+  pointer-events: none;
 }
 .splash.hide { opacity: 0; pointer-events: none; visibility: hidden; }
-.splash-emblem {
-  z-index: 1;
-  font-size: 58px;
-  line-height: 1;
-  margin-bottom: 4px;
-  filter: drop-shadow(0 8px 24px rgba(112, 164, 232, .38));
-  animation: float 3s ease-in-out infinite;
-}
+.splash-emblem { display: none; }
 .splash-nox {
+  position: relative;
   z-index: 1;
-  font-size: clamp(82px, 23vw, 126px);
-  line-height: .92;
+  font-size: clamp(104px, 27vw, 174px);
+  line-height: .82;
   font-weight: 1000;
-  letter-spacing: .12em;
-  padding-left: .12em;
-  color: #f2f7ff;
-  text-shadow: 0 3px 0 #879dbd, 0 8px 34px rgba(104, 157, 229, .42);
+  letter-spacing: .16em;
+  padding-left: .16em;
+  color: transparent;
+  background: linear-gradient(110deg, #f9fcff 8%, color-mix(in srgb, var(--splash-accent) 72%, white) 24%, #fff 38%, #8b9bb3 49%, #fff 58%, color-mix(in srgb, var(--splash-accent) 80%, white) 76%, #f4f8ff 92%);
+  background-size: 240% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--splash-accent) 45%, transparent));
+  animation: nox-wordmark-reveal 1.5s cubic-bezier(.2,.8,.2,1) both, nox-metal-shimmer 5s 1.5s ease-in-out infinite;
 }
 .splash-caption {
   z-index: 1;
-  color: #9bb8e4;
-  font-size: 11px;
+  margin-top: 22px;
+  color: color-mix(in srgb, var(--splash-accent) 65%, #dce8ff);
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: .38em;
-  padding-left: .38em;
+  letter-spacing: .48em;
+  padding-left: .48em;
+  opacity: 0;
+  animation: nox-caption-in .8s 1s ease forwards;
 }
 .splash-hint {
   z-index: 1;
-  color: #b6c5dc;
+  color: #d1d9e8;
   font-size: 14px;
-  margin: 24px 0 0;
-  letter-spacing: .04em;
+  margin: 74px 0 0;
+  letter-spacing: .05em;
+  opacity: 0;
+  animation: nox-caption-in .8s 1.8s ease forwards, nox-hint-pulse 2.2s 2.6s ease-in-out infinite;
 }
-
+@keyframes nox-ambient { to { transform: rotate(360deg); } }
+@keyframes nox-light-sweep {
+  0% { opacity: 0; transform: rotate(-8deg) translateX(-70%); }
+  24% { opacity: .95; }
+  100% { opacity: 0; transform: rotate(-8deg) translateX(70%); }
+}
+@keyframes nox-wordmark-reveal {
+  0% { opacity: 0; transform: scaleX(1.2); filter: blur(12px) drop-shadow(0 0 0 transparent); }
+  65% { opacity: 1; }
+  100% { opacity: 1; transform: scaleX(1); filter: blur(0) drop-shadow(0 0 18px color-mix(in srgb, var(--splash-accent) 48%, transparent)); }
+}
+@keyframes nox-metal-shimmer { 0%, 100% { background-position: 100% 50%; } 50% { background-position: 0% 50%; } }
+@keyframes nox-caption-in { to { opacity: 1; } }
+@keyframes nox-hint-pulse { 0%, 100% { opacity: .58; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .splash::before, .splash::after, .splash-nox, .splash-caption, .splash-hint { animation: none; }
+  .splash-nox, .splash-caption, .splash-hint { opacity: 1; }
+}
 /* زر النتائج في وسط الشاشة */
 .stats-toggle {
   display: block;
