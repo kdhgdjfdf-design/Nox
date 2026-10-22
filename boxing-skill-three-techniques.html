@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a0c">
+<title>ShadowBox Nox — كيف تفوز في قتال باستعمال 3 تقنيات</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0c;--line:#2b3036;--text:#f4f5f6;--muted:#a5abb3;--red:#e83b4b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#271116 0,var(--bg) 50%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;min-height:100vh}
+main{width:min(100%,650px);margin:auto;padding:calc(env(safe-area-inset-top) + 16px) 15px calc(env(safe-area-inset-bottom) + 28px)}
+header{display:flex;align-items:center;gap:11px;margin-bottom:20px}.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;color:white;background:#17191c;text-decoration:none;font-size:22px;flex:none}.logo{width:46px;height:46px;display:grid;place-items:center;background:#32161b;border:1px solid #67303a;border-radius:15px;font-size:24px;flex:none}
+h1{font-size:21px;line-height:1.45;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.intro{font-size:14px;line-height:1.8;color:#b8bdc4;margin:0 0 16px}
+.panel{padding:12px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#17191d,#101113);box-shadow:0 12px 35px #0005}.video{width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.video iframe{width:100%;height:100%;border:0}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{flex:1;min-width:76px;padding:12px 10px;border:1px solid #454950;border-radius:12px;background:#202227;color:white;font:inherit;font-size:13px;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#b92236,#791725);border-color:#d33b4c}.timer{display:flex;justify-content:space-between;gap:10px;color:#c6c9ce;font-size:12px;margin-top:12px}.track{height:5px;border-radius:9px;background:#33363b;overflow:hidden;margin-top:7px}.fill{height:100%;width:0;background:var(--red);transition:width .2s}.hint{font-size:12px;line-height:1.8;color:var(--muted);margin:14px 2px 0}
+</style></head>
+<body><main>
+<header><a class="back" href="boxing-skills-section.html?v=20261022-skills" aria-label="العودة إلى مهارات الملاكمة">‹</a><div class="logo">⚡</div><div><h1>كيف تفوز في قتال باستعمال 3 تقنيات</h1><div class="sub">درس فيديو · ShadowBox Nox</div></div></header>
+<p class="intro">شاهد الدرس داخل التطبيق، واستخدم أدوات التحكم لمتابعة المقطع بالوتيرة المناسبة لك.</p>
+<section class="panel"><div class="video"><div id="player"></div></div>
+<div class="controls"><button class="btn primary" id="toggle" type="button">▶ تشغيل</button><button class="btn" id="back10" type="button">↶ 10 ثوانٍ</button><button class="btn" id="forward10" type="button">10 ثوانٍ ↷</button></div>
+<div class="timer"><span id="state">جاهز للتشغيل</span><span><span id="current">00:00</span> / <span id="duration">--:--</span></span></div><div class="track"><div class="fill" id="fill"></div></div></section>
+<p class="hint">تذكير: الفيديو للتعلّم فقط. تدرب بأمان، وركّز على التوازن والتحكم، ولا تطبق الحركات على الآخرين.</p>
+</main>
+<script>
+const VIDEO_ID='qytDq4HF5hs';let player=null,timer=null;
+function fmt(n){if(!Number.isFinite(n)||n<0)n=0;return String(Math.floor(n/60)).padStart(2,'0')+':'+String(Math.floor(n%60)).padStart(2,'0')}
+function update(){if(!player||typeof player.getCurrentTime!=='function')return;const c=player.getCurrentTime()||0,d=player.getDuration()||0;document.getElementById('current').textContent=fmt(c);document.getElementById('duration').textContent=fmt(d);document.getElementById('fill').style.width=(d?Math.min(100,c/d*100):0)+'%';const s=player.getPlayerState();document.getElementById('state').textContent=s===1?'الفيديو يعمل':s===2?'متوقف مؤقتًا':s===0?'انتهى الفيديو':'جاهز للتشغيل';document.getElementById('toggle').textContent=s===1?'Ⅱ إيقاف مؤقت':'▶ تشغيل'}
+window.onYouTubeIframeAPIReady=function(){player=new YT.Player('player',{videoId:VIDEO_ID,playerVars:{playsinline:1,rel:0,modestbranding:1},events:{onReady:function(){update();timer=setInterval(update,500)},onStateChange:update}})};
+(function(){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s)})();
+document.getElementById('toggle').onclick=function(){if(!player)return;if(player.getPlayerState()===1)player.pauseVideo();else player.playVideo()};
+document.getElementById('back10').onclick=function(){if(player)player.seekTo(Math.max(0,(player.getCurrentTime()||0)-10),true)};
+document.getElementById('forward10').onclick=function(){if(player)player.seekTo((player.getCurrentTime()||0)+10,true)};
+</script></body></html>
