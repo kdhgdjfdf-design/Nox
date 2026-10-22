@@ -1890,13 +1890,9 @@ el.btnAgain.addEventListener("click", async () => {
 });
 el.btnHome.addEventListener("click", () => exitTraining("home"));
 
-// شاشة الدخول: تظهر أول مرة فقط في الجلسة؛ الرجوع من المدرّب لا يعيدها
-try {
-  if (sessionStorage.getItem("shadowbox_entered_v1") === "1") {
-    el.splash.classList.add("hide");
-    el.splash.hidden = true;
-  }
-} catch {}
+// تُعرض المقدمة السينمائية عند كل تحميل جديد للتطبيق؛ لا تُتجاوز بسبب جلسة سابقة.
+el.splash.hidden = false;
+el.splash.classList.remove("hide", "intro-finished");
 
 // المقدمة السينمائية تعمل أولًا، ثم تظهر شاشة الدخول المعتادة مع «اضغط للدخول».
 if (!el.splash.hidden && !el.splash.classList.contains("hide")) {
@@ -1905,13 +1901,13 @@ if (!el.splash.hidden && !el.splash.classList.contains("hide")) {
   }, 4700);
 }
 
-// شاشة الدخول: الضغط عليها يفعّل الصوت ويشغّل نغمة الدخول
+// شاشة الدخول: الضغط يتجاوز المقدمة ويفتح التطبيق مع صوت دخول قصير
 el.splash.addEventListener("click", () => {
   try { sessionStorage.setItem("shadowbox_entered_v1", "1"); } catch {}
   getAudio();
-  tone(440, 0.15, 0.2, "sine");
-  setTimeout(() => tone(660, 0.15, 0.2, "sine"), 150);
-  setTimeout(() => tone(880, 0.3, 0.25, "triangle"), 300);
+  tone(72, 0.38, 0.42, "sine");
+  setTimeout(() => tone(880, 0.12, 0.12, "triangle"), 110);
+  setTimeout(() => tone(1320, 0.22, 0.08, "triangle"), 170);
   el.splash.classList.add("hide");
   setTimeout(() => (el.splash.hidden = true), 700);
 }, { once: true });
