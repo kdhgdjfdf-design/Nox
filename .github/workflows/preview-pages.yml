@@ -16,6 +16,7 @@ on:
       - 'manifest.json'
       - 'icon-192.png'
       - 'icon-512.png'
+      - 'icon-boxing-cat.svg'
       - 'character-preview.html'
       - 'coach-preview.html'
       - 'shadowbox-learning-preview.html'
