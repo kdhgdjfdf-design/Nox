@@ -668,21 +668,55 @@ select:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  background: radial-gradient(circle at center, #3a0609 0%, #0a0a0a 70%);
+  gap: 12px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 42%, #172943 0%, #0b111d 38%, #05070b 78%);
   cursor: pointer;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.65s ease, visibility 0.65s ease;
 }
-.splash.hide { opacity: 0; pointer-events: none; }
-.splash-logo {
-  font-size: 96px;
+.splash::before {
+  content: "";
+  position: absolute;
+  width: min(78vw, 370px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(151, 190, 245, .14);
+  border-radius: 50%;
+  box-shadow: 0 0 70px rgba(82, 137, 214, .09), inset 0 0 60px rgba(82, 137, 214, .06);
+}
+.splash.hide { opacity: 0; pointer-events: none; visibility: hidden; }
+.splash-emblem {
+  z-index: 1;
+  font-size: 58px;
   line-height: 1;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 8px 24px rgba(112, 164, 232, .38));
   animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 8px 24px rgba(225, 29, 46, 0.6));
 }
-.splash-name { font-size: 34px; font-weight: 900; letter-spacing: 1px; }
-.splash-name span { color: var(--red); text-shadow: 0 0 18px rgba(225, 29, 46, 0.7); }
-.splash-hint { color: var(--muted); font-size: 15px; margin: 6px 0 0; }
+.splash-nox {
+  z-index: 1;
+  font-size: clamp(82px, 23vw, 126px);
+  line-height: .92;
+  font-weight: 1000;
+  letter-spacing: .12em;
+  padding-left: .12em;
+  color: #f2f7ff;
+  text-shadow: 0 3px 0 #879dbd, 0 8px 34px rgba(104, 157, 229, .42);
+}
+.splash-caption {
+  z-index: 1;
+  color: #9bb8e4;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .38em;
+  padding-left: .38em;
+}
+.splash-hint {
+  z-index: 1;
+  color: #b6c5dc;
+  font-size: 14px;
+  margin: 24px 0 0;
+  letter-spacing: .04em;
+}
 
 /* زر النتائج في وسط الشاشة */
 .stats-toggle {
