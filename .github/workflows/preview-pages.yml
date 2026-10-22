@@ -24,7 +24,7 @@ on:
       - 'boxing-basics-section.html'
       - 'boxing-warmups.html'
       - 'boxing-skills-section.html'
-      - 'boxing-skill-improve.html'
+      - 'boxing-skill-improve.html'\n      - 'boxing-skill-three-techniques.html'
       - 'health-nutrition.html'
       - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
