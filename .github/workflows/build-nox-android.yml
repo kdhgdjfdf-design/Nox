@@ -21,6 +21,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Prepare NOX launcher icon
+        working-directory: android-wrapper
+        run: |
+          mkdir -p app/src/main/res/drawable-nodpi
+          base64 --decode app/src/main/res/drawable-nodpi/nox_icon_base64.txt > app/src/main/res/drawable-nodpi/ic_nox.jpg
+          rm app/src/main/res/drawable-nodpi/nox_icon_base64.txt
+          file app/src/main/res/drawable-nodpi/ic_nox.jpg
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
