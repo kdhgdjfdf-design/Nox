@@ -662,7 +662,7 @@ select:focus {
 /* شاشة الدخول */
 /* ===== NOX / نوكس: original cinematic light identity ===== */
 .splash {
-  --splash-accent: var(--red, #e11d2e);
+  --splash-accent: #e11d2e;
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -680,46 +680,38 @@ select:focus {
 .splash::before {
   content: "";
   position: absolute;
-  inset: -10%;
+  inset: -15%;
   z-index: 0;
   pointer-events: none;
   opacity: 0;
   background:
-    radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--splash-accent) 18%, transparent), transparent 52%),
-    repeating-linear-gradient(90deg, transparent 0 9px, color-mix(in srgb, var(--splash-accent) 72%, transparent) 10px, transparent 12px, transparent 21px);
-  transform: scale(1.3);
-  filter: blur(2px);
-  animation: nox-light-corridor 3.4s .55s ease-out forwards;
+    radial-gradient(ellipse at 50% 50%, rgba(225,29,46,.18), transparent 52%),
+    repeating-linear-gradient(90deg,
+      transparent 0 5px,
+      rgba(255,35,50,.0) 5px 11px,
+      rgba(255,35,50,.95) 12px 13px,
+      rgba(255,35,50,.08) 14px 16px,
+      transparent 17px 27px);
+  transform: scale(1.65) translateX(-2%);
+  filter: blur(1.5px);
+  animation: nox-red-lines 3.5s .55s ease-out forwards;
 }
 .splash::after {
   content: "";
   position: absolute;
   z-index: 2;
-  top: -15%;
-  bottom: -15%;
+  top: -20%;
+  bottom: -20%;
   left: -90%;
-  width: 30%;
+  width: 26%;
   pointer-events: none;
   opacity: 0;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--splash-accent) 45%, transparent) 28%, #fff 49%, color-mix(in srgb, var(--splash-accent) 100%, white) 52%, color-mix(in srgb, var(--splash-accent) 45%, transparent) 74%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(225,29,46,.35) 24%, #fff 49%, #e11d2e 52%, rgba(225,29,46,.45) 75%, transparent);
   filter: blur(1px);
-  box-shadow: 0 0 28px var(--splash-accent), 0 0 76px var(--splash-accent);
+  box-shadow: 0 0 26px #e11d2e, 0 0 72px rgba(225,29,46,.85);
   transform: skewX(-17deg);
-  animation: nox-beam-pass 1.7s .85s cubic-bezier(.45,.05,.25,1) forwards;
+  animation: nox-red-beam 1.45s 1.15s cubic-bezier(.45,.05,.25,1) forwards;
 }
-.splash.intro-finished::before,
-.splash.intro-finished::after { opacity: 0; transition: opacity .7s ease; }
-.splash.intro-finished .splash-nox {
-  opacity: 1;
-  clip-path: inset(0);
-  filter: none;
-  transform: none;
-  animation: none;
-  text-shadow: 0 0 2px #fff, 0 0 18px color-mix(in srgb, var(--splash-accent) 45%, transparent);
-}
-.splash.intro-finished .splash-caption,
-.splash.intro-finished .splash-hint { opacity: 1; animation: none; }
-.splash.intro-finished .splash-hint { margin-top: 68px; }
 .splash.hide { opacity: 0; pointer-events: none; visibility: hidden; }
 .splash-emblem { display: none; }
 .splash-nox {
@@ -733,21 +725,21 @@ select:focus {
   letter-spacing: .08em;
   color: #f7f7f7;
   opacity: 0;
-  text-shadow: 0 0 2px #fff, 0 0 22px color-mix(in srgb, var(--splash-accent) 62%, transparent);
+  text-shadow: 0 0 2px #fff, 0 0 22px rgba(225,29,46,.7);
   clip-path: inset(0 100% 0 0);
-  animation: nox-wordmark-build 1.45s 1.8s cubic-bezier(.16,1,.3,1) forwards;
+  animation: nox-wordmark-build 1.25s 2.15s cubic-bezier(.16,1,.3,1) forwards;
 }
 .splash-caption {
   position: relative;
   z-index: 1;
   margin-top: 16px;
-  color: color-mix(in srgb, var(--splash-accent) 72%, #f2f2f2);
+  color: #ff6670;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .42em;
   padding-left: .42em;
   opacity: 0;
-  animation: nox-caption-in .7s 2.9s ease forwards;
+  animation: nox-caption-in .7s 3.05s ease forwards;
 }
 .splash-hint {
   position: relative;
@@ -757,18 +749,19 @@ select:focus {
   margin: 68px 0 0;
   letter-spacing: .05em;
   opacity: 0;
-  animation: nox-caption-in .7s 3.35s ease forwards, nox-hint-pulse 2.2s 4s ease-in-out infinite;
+  animation: nox-caption-in .7s 3.55s ease forwards, nox-hint-pulse 2.2s 4s ease-in-out infinite;
 }
-@keyframes nox-light-corridor {
-  0% { opacity: 0; transform: scale(1.5); filter: blur(14px); }
-  12% { opacity: .95; }
-  35% { opacity: .7; transform: scale(1.12); filter: blur(4px); }
-  62% { opacity: .42; transform: scale(1); filter: blur(2px); }
-  100% { opacity: .2; transform: scale(1); filter: blur(4px); }
+@keyframes nox-red-lines {
+  0% { opacity: 0; transform: scale(1.75) translateX(-3%); filter: blur(8px); background-position: 0 0; }
+  12% { opacity: 1; }
+  34% { opacity: .95; transform: scale(1.18) translateX(2%); filter: blur(2px); }
+  55% { opacity: .72; transform: scale(1.03) translateX(-1%); filter: blur(1px); }
+  78% { opacity: .4; transform: scale(1) translateX(0); }
+  100% { opacity: .18; transform: scale(1) translateX(0); filter: blur(2px); }
 }
-@keyframes nox-beam-pass {
+@keyframes nox-red-beam {
   0% { left: -90%; opacity: 0; }
-  10% { opacity: 1; }
+  12% { opacity: 1; }
   70% { left: 80%; opacity: 1; }
   100% { left: 150%; opacity: 0; }
 }
@@ -776,7 +769,7 @@ select:focus {
   0% { opacity: 0; clip-path: inset(0 100% 0 0); filter: blur(10px); transform: scale(1.08); }
   28% { opacity: 1; }
   72% { clip-path: inset(0 0 0 0); filter: blur(0); }
-  100% { opacity: 1; clip-path: inset(0 0 0 0); filter: drop-shadow(0 0 20px color-mix(in srgb, var(--splash-accent) 52%, transparent)); transform: scale(1); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); filter: drop-shadow(0 0 20px rgba(225,29,46,.55)); transform: scale(1); }
 }
 @keyframes nox-caption-in { to { opacity: 1; } }
 @keyframes nox-hint-pulse { 0%, 100% { opacity: .62; } 50% { opacity: 1; } }
