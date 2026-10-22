@@ -1,0 +1,58 @@
+name: Build ShadowBox Nox APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android-apk/**'
+      - 'icon-boxing-cat.svg'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SVG converter
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+
+      - name: Prepare launcher icons
+        run: |
+          mkdir -p android-apk/app/src/main/res/drawable
+          mkdir -p android-apk/app/src/main/res/mipmap-mdpi
+          mkdir -p android-apk/app/src/main/res/mipmap-hdpi
+          mkdir -p android-apk/app/src/main/res/mipmap-xhdpi
+          mkdir -p android-apk/app/src/main/res/mipmap-xxhdpi
+          mkdir -p android-apk/app/src/main/res/mipmap-xxxhdpi
+          rsvg-convert -w 48 -h 48 icon-boxing-cat.svg -o android-apk/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          rsvg-convert -w 72 -h 72 icon-boxing-cat.svg -o android-apk/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          rsvg-convert -w 96 -h 96 icon-boxing-cat.svg -o android-apk/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          rsvg-convert -w 144 -h 144 icon-boxing-cat.svg -o android-apk/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          rsvg-convert -w 192 -h 192 icon-boxing-cat.svg -o android-apk/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+
+      - name: Build debug APK
+        run: |
+          cd android-apk
+          gradle --no-daemon assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShadowBox-Nox-APK
+          path: android-apk/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
