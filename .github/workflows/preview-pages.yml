@@ -26,6 +26,7 @@ on:
       - 'boxing-skills-section.html'
       - 'boxing-skill-improve.html'
       - 'boxing-skill-three-techniques.html'
+      - 'boxing-skill-max-power.html'
       - 'health-nutrition.html'
       - 'shadowbox-training-layout-preview.html'
       - '.github/workflows/preview-pages.yml'
