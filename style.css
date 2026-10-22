@@ -707,6 +707,19 @@ select:focus {
   transform: skewX(-17deg);
   animation: nox-beam-pass 1.7s .85s cubic-bezier(.45,.05,.25,1) forwards;
 }
+.splash.intro-finished::before,
+.splash.intro-finished::after { opacity: 0; transition: opacity .7s ease; }
+.splash.intro-finished .splash-nox {
+  opacity: 1;
+  clip-path: inset(0);
+  filter: none;
+  transform: none;
+  animation: none;
+  text-shadow: 0 0 2px #fff, 0 0 18px color-mix(in srgb, var(--splash-accent) 45%, transparent);
+}
+.splash.intro-finished .splash-caption,
+.splash.intro-finished .splash-hint { opacity: 1; animation: none; }
+.splash.intro-finished .splash-hint { margin-top: 68px; }
 .splash.hide { opacity: 0; pointer-events: none; visibility: hidden; }
 .splash-emblem { display: none; }
 .splash-nox {
