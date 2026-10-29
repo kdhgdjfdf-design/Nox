@@ -1869,15 +1869,18 @@ el.complaintsForm.addEventListener("submit", async (event) => {
   el.complaintStatus.textContent = "";
   el.complaintStatus.classList.remove("error");
   try {
-    const payload = new FormData();
-    payload.append("nickname", nickname);
-    payload.append("type", el.complaintType.value);
-    payload.append("message", message);
-    payload.append("_subject", "[SHADOWBOXNOX] رسالة من " + nickname);
-    payload.append("_template", "table");
-    payload.append("_captcha", "true");
+    const payload = {
+      nickname,
+      type: el.complaintType.value,
+      message,
+      _subject: "[SHADOWBOXNOX] رسالة من " + nickname,
+      _template: "table",
+      _captcha: "true"
+    };
     const response = await fetch("https://formsubmit.co/ajax/kdhgdjfdf@gmail.com", {
-      method: "POST", headers: { "Accept": "application/json" }, body: payload
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok || (result.success !== "true" && result.success !== true)) throw new Error("Submission failed");
