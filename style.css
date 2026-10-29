@@ -1169,3 +1169,22 @@ html, body {
   color: #f4d77a;
 }
 
+
+
+/* ===== الشكاوى والملاحظات: بطاقة صغيرة ونموذج متناسق ===== */
+.complaint-mini { display:flex; align-items:center; gap:12px; width:100%; min-height:66px; margin:16px 0 4px; padding:11px 13px; border:1px solid rgba(255,255,255,.12); border-radius:15px; background:linear-gradient(120deg,rgba(33,33,33,.96),rgba(18,18,18,.96)); color:var(--text); text-align:start; font:inherit; cursor:pointer; box-shadow:0 8px 22px rgba(0,0,0,.22); }
+.complaint-mini:active { transform:scale(.99); }
+.complaint-mini-icon { display:grid; place-items:center; width:38px; height:38px; flex:0 0 38px; border-radius:12px; color:#ff8790; background:rgba(225,29,46,.13); border:1px solid rgba(225,29,46,.25); font-size:21px; }
+.complaint-mini b,.complaint-mini small { display:block; }
+.complaint-mini b { font-size:14px; }
+.complaint-mini small { margin-top:3px; color:var(--muted); font-size:11.5px; }
+.complaint-mini-arrow { margin-inline-start:auto; color:var(--muted); font-size:24px; }
+.complaint-settings-link { display:flex; align-items:center; gap:10px; width:100%; min-height:46px; padding:8px 12px; margin-top:12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.035); color:var(--text); font:inherit; text-align:start; cursor:pointer; }
+.complaint-settings-link span:last-child { margin-inline-start:auto; color:var(--muted); font-size:22px; }
+.complaints-sheet { max-height:min(90dvh,720px); }
+.complaints-form .field { text-align:start; }
+.complaints-form input,.complaints-form textarea { width:100%; min-height:48px; padding:12px 14px; border:1px solid #333; border-radius:12px; background:var(--panel-2); color:var(--text); font:inherit; font-size:15px; resize:vertical; }
+.complaints-form input:focus,.complaints-form textarea:focus { outline:2px solid var(--red); outline-offset:2px; }
+.complaints-form .row { flex-wrap:wrap; }
+.complaints-form .row .btn { min-width:120px; }
+.complaints-form .msg { min-height:0; }
