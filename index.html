@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="description" content="ShadowBox Nox - shadow boxing trainer with your phone camera. تدريب الملاكمة الافتراضي بكاميرا هاتفك." />
   <title>SHADOWBOXNOX 🥊</title>
-  <link rel="stylesheet" href="style.css?v=20261020-exercise-fold1" />
+  <link rel="stylesheet" href="style.css?v=20261029-complaints1" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icon-boxing-cat.svg" />
   <link rel="apple-touch-icon" href="icon-boxing-cat.svg" />
@@ -62,6 +62,12 @@
         <span class="mode-arrow"></span>
       </button>
     </nav>
+
+    <button id="btnOpenComplaintsHome" class="complaint-mini" type="button" aria-haspopup="dialog">
+      <span class="complaint-mini-icon" aria-hidden="true">✉</span>
+      <span><b data-i18n="complaint_card_title">الشكاوى والملاحظات</b><small data-i18n="complaint_card_desc">ساعدنا على تحسين SHADOWBOXNOX</small></span>
+      <span class="complaint-mini-arrow" aria-hidden="true">‹</span>
+    </button>
 
     <div class="row">
       <button id="btnHelp" class="btn ghost" data-i18n="btn_help">نصائح الإعداد</button>
@@ -330,10 +336,30 @@
         <span data-i18n="toggle_sound">تفعيل الأصوات والتأثيرات الصوتية</span>
       </label>
 
+      <button id="btnOpenComplaintsSettings" class="complaint-settings-link" type="button">
+        <span aria-hidden="true">✉</span><span data-i18n="complaint_card_title">الشكاوى والملاحظات</span><span aria-hidden="true">‹</span>
+      </button>
+
       <div class="row">
         <button id="btnResetHistory" class="btn ghost danger-text" data-i18n="btn_reset_history">حذف السجل المحفوظ</button>
         <button id="btnCloseSettings" class="btn primary" data-i18n="btn_close">إغلاق</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ============ الشكاوى والملاحظات ============ -->
+  <div id="complaintsModal" class="overlay modal" hidden>
+    <div class="sheet wide complaints-sheet" role="dialog" aria-modal="true" aria-labelledby="complaintsTitle">
+      <h2 id="complaintsTitle" data-i18n="complaint_title">الشكاوى والملاحظات</h2>
+      <p class="hint" data-i18n="complaint_intro">اكتب ملاحظتك أو المشكلة التي واجهتك. استخدم اسمًا مستعارًا فقط.</p>
+      <form id="complaintsForm" class="complaints-form">
+        <label class="field"><span data-i18n="complaint_nickname">الاسم المستعار</span><input id="complaintNickname" name="nickname" type="text" maxlength="32" autocomplete="nickname" required data-i18n-placeholder="complaint_nickname_placeholder" placeholder="مثال: ShadowFox" /></label>
+        <label class="field"><span data-i18n="complaint_type">نوع الرسالة</span><select id="complaintType" name="نوع الرسالة"><option value="شكوى" data-i18n="complaint_type_issue">شكوى أو خلل</option><option value="اقتراح" data-i18n="complaint_type_idea">اقتراح</option><option value="ملاحظة" data-i18n="complaint_type_note">ملاحظة أخرى</option></select></label>
+        <label class="field"><span data-i18n="complaint_message">تفاصيل الرسالة</span><textarea id="complaintMessage" name="message" rows="5" maxlength="3000" required data-i18n-placeholder="complaint_message_placeholder" placeholder="اشرح المشكلة أو اقتراحك باختصار..."></textarea></label>
+        <p class="notice small" data-i18n="complaint_privacy_note">لا تكتب كلمات مرور أو معلومات شخصية حساسة. الرسالة ستُرسل إلى بريد مطوّر التطبيق.</p>
+        <p id="complaintStatus" class="msg" role="status" aria-live="polite"></p>
+        <div class="row"><button id="btnSendComplaint" class="btn primary" type="submit" data-i18n="complaint_send">إرسال الرسالة</button><button id="btnCloseComplaints" class="btn ghost" type="button" data-i18n="btn_close">إغلاق</button></div>
+      </form>
     </div>
   </div>
 
@@ -376,6 +402,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20261021-coach-merge3" type="module"></script>
+  <script src="script.js?v=20261029-complaints1" type="module"></script>
 </body>
 </html>
