@@ -54,6 +54,24 @@ const T = {
   splash_hint: ["اضغط للدخول", "Tap to enter"],
   tagline: ["كيس افتراضي يستجيب للكماتك، وعدّاد لكمات يعمل بكاميرا هاتفك", "A virtual bag that reacts to your punches, with a punch counter powered by your phone camera"],
   btn_settings: ["⚙️ الإعدادات", "⚙️ Settings"],
+  complaint_card_title: ["الشكاوى والملاحظات", "Feedback & complaints"],
+  complaint_card_desc: ["ساعدنا على تحسين SHADOWBOXNOX", "Help improve SHADOWBOXNOX"],
+  complaint_title: ["الشكاوى والملاحظات", "Feedback & complaints"],
+  complaint_intro: ["اكتب ملاحظتك أو المشكلة التي واجهتك. استخدم اسمًا مستعارًا فقط.", "Describe your feedback or the issue you encountered. Use a nickname only."],
+  complaint_nickname: ["الاسم المستعار", "Nickname"],
+  complaint_nickname_placeholder: ["مثال: ShadowFox", "e.g. ShadowFox"],
+  complaint_type: ["نوع الرسالة", "Message type"],
+  complaint_type_issue: ["شكوى أو خلل", "Complaint or bug"],
+  complaint_type_idea: ["اقتراح", "Suggestion"],
+  complaint_type_note: ["ملاحظة أخرى", "Other feedback"],
+  complaint_message: ["تفاصيل الرسالة", "Message details"],
+  complaint_message_placeholder: ["اشرح المشكلة أو اقتراحك باختصار...", "Briefly describe the issue or suggestion..."],
+  complaint_privacy_note: ["لا تكتب كلمات مرور أو معلومات شخصية حساسة. الرسالة ستُرسل إلى بريد مطوّر التطبيق.", "Do not include passwords or sensitive personal information. Your message will be sent to the app developer's email."],
+  complaint_send: ["إرسال الرسالة", "Send message"],
+  complaint_sending: ["جارٍ الإرسال...", "Sending..."],
+  complaint_success: ["تم إرسال الرسالة بنجاح. شكرًا لمساعدتنا في تحسين التطبيق.", "Message sent successfully. Thanks for helping improve the app."],
+  complaint_error: ["تعذّر الإرسال الآن. تحقق من اتصال الإنترنت وحاول مجددًا.", "Could not send right now. Check your internet connection and try again."],
+  complaint_invalid: ["أدخل اسمًا مستعارًا ورسالة واضحة.", "Enter a nickname and a clear message."],
   banner_https: ["⚠️ الكاميرا لا تعمل إلا عبر <b>HTTPS</b>. افتح التطبيق من رابط يبدأ بـ https:// أو من localhost.", "⚠️ The camera only works over <b>HTTPS</b>. Open the app from an https:// link or localhost."],
   modes_title: ["اختر نوع التدريب", "Choose a training mode"],
   name_free: ["حرّ", "Free"],
@@ -317,6 +335,7 @@ const IDS = [
   "settingsModal", "langSel", "themeSel", "btnCloseSettings", "btnResetHistory",
   "btnCoach", "coachModal", "coachBody", "btnCloseCoach",
   "btnTraining", "btnLearn", "btnHealth", "trainMenuScreen", "learnScreen", "btnTrainBack", "btnLearnBack", "progressHint",
+  "btnOpenComplaintsHome", "btnOpenComplaintsSettings", "complaintsModal", "complaintsForm", "complaintNickname", "complaintType", "complaintMessage", "complaintStatus", "btnSendComplaint", "btnCloseComplaints",
 ];
 const el = {};
 for (const id of IDS) el[id] = $(id);
@@ -517,6 +536,7 @@ function applyLang() {
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   document.querySelectorAll("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
   document.querySelectorAll("[data-i18n-html]").forEach((n) => { n.innerHTML = t(n.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((n) => { n.placeholder = t(n.dataset.i18nPlaceholder); });
   el.langSel.value = lang;
   setSetupMode();
   setStatsHidden(statsHidden);
@@ -1820,6 +1840,58 @@ document.querySelectorAll(".mode-card").forEach((card) => {
 });
 el.btnSetupBack.addEventListener("click", () => showScreen("trainMenu"));
 el.btnStart.addEventListener("click", startSession);
+
+function openComplaints() {
+  el.complaintStatus.textContent = "";
+  el.complaintStatus.classList.remove("error");
+  el.complaintsModal.hidden = false;
+  el.complaintNickname.focus();
+}
+
+el.btnOpenComplaintsHome.addEventListener("click", openComplaints);
+el.btnOpenComplaintsSettings.addEventListener("click", () => {
+  el.settingsModal.hidden = true;
+  openComplaints();
+});
+el.btnCloseComplaints.addEventListener("click", () => { el.complaintsModal.hidden = true; });
+el.complaintsForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const nickname = el.complaintNickname.value.trim().slice(0, 32);
+  const message = el.complaintMessage.value.trim().slice(0, 3000);
+  if (!nickname || !message) {
+    el.complaintStatus.textContent = t("complaint_invalid");
+    el.complaintStatus.classList.add("error");
+    return;
+  }
+  const submitButton = el.btnSendComplaint;
+  submitButton.disabled = true;
+  submitButton.textContent = t("complaint_sending");
+  el.complaintStatus.textContent = "";
+  el.complaintStatus.classList.remove("error");
+  try {
+    const payload = new FormData();
+    payload.append("nickname", nickname);
+    payload.append("type", el.complaintType.value);
+    payload.append("message", message);
+    payload.append("_subject", "[SHADOWBOXNOX] رسالة من " + nickname);
+    payload.append("_template", "table");
+    payload.append("_captcha", "true");
+    const response = await fetch("https://formsubmit.co/ajax/kdhgdjfdf@gmail.com", {
+      method: "POST", headers: { "Accept": "application/json" }, body: payload
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || (result.success !== "true" && result.success !== true)) throw new Error("Submission failed");
+    el.complaintStatus.textContent = t("complaint_success");
+    el.complaintsForm.reset();
+  } catch (error) {
+    console.warn("Complaint submission failed", error);
+    el.complaintStatus.textContent = t("complaint_error");
+    el.complaintStatus.classList.add("error");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = t("complaint_send");
+  }
+});
 
 el.btnSettings.addEventListener("click", () => (el.settingsModal.hidden = false));
 el.btnCloseSettings.addEventListener("click", () => {
